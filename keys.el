@@ -52,7 +52,7 @@
 (global-set-key (kbd "<f10>") 'next-error)
 
 ;; Multiple markers
-(key-chord-define-global (kbd "ee") 'mc/edit-lines)
+(key-chord-define-global (kbd "qq") 'mc/edit-lines)
 (global-set-key (kbd "C-f") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-b") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-!") 'mc/mark-all-like-this)
@@ -61,22 +61,21 @@
 (global-set-key (kbd "C-n") 'er/expand-region)
 (global-set-key (kbd "C-p") 'er/contract-region)
 
-;; Key Chords
-(key-chord-define-global (kbd "aa") 'rgrep)
 
 ;; Jedi
 (global-set-key (kbd "M-.") 'jedi:goto-definition)
 (global-set-key (kbd "M-:") 'jedi:goto-definition-pop-marker)
 
-;; Ace
+;; Search
 (key-chord-define-global (kbd ",,") 'ace-jump-word-mode)
+(key-chord-define-global (kbd "aa") 'rgrep)
 
 ;; Projectile
 (global-set-key (kbd "C-x f") 'projectile-find-file)
 (global-set-key (kbd "C-x b") 'projectile-switch-to-buffer)
 (global-set-key (kbd "C-x s") 'projectile-switch-project)
 (global-set-key (kbd "C-x g") 'projectile-grep)
-(global-set-key (kbd "C-x r") 'projectile-replace)
+(global-set-key (kbd "C-x q") 'projectile-replace)
 (global-set-key (kbd "C-x t") 'projectile-toggle-between-implementation-and-test)
 
 ;; Misc
