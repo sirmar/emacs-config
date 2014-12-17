@@ -10,6 +10,7 @@
 
 ;; Load my settings
 (load "~/.emacs.d/variables.el")
+(load "~/.emacs.d/grep-settings.el")
 (load "~/.emacs.d/settings.el")
 (load "~/.emacs.d/functions.el")
 (load "~/.emacs.d/keys.el")
