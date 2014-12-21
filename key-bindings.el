@@ -24,12 +24,6 @@
 (global-set-key (kbd "<C-S-iso-lefttab>") 'dabbrev-completion)
 (define-key minibuffer-local-map (kbd "<C-S-iso-lefttab>") 'dabbrev-completion)
 
-;; Pairing
-(global-set-key "(" 'skeleton-pair-insert-maybe)
-(global-set-key "[" 'skeleton-pair-insert-maybe)
-(global-set-key "{" 'skeleton-pair-insert-maybe)
-(global-set-key "\"" 'skeleton-pair-insert-maybe)
-
 ;; Macros
 (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
 

@@ -21,6 +21,6 @@
 (setq compile-command "")
 (setq tags-file-name "~/TAGS")
 (setq make-backup-files nil)
-(setq skeleton-pair t)
+(electric-pair-mode t)
 (setq mouse-yank-at-point t)
 (defalias 'yes-or-no-p 'y-or-n-p)
