@@ -11,3 +11,4 @@
 (depends-on "multiple-cursors")
 (depends-on "auto-complete")
 (depends-on "jedi")
+(depends-on "magit")

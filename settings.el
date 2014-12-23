@@ -3,6 +3,7 @@
 (line-number-mode t)
 (column-number-mode t)
 (setq frame-title-format "%b")
+(setq ediff-split-window-function (quote split-window-horizontally))
 
 ;; Whitespace
 (setq whitespace-line-column 100)

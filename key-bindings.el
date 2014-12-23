@@ -27,12 +27,8 @@
 ;; Macros
 (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
 
-;; SVN
-(global-set-key (kbd "C-c d") 'svn-file-show-svn-ediff)
-(global-set-key (kbd "C-c r") 'vc-revert)
-(global-set-key (kbd "C-c l") 'vc-print-log)
-(global-set-key (kbd "C-c i") 'vc-next-action)
-(global-set-key (kbd "C-c s") 'svn-examine)
+;; Git
+(global-set-key (kbd "C-c s") 'magit-status)
 
 ;; Compilation
 (global-set-key (kbd "<f5>") 'compile)
