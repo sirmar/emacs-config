@@ -24,12 +24,6 @@
 (global-set-key (kbd "<C-S-iso-lefttab>") 'dabbrev-completion)
 (define-key minibuffer-local-map (kbd "<C-S-iso-lefttab>") 'dabbrev-completion)
 
-;; Macros
-(global-set-key (kbd "<f12>") 'call-last-kbd-macro)
-
-;; Git
-(global-set-key (kbd "C-c s") 'magit-status)
-
 ;; Compilation
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "<f6>") 'recompile)
@@ -46,7 +40,6 @@
 ;; Expand region
 (global-set-key (kbd "C-n") 'er/expand-region)
 (global-set-key (kbd "C-p") 'er/contract-region)
-
 
 ;; Jedi
 (global-set-key (kbd "M-.") 'jedi:goto-definition)
@@ -66,4 +59,7 @@
 
 ;; Misc
 (global-set-key (kbd "C-z") 'undo)
+(global-set-key (kbd "<f12>") 'call-last-kbd-macro)
+(global-set-key (kbd "C-c s") 'magit-status)
+
 
