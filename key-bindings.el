@@ -39,7 +39,6 @@
 
 ;; Expand region
 (global-set-key (kbd "C-n") 'er/expand-region)
-(global-set-key (kbd "C-p") 'er/contract-region)
 
 ;; Jedi
 (global-set-key (kbd "M-.") 'jedi:goto-definition)
