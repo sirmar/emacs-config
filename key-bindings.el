@@ -15,8 +15,8 @@
 ;; Move cursor
 (global-set-key (kbd "<down>") 'next-logical-line)
 (global-set-key (kbd "<up>") 'previous-logical-line)
-(global-set-key (kbd "<M-up>") 'move-line-up)
-(global-set-key (kbd "<M-down>") 'move-line-down)
+(global-set-key (kbd "<M-up>") 'move-text-up)
+(global-set-key (kbd "<M-down>") 'move-text-down)
 
 ;; Completion
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
@@ -57,9 +57,12 @@
 (global-set-key (kbd "C-x q") 'projectile-replace)
 (global-set-key (kbd "C-x t") 'projectile-toggle-between-implementation-and-test)
 
+;; Magit
+(global-set-key (kbd "C-c s") 'magit-status)
+(global-set-key (kbd "C-c b") 'magit-blame-mode)
+
 ;; Misc
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
-(global-set-key (kbd "C-c s") 'magit-status)
 
 

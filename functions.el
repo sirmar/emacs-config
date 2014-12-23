@@ -37,22 +37,3 @@
   (generate-new-buffer "*grep*")
   (set-window-buffer w2 "*grep*")
   )
-
-(defun move-line-down ()
-  "Move current line down and indents"
-  (interactive)
-  (next-logical-line)
-  (transpose-lines 1)
-  (previous-logical-line 2)
-  (indent-for-tab-command)
-  (next-logical-line)
-  (indent-for-tab-command))
-
-(defun move-line-up ()
-  "Move current line up and indents"
-  (interactive)
-  (transpose-lines 1)
-  (previous-logical-line)
-  (indent-for-tab-command)
-  (previous-logical-line)
-  (indent-for-tab-command))

@@ -12,3 +12,4 @@
 (depends-on "auto-complete")
 (depends-on "jedi")
 (depends-on "magit")
+(depends-on "move-text")
