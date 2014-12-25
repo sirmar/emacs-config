@@ -45,8 +45,8 @@
 (global-set-key (kbd "M-:") 'jedi:goto-definition-pop-marker)
 
 ;; Search
-(key-chord-define-global (kbd ",,") 'ace-jump-word-mode)
-(key-chord-define-global (kbd "aa") 'rgrep)
+(global-set-key (kbd "C-c C-s") 'ace-jump-word-mode)
+(global-set-key (kbd "C-c g") 'rgrep)
 
 ;; Projectile
 (global-set-key (kbd "C-x f") 'projectile-find-file)
@@ -63,5 +63,3 @@
 ;; Misc
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
-
-
