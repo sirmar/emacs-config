@@ -24,8 +24,6 @@
 (global-set-key (kbd "<up>") 'previous-logical-line)
 (global-set-key (kbd "<M-up>") 'move-text-up)
 (global-set-key (kbd "<M-down>") 'move-text-down)
-(global-set-key (kbd "M-p") 'scroll-down-line)
-(global-set-key (kbd "M-n") 'scroll-up-line)
 
 ;; Completion
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
@@ -41,10 +39,10 @@
 (global-set-key (kbd "<f10>") 'next-error)
 
 ;; Multiple markers
-(key-chord-define-global (kbd "qq") 'mc/edit-lines)
-(global-set-key (kbd "C-f") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-b") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-!") 'mc/mark-all-like-this)
+(global-set-key (kbd "M-e") 'mc/edit-lines)
+(global-set-key (kbd "M-n") 'mc/mark-next-like-this)
+(global-set-key (kbd "M-p") 'mc/mark-previous-like-this)
+(global-set-key (kbd "M-a") 'mc/mark-all-like-this)
 
 ;; Expand region
 (global-set-key (kbd "C-S-SPC") 'er/expand-region)

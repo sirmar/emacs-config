@@ -5,7 +5,6 @@
 (depends-on "projectile")
 (depends-on "flx-ido")
 (depends-on "expand-region")
-(depends-on "key-chord")
 (depends-on "yasnippet")
 (depends-on "ace-jump-mode")
 (depends-on "multiple-cursors")
