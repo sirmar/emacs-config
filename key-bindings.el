@@ -5,12 +5,19 @@
 (global-set-key (kbd "C-M-,") 'previous-buffer)
 (global-set-key (kbd "C-M-.") 'next-buffer)
 (global-set-key (kbd "<f8>") 'config-buffers)
+(global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
+(global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
 
 ;; Edit
 (global-set-key (kbd "C-c SPC") 'goto-last-edit-point)
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "C-c C-c") 'comment-region)
 (global-set-key (kbd "<delete>") 'delete-char)
+(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
+(global-set-key (kbd "<C-return>") 'open-line-below)
+(global-set-key (kbd "<C-S-return>") 'open-line-above)
+(global-set-key (kbd "C-z") 'undo)
+(global-set-key (kbd "M-S-SPC") 'just-one-space)
 
 ;; Move cursor
 (global-set-key (kbd "<down>") 'next-logical-line)
@@ -38,7 +45,7 @@
 (global-set-key (kbd "C-!") 'mc/mark-all-like-this)
 
 ;; Expand region
-(global-set-key (kbd "C-n") 'er/expand-region)
+(global-set-key (kbd "C-S-SPC") 'er/expand-region)
 
 ;; Jedi
 (global-set-key (kbd "M-.") 'jedi:goto-definition)
@@ -61,5 +68,4 @@
 (global-set-key (kbd "C-c b") 'magit-blame-mode)
 
 ;; Misc
-(global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
