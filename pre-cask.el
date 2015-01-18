@@ -3,6 +3,7 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (setq inhibit-startup-message t)
+(setq initial-scratch-message "")
 
 ;; Set window size
 (when window-system (set-frame-size (selected-frame) 195 47))
