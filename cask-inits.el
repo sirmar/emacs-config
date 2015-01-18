@@ -18,11 +18,10 @@
 (ac-set-trigger-key "TAB")
 (setq ac-auto-show-menu 0.1)
 
-;; Key Chords
-(key-chord-mode 1)
-
 ;; Jedi
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
 
+;; Flycheck
+(add-hook 'python-mode-hook 'flycheck-mode)
 
