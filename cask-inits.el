@@ -27,5 +27,4 @@
 (add-hook 'python-mode-hook 'flycheck-mode)
 
 ;; Fullframe
-(after-load 'magit
-            (fullframe magit-status magit-mode-quit-window))
+(fullframe magit-status magit-mode-quit-window)
