@@ -4,6 +4,7 @@
 (flx-ido-mode 1)
 (setq ido-enable-flex-matching t)
 (setq ido-use-faces nil)
+(ido-vertical-mode)
 
 ;; Yasnippet
 (yas-global-mode t)
@@ -25,3 +26,6 @@
 ;; Flycheck
 (add-hook 'python-mode-hook 'flycheck-mode)
 
+;; Fullframe
+(after-load 'magit
+            (fullframe magit-status magit-mode-quit-window))

@@ -52,7 +52,7 @@
 (global-set-key (kbd "M-:") 'jedi:goto-definition-pop-marker)
 
 ;; Search
-(global-set-key (kbd "C-c C-s") 'ace-jump-word-mode)
+(global-set-key (kbd "M-s") 'ace-jump-word-mode)
 (global-set-key (kbd "C-c g") 'rgrep)
 
 ;; Projectile
