@@ -28,3 +28,12 @@
 
 ;; Fullframe
 (fullframe magit-status magit-mode-quit-window)
+
+;; Smartscan
+(smartscan-mode 1)
+(setq smartscan-symbol-selector "symbol")
+
+;; Smartparen
+(smartparens-global-mode 1)
+(show-smartparens-global-mode t)
+(setq sp-autoescape-string-quote t)

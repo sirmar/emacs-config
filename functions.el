@@ -81,4 +81,15 @@
   (forward-line -1)
   (indent-for-tab-command))
 
+(defun my-home ()
+  "Move to indentation, beginning of line and beginning of buffer."
+  (interactive)
+  (if (bolp) (beginning-of-buffer)
+    (skip-chars-backward " \t")
+    (unless (bolp) (back-to-indentation))))
 
+(defun my-end ()
+  "Move to end of line and end of buffer."
+  (interactive)
+  (if (eolp) (end-of-buffer)
+    (end-of-line)))

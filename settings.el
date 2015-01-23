@@ -1,5 +1,4 @@
 ;; Buffer visulaization
-(show-paren-mode t)
 (line-number-mode t)
 (column-number-mode t)
 (setq frame-title-format "%b")
@@ -22,6 +21,5 @@
 (setq compile-command "")
 (setq tags-file-name "~/TAGS")
 (setq make-backup-files nil)
-(electric-pair-mode t)
 (setq mouse-yank-at-point t)
 (defalias 'yes-or-no-p 'y-or-n-p)

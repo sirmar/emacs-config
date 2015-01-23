@@ -14,16 +14,23 @@
 (global-set-key (kbd "C-c C-c") 'comment-region)
 (global-set-key (kbd "<delete>") 'delete-char)
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
-(global-set-key (kbd "<C-return>") 'open-line-below)
-(global-set-key (kbd "<C-S-return>") 'open-line-above)
+(global-set-key (kbd "<C-return>") 'open-line-above)
+(global-set-key (kbd "<S-return>") 'open-line-below)
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-S-SPC") 'just-one-space)
+(global-set-key (kbd "M-C-<backspace>") 'backward-kill-sexp)
 
 ;; Move cursor
 (global-set-key (kbd "<down>") 'next-logical-line)
 (global-set-key (kbd "<up>") 'previous-logical-line)
 (global-set-key (kbd "<M-up>") 'move-text-up)
 (global-set-key (kbd "<M-down>") 'move-text-down)
+(global-set-key (kbd "<C-M-up>") 'sp-previous-sexp)
+(global-set-key (kbd "<C-M-down>") 'sp-next-sexp)
+(global-set-key (kbd "<C-M-left>") 'sp-backward-up-sexp)
+(global-set-key (kbd "<C-M-right>") 'sp-down-sexp)
+(global-set-key (kbd "C-a") 'my-home)
+(global-set-key (kbd "C-e") 'my-end)
 
 ;; Completion
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
@@ -38,18 +45,16 @@
 (global-set-key (kbd "<f9>") 'previous-error)
 (global-set-key (kbd "<f10>") 'next-error)
 
-;; Multiple markers
-(global-set-key (kbd "M-e") 'mc/edit-lines)
-(global-set-key (kbd "M-n") 'mc/mark-next-like-this)
-(global-set-key (kbd "M-p") 'mc/mark-previous-like-this)
-(global-set-key (kbd "M-a") 'mc/mark-all-like-this)
+;; Smart scan
+(global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
+(global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
 
 ;; Expand region
 (global-set-key (kbd "C-S-SPC") 'er/expand-region)
 
 ;; Jedi
 (global-set-key (kbd "M-.") 'jedi:goto-definition)
-(global-set-key (kbd "M-:") 'jedi:goto-definition-pop-marker)
+(global-set-key (kbd "M-,") 'jedi:goto-definition-pop-marker)
 
 ;; Search
 (global-set-key (kbd "M-s") 'ace-jump-word-mode)

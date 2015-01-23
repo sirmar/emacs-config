@@ -13,6 +13,7 @@
 (depends-on "jedi")
 (depends-on "magit")
 (depends-on "move-text")
-(depends-on "multiple-cursors")
 (depends-on "projectile")
 (depends-on "yasnippet")
+(depends-on "smartscan")
+(depends-on "smartparens")
