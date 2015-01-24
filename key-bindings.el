@@ -9,28 +9,27 @@
 (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
 
 ;; Edit
-(global-set-key (kbd "C-c SPC") 'goto-last-edit-point)
-(global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "C-c C-c") 'comment-region)
 (global-set-key (kbd "<delete>") 'delete-char)
-(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
+(global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
 (global-set-key (kbd "<C-return>") 'open-line-above)
 (global-set-key (kbd "<S-return>") 'open-line-below)
-(global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-S-SPC") 'just-one-space)
-(global-set-key (kbd "M-C-<backspace>") 'backward-kill-sexp)
-
-;; Move cursor
-(global-set-key (kbd "<down>") 'next-logical-line)
-(global-set-key (kbd "<up>") 'previous-logical-line)
+(global-set-key (kbd "M-C-<backspace>") 'sp-backward-kill-sexp)
 (global-set-key (kbd "<M-up>") 'move-text-up)
 (global-set-key (kbd "<M-down>") 'move-text-down)
+
+;; Navigation
+(global-set-key (kbd "<down>") 'next-logical-line)
+(global-set-key (kbd "<up>") 'previous-logical-line)
 (global-set-key (kbd "<C-M-up>") 'sp-previous-sexp)
 (global-set-key (kbd "<C-M-down>") 'sp-next-sexp)
 (global-set-key (kbd "<C-M-left>") 'sp-backward-up-sexp)
 (global-set-key (kbd "<C-M-right>") 'sp-down-sexp)
 (global-set-key (kbd "C-a") 'my-home)
 (global-set-key (kbd "C-e") 'my-end)
+(global-set-key (kbd "C-c SPC") 'goto-last-edit-point)
+(global-set-key (kbd "M-g") 'goto-line)
 
 ;; Completion
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
@@ -57,7 +56,7 @@
 (global-set-key (kbd "M-,") 'jedi:goto-definition-pop-marker)
 
 ;; Search
-(global-set-key (kbd "M-s") 'ace-jump-word-mode)
+(global-set-key (kbd "C-f") 'ace-jump-word-mode)
 (global-set-key (kbd "C-c g") 'rgrep)
 
 ;; Projectile
@@ -74,3 +73,4 @@
 
 ;; Misc
 (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
+(global-set-key (kbd "C-z") 'undo)
