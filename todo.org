@@ -1,0 +1,4 @@
+* Things to add to config [1/3]
+** DONE C-w ska klippa ut ord om ingen markering.
+** TODO M-w sk copiera ord om ingen markering
+** TODO C-M-w ska klippa ut sexp om ingen markering.

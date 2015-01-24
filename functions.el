@@ -69,12 +69,14 @@
                    name (file-name-nondirectory new-name)))))))
 
 (defun open-line-below ()
+  "Create new line below the current one."
   (interactive)
   (end-of-line)
   (newline)
   (indent-for-tab-command))
 
 (defun open-line-above ()
+  "Create new line above the current one."
   (interactive)
   (beginning-of-line)
   (newline)
@@ -93,3 +95,13 @@
   (interactive)
   (if (eolp) (end-of-buffer)
     (end-of-line)))
+
+(defun kill-word-or-region ()
+  "Cut region. If no region cut current symbol."
+  (interactive)
+  (if (use-region-p) (kill-region (region-beginning) (region-end))
+    (let (boundaries pos1 pos2 mything)
+      (setq boundaries (bounds-of-thing-at-point 'sexp))
+      (setq pos1 (car boundaries))
+      (setq pos2 (cdr boundaries))
+      (kill-region pos1 pos2))))
