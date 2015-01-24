@@ -17,3 +17,4 @@
 (depends-on "yasnippet")
 (depends-on "smartscan")
 (depends-on "smartparens")
+(depends-on "smex")

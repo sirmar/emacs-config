@@ -37,3 +37,6 @@
 (smartparens-global-mode 1)
 (show-smartparens-global-mode t)
 (setq sp-autoescape-string-quote t)
+
+;; Smex
+(smex-initialize)

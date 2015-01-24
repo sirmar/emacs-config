@@ -76,3 +76,4 @@
 ;; Misc
 (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
 (global-set-key (kbd "C-z") 'undo)
+(global-set-key (kbd "M-x") 'smex)
