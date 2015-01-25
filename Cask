@@ -4,6 +4,7 @@
 (depends-on "cask")
 
 (depends-on "ace-jump-mode")
+(depends-on "ace-window")
 (depends-on "auto-complete")
 (depends-on "expand-region")
 (depends-on "flx-ido")

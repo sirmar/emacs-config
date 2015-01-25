@@ -1,9 +1,6 @@
 ;; Buffers
 (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
-(global-set-key (kbd "C-,") 'back-window)
-(global-set-key (kbd "C-.") 'other-window)
-(global-set-key (kbd "C-M-,") 'previous-buffer)
-(global-set-key (kbd "C-M-.") 'next-buffer)
+(global-set-key (kbd "C-.") 'ace-window)
 (global-set-key (kbd "<f8>") 'config-buffers)
 (global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
 (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)

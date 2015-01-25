@@ -1,8 +1,3 @@
-(defun back-window ()
-  "Go back a window."
-  (interactive)
-  (other-window -1))
-
 (defun indent-buffer ()
   "Indents whole buffer."
   (interactive)
