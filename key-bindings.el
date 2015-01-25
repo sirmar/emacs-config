@@ -17,6 +17,8 @@
 (global-set-key (kbd "<M-down>") 'move-text-down)
 (global-set-key (kbd "M-k") 'kill-whole-line)
 (global-set-key (kbd "C-w") 'kill-word-or-region)
+(global-set-key (kbd "M-i") 'change-inner)
+(global-set-key (kbd "M-o") 'change-outer)
 
 ;; Navigation
 (global-set-key (kbd "<down>") 'next-logical-line)
