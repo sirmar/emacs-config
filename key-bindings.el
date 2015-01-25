@@ -11,7 +11,7 @@
 (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
 (global-set-key (kbd "<C-return>") 'open-line-above)
 (global-set-key (kbd "<S-return>") 'open-line-below)
-(global-set-key (kbd "M-S-SPC") 'just-one-space)
+(global-set-key (kbd "M-S-SPC") 'cycle-spacing)
 (global-set-key (kbd "M-C-<backspace>") 'sp-backward-kill-sexp)
 (global-set-key (kbd "<M-up>") 'move-text-up)
 (global-set-key (kbd "<M-down>") 'move-text-down)
@@ -33,10 +33,8 @@
 (global-set-key (kbd "M-g") 'goto-line)
 
 ;; Completion
-(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
-(define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
-(global-set-key (kbd "<C-S-iso-lefttab>") 'dabbrev-completion)
-(define-key minibuffer-local-map (kbd "<C-S-iso-lefttab>") 'dabbrev-completion)
+(global-set-key (kbd "C-<tab>") 'hippie-expand)
+(define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
 
 ;; Compilation
 (global-set-key (kbd "<f5>") 'compile)
@@ -59,6 +57,8 @@
 ;; Search
 (global-set-key (kbd "C-f") 'ace-jump-word-mode)
 (global-set-key (kbd "C-c g") 'rgrep)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
 
 ;; Projectile
 (global-set-key (kbd "C-x f") 'projectile-find-file)

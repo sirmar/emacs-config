@@ -8,4 +8,3 @@
 (load "~/.emacs.d/functions.el")
 (load "~/.emacs.d/key-bindings.el")
 (load "~/.emacs.d/grep-settings.el")
-
