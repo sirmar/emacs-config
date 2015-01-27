@@ -1,21 +1,34 @@
 * Introduction
-* Improvements [3/10]
-** DONE Redo config as an org mode file                                :doc:
-** DONE Change C-w to remove line when no region                      :edit:
-** DONE Remove M-k binding                                            :edit:
+Two things happened at the same time. I learned about the existence
+of org mode and I found new inspiration to play around with my emacs
+configuration. I figured, why not combine the two as a way to learn
+org mode and to find out what is out there in terms of helpful tools
+to use in my setup. This is the result.
+
+Feel free to steal anything you find useful.
+
+--- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
+
+* Improvements [1/9]
 ** TODO Write descriptions in config sections                          :doc:
-** TODO Write introduction                                             :doc:
 ** TODO Write the ending words                                         :doc:
 ** TODO Write the dependecies section                                  :doc:
 ** TODO Rewrite config using use-package                           :package:
 ** TODO Remove cask                                                   :cask:
 ** TODO Check why src block background does not work               :bug:org:
+** TODO Get spell checking to work                                 :package:
+** TODO Link to packages on the internet                               :doc:
+** DONE Create emacs-lisp source block template                        :org:
+CLOSED: [2015-01-27 Tue 15:44]
 * Dependencies
 * Emacs configuration
 ** Starting Emacs                                                  :startup:
 *** Cleaning the interface
-The Emacs window should be as clean as possible. Therefor the menu bar, the tool bar
-and the scroll bar is removed.
+The Emacs window should be as clean as possible. Therefor the
+menu bar, the tool bar and the scroll bar are removed.
+
+Also I want the buffers to be clean, so startup message and
+scratch buffer message are both removed.
 
 #+BEGIN_SRC emacs-lisp
   (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
@@ -429,10 +442,48 @@ and the scroll bar is removed.
 #+END_SRC
 
 ** Org mode                                                            :org:
+*** Code blocks
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+
+  (defface org-block-begin-line
+    '((t (:foreground "#111111" :background "#DDDDDD"))) "")
+  (defface org-block
+    '((t (:background "#EEEEEE"))) "")
+  (defface org-block-background
+    '((t (:background "#EEEEEE"))) "")
+  (defface org-block-end-line
+    '((t (:foreground "#111111" :background "#DDDDDD"))) "")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-structure-template-alist
+        '(("s" "#+BEGIN_SRC ?\n\n#+END_SRC" "<src lang=\"?\">\n\n</src>")
+          ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE" "<example>\n?\n</example>")
+          ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE" "<quote>\n?\n</quote>")
+          ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE" "<verse>\n?\n</verse>")
+          ("c" "#+BEGIN_COMMENT\n?\n#+END_COMMENT")
+          ("p" "#+BEGIN_PRACTICE\n?\n#+END_PRACTICE")
+          ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC" "<src lang=\"emacs-lisp\">\n?\n</src>")
+          ("L" "#+LATEX: " "<literal style=\"latex\">?</literal>")
+          ("h" "#+BEGIN_HTML\n?\n#+END_HTML" "<literal style=\"html\">\n?\n</literal>")
+          ("H" "#+HTML: " "<literal style=\"html\">?</literal>")
+          ("a" "#+BEGIN_ASCII\n?\n#+END_ASCII")
+          ("A" "#+ASCII: ")
+          ("i" "#+INDEX: ?" "#+index: ?")
+          ("I" "#+INCLUDE %file ?" "<include file=%file markup=\"?\">")))
+#+END_SRC
+
+*** Tasks
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keywords '((sequence "TODO" "DONE")))
+  (setq org-log-done "time")
+#+END_SRC
+
 *** Capture
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'text-mode-hook
+  (add-hook 'org-mode-hook
             (lambda ()
               (setq org-default-notes-file (concat org-directory "/todo.org"))
               (define-key global-map "\C-cc" 'org-capture)
@@ -444,24 +495,6 @@ and the scroll bar is removed.
 #+BEGIN_SRC emacs-lisp
   (setq org-startup-indented t)
   (setq org-startup-truncated nil)
-#+END_SRC
-
-*** Code blocks
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-src-fontify-natively t)
-
-  (defface org-block-begin-line
-    '((t (:foreground "#111111" :background "#DDDDDD")))
-    "Face used for the line delimiting the begin of source blocks.")
-
-  (defface org-block-background
-    '((t (:background "#EEEEEE")))
-    "Face used for the source block background.")
-
-  (defface org-block-end-line
-    '((t (:foreground "#111111" :background "#DDDDDD")))
-    "Face used for the line delimiting the end of source blocks.")
 #+END_SRC
 
 ** Misc
@@ -484,4 +517,13 @@ and the scroll bar is removed.
   (global-set-key (kbd "C-z") 'undo)
 #+END_SRC
 
+* History [4/4]
+** DONE Write introduction                                             :doc:
+CLOSED: [2015-01-27 Tue 14:50]
+** DONE Redo config as an org mode file                                :doc:
+CLOSED: [2015-01-27 Tue 14:50]
+** DONE Change C-w to remove line when no region                      :edit:
+CLOSED: [2015-01-27 Tue 14:50]
+** DONE Remove M-k binding                                            :edit:
+CLOSED: [2015-01-27 Tue 14:50]
 * Ending words
