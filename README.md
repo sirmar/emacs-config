@@ -1,12 +1,4 @@
-## emacs-config
-
-An emacs configuration containing nice to haves for python development.
-
-Dowload this to your .emacs.d directory.
-
-### Dependencies
-
-This is also needed:
-- Install homebrew for mac
-- Install Cask for emacs (brew install cask)
-- Install python virtual environment (pip install virtualenv)
+## Emacs-config
+My personal Emacs configuration written using org-mode.
+Feel free to download and try it. Put the files in .emacs.d in
+your home directory.
