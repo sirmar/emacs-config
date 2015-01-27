@@ -9,17 +9,15 @@ Feel free to steal anything you find useful.
 
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
-* Improvements [1/9]
-** TODO Write descriptions in config sections                          :doc:
-** TODO Write the ending words                                         :doc:
-** TODO Write the dependecies section                                  :doc:
-** TODO Rewrite config using use-package                           :package:
-** TODO Remove cask                                                   :cask:
-** TODO Check why src block background does not work               :bug:org:
-** TODO Get spell checking to work                                 :package:
-** TODO Link to packages on the internet                               :doc:
-** DONE Create emacs-lisp source block template                        :org:
-CLOSED: [2015-01-27 Tue 15:44]
+* Improvements [0/7]
+** TODO Write descriptions in config sections                           :doc:
+** TODO Write the ending words                                          :doc:
+** TODO Write the dependecies section                                   :doc:
+** TODO Check why src block background does not work                :bug:org:
+** TODO Get spell checking to work                                      :new:
+** TODO Replace global key with bind key macro
+** TODO Link to packages on the internet                                :doc:
+
 * Dependencies
 * Emacs configuration
 ** Starting Emacs                                                  :startup:
@@ -39,20 +37,60 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** The emacs frame
-
 #+BEGIN_SRC emacs-lisp
   (when window-system (set-frame-size (selected-frame) 195 47))
   (when window-system (set-frame-position (selected-frame) 20 40))
 #+END_SRC
 
-** Cask                                                               :cask:
-
+** Packages                                                       :packages:
+*** Package module
 #+BEGIN_SRC emacs-lisp
-  (require 'cask "/usr/local/Cellar/cask/0.7.2/cask.el")
-  (cask-initialize)
+  (setq package-enable-at-startup nil)
+  (package-initialize)
+
+  (setq
+   package-enable-at-startup nil
+   package-archives
+   '(("melpa-stable" . "http://stable.melpa.org/packages/")
+     ("melpa"        . "http://melpa.org/packages/")
+     ("marmalade"    . "http://marmalade-repo.org/packages/")
+     ("org"          . "http://orgmode.org/elpa/")
+     ("gnu"          . "http://elpa.gnu.org/packages/")))
+
+  (eval-and-compile
+    (require 'package)
+    (package-initialize t))
+#+END_SRC
+
+*** Use package
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  (require 'use-package)
+#+END_SRC
+
+*** Auto compile
+#+BEGIN_SRC emacs-lisp
+  (use-package dash
+    :ensure t)
+
+  (use-package auto-compile
+    :ensure t
+    :init (auto-compile-on-load-mode))
+  (setq load-prefer-newer t)
 #+END_SRC
 
 ** Text manipulation                                                  :edit:
+*** Indentation
+#+BEGIN_SRC emacs-lisp
+  (setq lisp-indent-offset 2)
+
+  (defun indent-buffer ()
+    "Indents whole buffer."
+    (interactive)
+    (indent-region (point-min) (point-max) nil))
+#+END_SRC
+
 *** Cut, copy and paste
 
 #+BEGIN_SRC emacs-lisp
@@ -71,22 +109,17 @@ scratch buffer message are both removed.
 
 *** Change inner                                                  :package:
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-i") 'change-inner)
-  (global-set-key (kbd "M-o") 'change-outer)
+  (use-package change-inner
+    :ensure t
+    :bind ( ("M-i" . change-inner)
+            ("M-o" . change-outer)))
 #+END_SRC
 
 *** Expand region                                                 :package:
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-S-SPC") 'er/expand-region)
-#+END_SRC
-
-*** Indentation
-
-#+BEGIN_SRC emacs-lisp
-  (defun indent-buffer ()
-    "Indents whole buffer."
-    (interactive)
-    (indent-region (point-min) (point-max) nil))
+  (use-package expand-region
+    :ensure t
+    :bind ( ("C-S-SPC" . er/expand-region)))
 #+END_SRC
 
 *** New lines
@@ -113,8 +146,10 @@ scratch buffer message are both removed.
 
 *** Move text                                                     :package:
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<M-up>") 'move-text-up)
-  (global-set-key (kbd "<M-down>") 'move-text-down)
+  (use-package move-text
+    :ensure t
+    :bind ( ("<M-up>"   . move-text-up)
+            ("<M-down>" . move-text-down)))
 #+END_SRC
 
 *** Other
@@ -126,26 +161,29 @@ scratch buffer message are both removed.
 
 ** Navigation                                                          :nav:
 *** Smartparen
-
 #+BEGIN_SRC emacs-lisp
-  (smartparens-global-mode 1)
-  (show-smartparens-global-mode t)
-  (setq sp-autoescape-string-quote t)
-
-  (global-set-key (kbd "<C-M-up>") 'sp-previous-sexp)
-  (global-set-key (kbd "<C-M-down>") 'sp-next-sexp)
-  (global-set-key (kbd "<C-M-left>") 'sp-backward-up-sexp)
-  (global-set-key (kbd "<C-M-right>") 'sp-down-sexp)
+  (use-package smartparens
+    :ensure t
+    :init
+    (progn
+      (smartparens-global-mode 1)
+      (show-smartparens-global-mode t)
+      (setq sp-autoescape-string-quote t))
+    :bind
+    ( ("<C-M-up>"    . sp-previous-sexp)
+      ("<C-M-down>"  . sp-next-sexp)
+      ("<C-M-left>"  . sp-backward-up-sexp)
+      ("<C-M-right>" . sp-down-sexp)))
 #+END_SRC
 
-*** Ace jump moce
-
+*** Ace jump mode
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-f") 'ace-jump-word-mode)
+  (use-package ace-jump-mode
+    :ensure t
+    :bind ( ("C-f" . ace-jump-word-mode)))
 #+END_SRC
 
 *** Tags
-
 #+BEGIN_SRC emacs-lisp
   (setq tags-file-name "~/TAGS")
 #+END_SRC
@@ -191,7 +229,6 @@ scratch buffer message are both removed.
 
 ** Search and replace                                               :search:
 *** Casing
-
 #+BEGIN_SRC emacs-lisp
   (setq case-fold-search t)
   (setq case-replace t)
@@ -231,63 +268,86 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Smartscan
-
 #+BEGIN_SRC emacs-lisp
-  (smartscan-mode 1)
-  (setq smartscan-symbol-selector "symbol")
-
-  (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
-  (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
+  (use-package smartscan
+    :ensure t
+    :init
+    (progn
+      (smartscan-mode 1)
+      (setq smartscan-symbol-selector "symbol"))
+    :bind
+    ( ("M-n" . smartscan-symbol-go-forward)
+      ("M-p" . smartscan-symbol-go-backward)))
 #+END_SRC
 
 ** Fuzzy matching                                                    :fuzzy:
 *** Flx ido mode
 #+BEGIN_SRC emacs-lisp
-  (ido-mode 1)
-  (ido-everywhere 1)
-  (flx-ido-mode 1)
-  (setq ido-enable-flex-matching t)
-  (setq ido-use-faces nil)
+  (use-package flx-ido
+    :ensure t
+    :init
+    (progn
+      (ido-mode 1)
+      (ido-everywhere 1)
+      (flx-ido-mode 1)
+      (setq ido-enable-flex-matching t)
+      (setq ido-use-faces nil)))
 #+END_SRC
 
 *** Ido verticle mode
 #+BEGIN_SRC emacs-lisp
-  (ido-vertical-mode)
+  (use-package ido-vertical-mode
+    :ensure t
+    :init
+    (progn
+      (ido-vertical-mode)))
 #+END_SRC
 
 *** Smex
-
 #+BEGIN_SRC emacs-lisp
-  (smex-initialize)
-
-  (global-set-key (kbd "M-x") 'smex)
+  (use-package smex
+    :ensure t
+    :init
+    (progn
+      (smex-initialize))
+    :bind
+    ( ("M-x" . smex)))
 #+END_SRC
 
 ** Completion                                                   :completion:
 *** YaSnippet
-
 #+BEGIN_SRC emacs-lisp
-  (yas-global-mode t)
+  (use-package yasnippet
+    :ensure t
+    :init
+    (progn
+      (yas-global-mode t)))
 #+END_SRC
 
 *** Auto Complete
-
 #+BEGIN_SRC emacs-lisp
-  (ac-config-default)
-  (setq ac-ignore-case nil)
-  (setq ac-auto-start nil)
-  (ac-set-trigger-key "TAB")
-  (setq ac-auto-show-menu 0.1)
+  (use-package auto-complete
+    :ensure t
+    :init
+    (progn
+      (ac-config-default)
+      (setq ac-ignore-case nil)
+      (setq ac-autos-tart nil)
+      (ac-set-trigger-key "TAB")
+      (setq ac-auto-show-menu 0.1)))
 #+END_SRC
 
 *** Jedi
-
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (setq jedi:complete-on-dot t)
-
-  (global-set-key (kbd "M-.") 'jedi:goto-definition)
-  (global-set-key (kbd "M-,") 'jedi:goto-definition-pop-marker)
+  (use-package jedi
+    :ensure t
+    :init
+    (progn
+      (add-hook 'python-mode-hook 'jedi:setup)
+      (setq jedi:complete-on-dot t))
+    :bind
+    ( ("M-." . jedi:goto-definition)
+      ("M-," . jedi:goto-definition-pop-marker)))
 #+END_SRC
 
 *** Hippie expand
@@ -301,22 +361,29 @@ scratch buffer message are both removed.
 
 ** Projects                                                           :proj:
 *** Projectile
-
 #+BEGIN_SRC emacs-lisp
-  (projectile-global-mode)
-
-  (global-set-key (kbd "C-x f") 'projectile-find-file)
-  (global-set-key (kbd "C-x b") 'projectile-switch-to-buffer)
-  (global-set-key (kbd "C-x s") 'projectile-switch-project)
-  (global-set-key (kbd "C-x g") 'projectile-grep)
-  (global-set-key (kbd "C-x q") 'projectile-replace)
-  (global-set-key (kbd "C-x t") 'projectile-toggle-between-implementation-and-test)
+  (use-package projectile
+    :ensure t
+    :init
+    (progn
+      (projectile-global-mode))
+    :bind
+    ( ("C-x f" . projectile-find-file)
+      ("C-x b" . projectile-switch-to-buffer)
+      ("C-x s" . projectile-switch-project)
+      ("C-x g" . projectile-grep)
+      ("C-x q" . projectile-replace)
+      ("C-x t" . projectile-toggle-between-implementation-and-test)))
 #+END_SRC
 
 ** Buffers                                                         :buffers:
 *** Fullframe
 #+BEGIN_SRC emacs-lisp
-  (fullframe magit-status magit-mode-quit-window)
+  (use-package fullframe
+    :ensure t
+    :init
+    (progn
+      (fullframe magit-status magit-mode-quit-window)))
 #+END_SRC
 
 *** Standard windows
@@ -336,11 +403,13 @@ scratch buffer message are both removed.
 
 *** Ace window
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-.") 'ace-window)
+  (use-package ace-window
+    :ensure t
+    :bind
+    ( ("C-." . ace-window)))
 #+END_SRC
 
 *** Other settings
-
 #+BEGIN_SRC emacs-lisp
   (line-number-mode t)
   (column-number-mode t)
@@ -351,7 +420,6 @@ scratch buffer message are both removed.
 
 ** Instant feedback                                               :feedback:
 *** White space mode
-
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
   (setq whitespace-line-column 100)
@@ -371,9 +439,12 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Flycheck
-
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'python-mode-hook 'flycheck-mode)
+  (use-package flycheck
+    :ensure t
+    :init
+    (progn
+      (add-hook 'python-mode-hook 'flycheck-mode)))
 #+END_SRC
 
 ** Files                                                             :files:
@@ -416,7 +487,6 @@ scratch buffer message are both removed.
 ** Building                                                       :building:
 *** Debugging
 *** Compiling
-
 #+BEGIN_SRC emacs-lisp
   (setq compile-command "")
 
@@ -431,12 +501,14 @@ scratch buffer message are both removed.
 ** Source control                                                      :scm:
 *** Magit
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c s") 'magit-status)
-  (global-set-key (kbd "C-c b") 'magit-blame-mode)
+  (use-package magit
+    :ensure t
+    :bind
+    ( ("C-c s" . magit-status)
+      ("C-c b" . magit-blame-mode)))
 #+END_SRC
 
 *** Ediff
-
 #+BEGIN_SRC emacs-lisp
   (setq ediff-split-window-function (quote split-window-horizontally))
 #+END_SRC
@@ -481,7 +553,6 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Capture
-
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
             (lambda ()
@@ -491,7 +562,6 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Indentation and wrapping
-
 #+BEGIN_SRC emacs-lisp
   (setq org-startup-indented t)
   (setq org-startup-truncated nil)
@@ -499,31 +569,44 @@ scratch buffer message are both removed.
 
 ** Misc
 *** Discover
-
 #+BEGIN_SRC emacs-lisp
-  (global-discover-mode 1)
+  (use-package discover
+    :ensure t
+    :init
+    (progn
+      (global-discover-mode 1)))
 #+END_SRC
 
-*** Use Package
-*** Other
-
+*** Backup
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil)
+#+END_SRC
+
+*** Yes and no
+#+BEGIN_SRC emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+*** Bindings
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
   (global-set-key (kbd "C-z") 'undo)
 #+END_SRC
 
-* History [4/4]
-** DONE Write introduction                                             :doc:
+* History [7/7]
+** DONE Rewrite config using use-package                                :new:
+CLOSED: [2015-01-27 Tue 19:27]
+** DONE Remove cask                                                    :cask:
+CLOSED: [2015-01-27 Tue 19:26]
+** DONE Create emacs-lisp source block template                         :org:
+CLOSED: [2015-01-27 Tue 15:44]
+** DONE Write introduction                                              :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-** DONE Redo config as an org mode file                                :doc:
+** DONE Redo config as an org mode file                                 :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-** DONE Change C-w to remove line when no region                      :edit:
+** DONE Change C-w to remove line when no region                       :edit:
 CLOSED: [2015-01-27 Tue 14:50]
-** DONE Remove M-k binding                                            :edit:
+** DONE Remove M-k binding                                             :edit:
 CLOSED: [2015-01-27 Tue 14:50]
+
 * Ending words

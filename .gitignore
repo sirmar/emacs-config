@@ -1,4 +1,3 @@
-.cask/
 eshell/
 .mc-lists.el
 .python-environments/
@@ -8,4 +7,5 @@ ido.last
 projectile-bookmarks.eld
 projectile.cache
 smex-items
-/emacs_config.el
+emacs_config.el
+elpa/
