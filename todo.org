@@ -1,6 +1,0 @@
-* Tasks [0/5]
-** TODO Redo config as an org mode file.                               :org:
-** TODO Write free text descriptions in org config file                :org:
-** TODO Rewrite config using use-package.                          :package:
-** TODO Change C-w to remove line when no region.                  :editing:
-** TODO Remove M-k binding.                                        :editing:

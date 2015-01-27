@@ -1,6 +1,18 @@
 * Introduction
+* Improvements [1/10]
+** DONE Redo config as an org mode file                                :doc:
+** TODO Write descriptions in config sections                          :doc:
+** TODO Write introduction                                             :doc:
+** TODO Write the ending words                                         :doc:
+** TODO Write the dependecies section                                  :doc:
+** TODO Rewrite config using use-package                           :package:
+** TODO Remove cask                                                   :cask:
+** TODO Change C-w to remove line when no region                      :edit:
+** TODO Remove M-k binding                                            :edit:
+** TODO Check why src block background does not work               :bug:org:
+* Dependencies
 * Emacs configuration
-** Starting Emacs
+** Starting Emacs                                                  :startup:
 *** Cleaning the interface
 The Emacs window should be as clean as possible. Therefor the menu bar, the tool bar
 and the scroll bar is removed.
@@ -20,32 +32,42 @@ and the scroll bar is removed.
   (when window-system (set-frame-position (selected-frame) 20 40))
 #+END_SRC
 
-** Cask
+** Cask                                                               :cask:
 
 #+BEGIN_SRC emacs-lisp
   (require 'cask "/usr/local/Cellar/cask/0.7.2/cask.el")
   (cask-initialize)
 #+END_SRC
 
-** Text manipulation
+** Text manipulation                                                  :edit:
 *** Cut, copy and paste
 
 #+BEGIN_SRC emacs-lisp
   (delete-selection-mode)
   (setq mouse-yank-at-point t)
 
+  (defun kill-word-or-region ()
+    "Cut region. If no region cut current symbol."
+    (interactive)
+    (if (use-region-p) (kill-region (region-beginning) (region-end))
+      (let (boundaries pos1 pos2 mything)
+        (setq boundaries (bounds-of-thing-at-point 'sexp))
+        (setq pos1 (car boundaries))
+        (setq pos2 (cdr boundaries))
+        (kill-region pos1 pos2))))
+
   (global-set-key (kbd "M-C-<backspace>") 'sp-backward-kill-sexp)
   (global-set-key (kbd "M-k") 'kill-whole-line)
   (global-set-key (kbd "C-w") 'kill-word-or-region)
 #+END_SRC
 
-*** Change inner
+*** Change inner                                                  :package:
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-i") 'change-inner)
   (global-set-key (kbd "M-o") 'change-outer)
 #+END_SRC
 
-*** Expand region
+*** Expand region                                                 :package:
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-SPC") 'er/expand-region)
 #+END_SRC
@@ -81,7 +103,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
 #+END_SRC
 
-*** Move text
+*** Move text                                                     :package:
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "<M-up>") 'move-text-up)
   (global-set-key (kbd "<M-down>") 'move-text-down)
@@ -94,7 +116,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "M-S-SPC") 'cycle-spacing)
 #+END_SRC
 
-** Navigation
+** Navigation                                                          :nav:
 *** Smartparen
 
 #+BEGIN_SRC emacs-lisp
@@ -159,7 +181,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "M-g") 'goto-line)
 #+END_SRC
 
-** Search and replace
+** Search and replace                                               :search:
 *** Casing
 
 #+BEGIN_SRC emacs-lisp
@@ -210,7 +232,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
 #+END_SRC
 
-** Fuzzy matching
+** Fuzzy matching                                                    :fuzzy:
 *** Flx ido mode
 #+BEGIN_SRC emacs-lisp
   (ido-mode 1)
@@ -233,7 +255,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "M-x") 'smex)
 #+END_SRC
 
-** Completion
+** Completion                                                   :completion:
 *** YaSnippet
 
 #+BEGIN_SRC emacs-lisp
@@ -269,7 +291,7 @@ and the scroll bar is removed.
   (define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
 #+END_SRC
 
-** Projects
+** Projects                                                           :proj:
 *** Projectile
 
 #+BEGIN_SRC emacs-lisp
@@ -283,7 +305,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "C-x t") 'projectile-toggle-between-implementation-and-test)
 #+END_SRC
 
-** Buffers
+** Buffers                                                         :buffers:
 *** Fullframe
 #+BEGIN_SRC emacs-lisp
   (fullframe magit-status magit-mode-quit-window)
@@ -319,7 +341,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
 #+END_SRC
 
-** Instant feedback
+** Instant feedback                                               :feedback:
 *** White space mode
 
 #+BEGIN_SRC emacs-lisp
@@ -346,7 +368,7 @@ and the scroll bar is removed.
   (add-hook 'python-mode-hook 'flycheck-mode)
 #+END_SRC
 
-** Files
+** Files                                                             :files:
 *** Current buffer operations
 #+BEGIN_SRC emacs-lisp
   (defun delete-current-buffer-file ()
@@ -383,7 +405,7 @@ and the scroll bar is removed.
   (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
 #+END_SRC
 
-** Building
+** Building                                                       :building:
 *** Debugging
 *** Compiling
 
@@ -398,7 +420,7 @@ and the scroll bar is removed.
 #+END_SRC
 
 *** Tests
-** Source control
+** Source control                                                      :scm:
 *** Magit
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c s") 'magit-status)
@@ -411,7 +433,7 @@ and the scroll bar is removed.
   (setq ediff-split-window-function (quote split-window-horizontally))
 #+END_SRC
 
-** Org mode
+** Org mode                                                            :org:
 *** Capture
 
 #+BEGIN_SRC emacs-lisp
