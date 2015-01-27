@@ -1,6 +1,6 @@
 * Introduction
 Two things happened at the same time. I learned about the existence
-of org mode and I found new inspiration to play around with my emacs
+of org mode and I found new inspiration to play around with my Emacs
 configuration. I figured, why not combine the two as a way to learn
 org mode and to find out what is out there in terms of helpful tools
 to use in my setup. This is the result.
@@ -9,22 +9,24 @@ Feel free to steal anything you find useful.
 
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
-* Improvements [1/7]
+* Improvements [0/5]
 ** TODO Write descriptions in config sections                           :doc:
 ** TODO Write the ending words                                          :doc:
-** TODO Write the dependecies section                                   :doc:
+** TODO Write the dependencies section                                  :doc:
 ** TODO Check why src block background does not work                :bug:org:
-** TODO Get spell checking to work                                      :new:
 ** TODO Link to packages on the internet                                :doc:
 
 * Dependencies
+*** Aspell
+brew install aspell --with-lang-en
+
 * Emacs configuration
 ** Starting Emacs                                                  :startup:
 *** Cleaning the interface
 The Emacs window should be as clean as possible. Therefor the
 menu bar, the tool bar and the scroll bar are removed.
 
-Also I want the buffers to be clean, so startup message and
+Also I want the buffers to be clean, so start up message and
 scratch buffer message are both removed.
 
 #+BEGIN_SRC emacs-lisp
@@ -266,7 +268,7 @@ scratch buffer message are both removed.
   (bind-key "C-c g" 'rgrep)
 #+END_SRC
 
-*** Smartscan
+*** Smart scan
 #+BEGIN_SRC emacs-lisp
   (use-package smartscan
     :ensure t
@@ -376,7 +378,7 @@ scratch buffer message are both removed.
 #+END_SRC
 
 ** Buffers                                                         :buffers:
-*** Fullframe
+*** Full frame
 #+BEGIN_SRC emacs-lisp
   (use-package fullframe
     :ensure t
@@ -576,6 +578,21 @@ scratch buffer message are both removed.
       (global-discover-mode 1)))
 #+END_SRC
 
+*** Spelling
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-dictionary "english")
+  (setq ispell-program-name "aspell")
+
+  (add-hook 'text-mode-hook (lambda () (flyspell-mode 1)))
+  (add-hook 'org-mode-hook  (lambda () (flyspell-mode 1)))
+  (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
+
+  (eval-after-load "flyspell"
+    '(define-key flyspell-mode-map (kbd "C-.") nil))
+
+  (bind-key "C-," 'flyspell-auto-correct-word)
+#+END_SRC
+
 *** Backup
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil)
@@ -592,7 +609,9 @@ scratch buffer message are both removed.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* History [7/7]
+* History [9/9]
+** DONE Get spell checking to work                                     :new:
+CLOSED: [2015-01-27 Tue 20:18]
 ** DONE Replace global key with bind key macro
 CLOSED: [2015-01-27 Tue 19:34]
 ** DONE Rewrite config using use-package                                :new:
@@ -610,4 +629,4 @@ CLOSED: [2015-01-27 Tue 14:50]
 ** DONE Remove M-k binding                                             :edit:
 CLOSED: [2015-01-27 Tue 14:50]
 
-* Ending words
+* Ending words.
