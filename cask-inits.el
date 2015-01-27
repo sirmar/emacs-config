@@ -40,3 +40,6 @@
 
 ;; Smex
 (smex-initialize)
+
+;; Discover
+(global-discover-mode 1)

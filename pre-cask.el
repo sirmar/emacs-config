@@ -8,4 +8,3 @@
 ;; Set window size
 (when window-system (set-frame-size (selected-frame) 195 47))
 (when window-system (set-frame-position (selected-frame) 20 40))
-
