@@ -1,0 +1,470 @@
+* Introduction
+* Emacs configuration
+** Starting Emacs
+*** Cleaning the interface
+The Emacs window should be as clean as possible. Therefor the menu bar, the tool bar
+and the scroll bar is removed.
+
+#+BEGIN_SRC emacs-lisp
+  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+#+END_SRC
+
+*** The emacs frame
+
+#+BEGIN_SRC emacs-lisp
+  (when window-system (set-frame-size (selected-frame) 195 47))
+  (when window-system (set-frame-position (selected-frame) 20 40))
+#+END_SRC
+
+** Cask
+
+#+BEGIN_SRC emacs-lisp
+  (require 'cask "/usr/local/Cellar/cask/0.7.2/cask.el")
+  (cask-initialize)
+#+END_SRC
+
+** Text manipulation
+*** Cut, copy and paste
+
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode)
+  (setq mouse-yank-at-point t)
+
+  (global-set-key (kbd "M-C-<backspace>") 'sp-backward-kill-sexp)
+  (global-set-key (kbd "M-k") 'kill-whole-line)
+  (global-set-key (kbd "C-w") 'kill-word-or-region)
+#+END_SRC
+
+*** Change inner
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-i") 'change-inner)
+  (global-set-key (kbd "M-o") 'change-outer)
+#+END_SRC
+
+*** Expand region
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-S-SPC") 'er/expand-region)
+#+END_SRC
+
+*** Indentation
+
+#+BEGIN_SRC emacs-lisp
+  (defun indent-buffer ()
+    "Indents whole buffer."
+    (interactive)
+    (indent-region (point-min) (point-max) nil))
+#+END_SRC
+
+*** New lines
+#+BEGIN_SRC emacs-lisp
+  (defun open-line-below ()
+    "Create new line below the current one."
+    (interactive)
+    (end-of-line)
+    (newline)
+    (indent-for-tab-command))
+
+  (defun open-line-above ()
+    "Create new line above the current one."
+    (interactive)
+    (beginning-of-line)
+    (newline)
+    (forward-line -1)
+    (indent-for-tab-command))
+
+  (global-set-key (kbd "<C-return>") 'open-line-above)
+  (global-set-key (kbd "<S-return>") 'open-line-below)
+  (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
+#+END_SRC
+
+*** Move text
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<M-up>") 'move-text-up)
+  (global-set-key (kbd "<M-down>") 'move-text-down)
+#+END_SRC
+
+*** Other
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c C-c") 'comment-region)
+  (global-set-key (kbd "<delete>") 'delete-char)
+  (global-set-key (kbd "M-S-SPC") 'cycle-spacing)
+#+END_SRC
+
+** Navigation
+*** Smartparen
+
+#+BEGIN_SRC emacs-lisp
+  (smartparens-global-mode 1)
+  (show-smartparens-global-mode t)
+  (setq sp-autoescape-string-quote t)
+
+  (global-set-key (kbd "<C-M-up>") 'sp-previous-sexp)
+  (global-set-key (kbd "<C-M-down>") 'sp-next-sexp)
+  (global-set-key (kbd "<C-M-left>") 'sp-backward-up-sexp)
+  (global-set-key (kbd "<C-M-right>") 'sp-down-sexp)
+#+END_SRC
+
+*** Ace jump moce
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-f") 'ace-jump-word-mode)
+#+END_SRC
+
+*** Tags
+
+#+BEGIN_SRC emacs-lisp
+  (setq tags-file-name "~/TAGS")
+#+END_SRC
+
+*** Other
+ #+BEGIN_SRC emacs-lisp
+   (defun goto-last-edit-point ()
+    "Sets the cursor on the last edit point."
+    (interactive)
+    (let ((undos buffer-undo-list))
+      (if (listp undos)
+          (while (and undos
+                      (let ((pos (or (cdr-safe (car undos)) (car undos))))
+                        (not (and (integerp pos) (goto-char (abs pos))))))
+            (setq undos (cdr undos))))))
+
+   (global-set-key (kbd "C-c SPC") 'goto-last-edit-point)
+ #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-home ()
+    "Move to indentation, beginning of line and beginning of buffer."
+    (interactive)
+    (if (bolp) (beginning-of-buffer)
+      (skip-chars-backward " \t")
+      (unless (bolp) (back-to-indentation))))
+
+  (defun my-end ()
+    "Move to end of line and end of buffer."
+    (interactive)
+    (if (eolp) (end-of-buffer)
+      (end-of-line)))
+
+  (global-set-key (kbd "C-a") 'my-home)
+  (global-set-key (kbd "C-e") 'my-end)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<down>") 'next-logical-line)
+  (global-set-key (kbd "<up>") 'previous-logical-line)
+  (global-set-key (kbd "M-g") 'goto-line)
+#+END_SRC
+
+** Search and replace
+*** Casing
+
+#+BEGIN_SRC emacs-lisp
+  (setq case-fold-search t)
+  (setq case-replace t)
+#+END_SRC
+
+*** isearch
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+#+END_SRC
+
+*** Grep
+
+#+BEGIN_SRC emacs-lisp
+  (defun delete-grep-header ()
+    "Hide grep command in grep buffer."
+    (save-excursion
+      (with-current-buffer grep-last-buffer
+        (goto-line 4)
+        (end-of-line)
+        (narrow-to-region (point) (point-max)))))
+
+  (defadvice grep (after delete-grep-header activate) (delete-grep-header))
+  (defadvice rgrep (after delete-grep-header activate) (delete-grep-header))
+
+  ;; (setq grep-find-template "find . <X> -type f <F> -print0 | xargs -n 100 -0 -e grep <C> -nH -E <R>")
+  (add-hook 'next-error-hook 'recenter)
+
+  ;; Ignore directories and files
+  (eval-after-load "grep"
+    '(progn
+       (add-to-list 'grep-find-ignored-directories ".*")
+       (add-to-list 'grep-find-ignored-files ".*")
+       ))
+
+  (global-set-key (kbd "C-c g") 'rgrep)
+#+END_SRC
+
+*** Smartscan
+
+#+BEGIN_SRC emacs-lisp
+  (smartscan-mode 1)
+  (setq smartscan-symbol-selector "symbol")
+
+  (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
+  (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
+#+END_SRC
+
+** Fuzzy matching
+*** Flx ido mode
+#+BEGIN_SRC emacs-lisp
+  (ido-mode 1)
+  (ido-everywhere 1)
+  (flx-ido-mode 1)
+  (setq ido-enable-flex-matching t)
+  (setq ido-use-faces nil)
+#+END_SRC
+
+*** Ido verticle mode
+#+BEGIN_SRC emacs-lisp
+  (ido-vertical-mode)
+#+END_SRC
+
+*** Smex
+
+#+BEGIN_SRC emacs-lisp
+  (smex-initialize)
+
+  (global-set-key (kbd "M-x") 'smex)
+#+END_SRC
+
+** Completion
+*** YaSnippet
+
+#+BEGIN_SRC emacs-lisp
+  (yas-global-mode t)
+#+END_SRC
+
+*** Auto Complete
+
+#+BEGIN_SRC emacs-lisp
+  (ac-config-default)
+  (setq ac-ignore-case nil)
+  (setq ac-auto-start nil)
+  (ac-set-trigger-key "TAB")
+  (setq ac-auto-show-menu 0.1)
+#+END_SRC
+
+*** Jedi
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (setq jedi:complete-on-dot t)
+
+  (global-set-key (kbd "M-.") 'jedi:goto-definition)
+  (global-set-key (kbd "M-,") 'jedi:goto-definition-pop-marker)
+#+END_SRC
+
+*** Hippie expand
+#+BEGIN_SRC emacs-lisp
+  (setq dabbrev-case-fold-search nil)
+  (setq dabbrev-case-replace nil)
+
+  (global-set-key (kbd "C-<tab>") 'hippie-expand)
+  (define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
+#+END_SRC
+
+** Projects
+*** Projectile
+
+#+BEGIN_SRC emacs-lisp
+  (projectile-global-mode)
+
+  (global-set-key (kbd "C-x f") 'projectile-find-file)
+  (global-set-key (kbd "C-x b") 'projectile-switch-to-buffer)
+  (global-set-key (kbd "C-x s") 'projectile-switch-project)
+  (global-set-key (kbd "C-x g") 'projectile-grep)
+  (global-set-key (kbd "C-x q") 'projectile-replace)
+  (global-set-key (kbd "C-x t") 'projectile-toggle-between-implementation-and-test)
+#+END_SRC
+
+** Buffers
+*** Fullframe
+#+BEGIN_SRC emacs-lisp
+  (fullframe magit-status magit-mode-quit-window)
+#+END_SRC
+
+*** Standard windows
+#+BEGIN_SRC emacs-lisp
+  (defun config-buffers ()
+    "Create three columns and a bottom grep buffer."
+    (interactive)
+    (setq w (selected-window))
+    (split-window w 176 t)
+    (setq w2 (split-window w 50))
+    (split-window w 88 t)
+    (generate-new-buffer "*grep*")
+    (set-window-buffer w2 "*grep*"))
+
+  (global-set-key (kbd "<f8>") 'config-buffers)
+#+END_SRC
+
+*** Ace window
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-.") 'ace-window)
+#+END_SRC
+
+*** Other settings
+
+#+BEGIN_SRC emacs-lisp
+  (line-number-mode t)
+  (column-number-mode t)
+  (setq frame-title-format "%b")
+
+  (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
+#+END_SRC
+
+** Instant feedback
+*** White space mode
+
+#+BEGIN_SRC emacs-lisp
+  (global-whitespace-mode t)
+  (setq whitespace-line-column 100)
+  (setq whitespace-style '(face empty tabs trailing lines-tail indentation::space))
+  (add-hook 'before-save-hook 'sanitize-whitespace)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun sanitize-whitespace ()
+    "Converts all tabs to spaces."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "[ \t]+$" nil t)
+        (replace-match "" nil nil))
+      (untabify (point-min) (point-max))))
+#+END_SRC
+
+*** Flycheck
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'python-mode-hook 'flycheck-mode)
+#+END_SRC
+
+** Files
+*** Current buffer operations
+#+BEGIN_SRC emacs-lisp
+  (defun delete-current-buffer-file ()
+    "Removes file connected to current buffer and kills buffer."
+    (interactive)
+    (let ((filename (buffer-file-name))
+          (buffer (current-buffer))
+          (name (buffer-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (ido-kill-buffer)
+        (when (yes-or-no-p "Are you sure you want to remove this file? ")
+          (delete-file filename)
+          (kill-buffer buffer)
+          (message "File '%s' successfully removed" filename)))))
+
+  (defun rename-current-buffer-file ()
+    "Renames current buffer and file it is visiting."
+    (interactive)
+    (let ((name (buffer-name))
+          (filename (buffer-file-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (error "Buffer '%s' is not visiting a file!" name)
+        (let ((new-name (read-file-name "New name: " filename)))
+          (if (get-buffer new-name)
+              (error "A buffer named '%s' already exists!" new-name)
+            (rename-file filename new-name 1)
+            (rename-buffer new-name)
+            (set-visited-file-name new-name)
+            (set-buffer-modified-p nil)
+            (message "File '%s' successfully renamed to '%s'"
+                     name (file-name-nondirectory new-name)))))))
+
+  (global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
+  (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
+#+END_SRC
+
+** Building
+*** Debugging
+*** Compiling
+
+#+BEGIN_SRC emacs-lisp
+  (setq compile-command "")
+
+  (global-set-key (kbd "<f5>") 'compile)
+  (global-set-key (kbd "<f6>") 'recompile)
+  (global-set-key (kbd "<f7>") 'kill-compilation)
+  (global-set-key (kbd "<f9>") 'previous-error)
+  (global-set-key (kbd "<f10>") 'next-error)
+#+END_SRC
+
+*** Tests
+** Source control
+*** Magit
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c s") 'magit-status)
+  (global-set-key (kbd "C-c b") 'magit-blame-mode)
+#+END_SRC
+
+*** Ediff
+
+#+BEGIN_SRC emacs-lisp
+  (setq ediff-split-window-function (quote split-window-horizontally))
+#+END_SRC
+
+** Org mode
+*** Capture
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook
+            (lambda ()
+              (setq org-default-notes-file (concat org-directory "/todo.org"))
+              (define-key global-map "\C-cc" 'org-capture)
+              ))
+#+END_SRC
+
+*** Indentation and wrapping
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-startup-indented t)
+  (setq org-startup-truncated nil)
+#+END_SRC
+
+*** Code blocks
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+
+  (defface org-block-begin-line
+    '((t (:foreground "#111111" :background "#DDDDDD")))
+    "Face used for the line delimiting the begin of source blocks.")
+
+  (defface org-block-background
+    '((t (:background "#EEEEEE")))
+    "Face used for the source block background.")
+
+  (defface org-block-end-line
+    '((t (:foreground "#111111" :background "#DDDDDD")))
+    "Face used for the line delimiting the end of source blocks.")
+#+END_SRC
+
+** Misc
+*** Discover
+
+#+BEGIN_SRC emacs-lisp
+  (global-discover-mode 1)
+#+END_SRC
+
+*** Use Package
+*** Other
+
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
+  (global-set-key (kbd "C-z") 'undo)
+#+END_SRC
+
+* Ending words
