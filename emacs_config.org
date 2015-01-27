@@ -9,16 +9,31 @@ Feel free to steal anything you find useful.
 
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
-* Improvements [0/5]
+* Improvements [1/5]
 ** TODO Write descriptions in config sections                           :doc:
 ** TODO Write the ending words                                          :doc:
-** TODO Write the dependencies section                                  :doc:
 ** TODO Check why src block background does not work                :bug:org:
 ** TODO Link to packages on the internet                                :doc:
 
 * Dependencies
+** Mac
+*** Homebrew
+Download and install Homebrew.
+Instructions can be found on the [[http://brew.sh][Homebrew website]].
+
 *** Aspell
-brew install aspell --with-lang-en
+Install the spell checker Aspell using brew.
+
+#+BEGIN_SRC sh
+  brew install aspell --with-lang-en
+#+END_SRC
+
+*** Virtualenv
+Install python virtual environment using pip:
+
+#+BEGIN_SRC sh
+pip install virtualenv
+#+END_SRC
 
 * Emacs configuration
 ** Starting Emacs                                                  :startup:
@@ -610,6 +625,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 * History [9/9]
+** DONE Write the dependencies section                                 :doc:
+CLOSED: [2015-01-27 Tue 22:08]
 ** DONE Get spell checking to work                                     :new:
 CLOSED: [2015-01-27 Tue 20:18]
 ** DONE Replace global key with bind key macro
