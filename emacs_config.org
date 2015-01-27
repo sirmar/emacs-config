@@ -1,14 +1,14 @@
 * Introduction
-* Improvements [1/10]
+* Improvements [3/10]
 ** DONE Redo config as an org mode file                                :doc:
+** DONE Change C-w to remove line when no region                      :edit:
+** DONE Remove M-k binding                                            :edit:
 ** TODO Write descriptions in config sections                          :doc:
 ** TODO Write introduction                                             :doc:
 ** TODO Write the ending words                                         :doc:
 ** TODO Write the dependecies section                                  :doc:
 ** TODO Rewrite config using use-package                           :package:
 ** TODO Remove cask                                                   :cask:
-** TODO Change C-w to remove line when no region                      :edit:
-** TODO Remove M-k binding                                            :edit:
 ** TODO Check why src block background does not work               :bug:org:
 * Dependencies
 * Emacs configuration
@@ -46,19 +46,14 @@ and the scroll bar is removed.
   (delete-selection-mode)
   (setq mouse-yank-at-point t)
 
-  (defun kill-word-or-region ()
+  (defun kill-line-or-region ()
     "Cut region. If no region cut current symbol."
     (interactive)
     (if (use-region-p) (kill-region (region-beginning) (region-end))
-      (let (boundaries pos1 pos2 mything)
-        (setq boundaries (bounds-of-thing-at-point 'sexp))
-        (setq pos1 (car boundaries))
-        (setq pos2 (cdr boundaries))
-        (kill-region pos1 pos2))))
+      (kill-whole-line)))
 
   (global-set-key (kbd "M-C-<backspace>") 'sp-backward-kill-sexp)
-  (global-set-key (kbd "M-k") 'kill-whole-line)
-  (global-set-key (kbd "C-w") 'kill-word-or-region)
+  (global-set-key (kbd "C-w") 'kill-line-or-region)
 #+END_SRC
 
 *** Change inner                                                  :package:
