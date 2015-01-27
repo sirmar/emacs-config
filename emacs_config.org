@@ -9,13 +9,12 @@ Feel free to steal anything you find useful.
 
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
-* Improvements [0/7]
+* Improvements [1/7]
 ** TODO Write descriptions in config sections                           :doc:
 ** TODO Write the ending words                                          :doc:
 ** TODO Write the dependecies section                                   :doc:
 ** TODO Check why src block background does not work                :bug:org:
 ** TODO Get spell checking to work                                      :new:
-** TODO Replace global key with bind key macro
 ** TODO Link to packages on the internet                                :doc:
 
 * Dependencies
@@ -103,8 +102,8 @@ scratch buffer message are both removed.
     (if (use-region-p) (kill-region (region-beginning) (region-end))
       (kill-whole-line)))
 
-  (global-set-key (kbd "M-C-<backspace>") 'sp-backward-kill-sexp)
-  (global-set-key (kbd "C-w") 'kill-line-or-region)
+  (bind-key "M-C-<backspace>" 'sp-backward-kill-sexp)
+  (bind-key "C-w" 'kill-line-or-region)
 #+END_SRC
 
 *** Change inner                                                  :package:
@@ -139,9 +138,9 @@ scratch buffer message are both removed.
     (forward-line -1)
     (indent-for-tab-command))
 
-  (global-set-key (kbd "<C-return>") 'open-line-above)
-  (global-set-key (kbd "<S-return>") 'open-line-below)
-  (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
+  (bind-key "<C-return>" 'open-line-above)
+  (bind-key "<S-return>" 'open-line-below)
+  (bind-key "C-j" (lambda () (interactive) (join-line -1)))
 #+END_SRC
 
 *** Move text                                                     :package:
@@ -154,9 +153,9 @@ scratch buffer message are both removed.
 
 *** Other
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c C-c") 'comment-region)
-  (global-set-key (kbd "<delete>") 'delete-char)
-  (global-set-key (kbd "M-S-SPC") 'cycle-spacing)
+  (bind-key "C-c C-c" 'comment-region)
+  (bind-key "<delete>" 'delete-char)
+  (bind-key "M-S-SPC" 'cycle-spacing)
 #+END_SRC
 
 ** Navigation                                                          :nav:
@@ -200,7 +199,7 @@ scratch buffer message are both removed.
                         (not (and (integerp pos) (goto-char (abs pos))))))
             (setq undos (cdr undos))))))
 
-   (global-set-key (kbd "C-c SPC") 'goto-last-edit-point)
+   (bind-key "C-c SPC" 'goto-last-edit-point)
  #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -217,14 +216,14 @@ scratch buffer message are both removed.
     (if (eolp) (end-of-buffer)
       (end-of-line)))
 
-  (global-set-key (kbd "C-a") 'my-home)
-  (global-set-key (kbd "C-e") 'my-end)
+  (bind-key "C-a" 'my-home)
+  (bind-key "C-e" 'my-end)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<down>") 'next-logical-line)
-  (global-set-key (kbd "<up>") 'previous-logical-line)
-  (global-set-key (kbd "M-g") 'goto-line)
+  (bind-key "<down>" 'next-logical-line)
+  (bind-key "<up>" 'previous-logical-line)
+  (bind-key "M-g" 'goto-line)
 #+END_SRC
 
 ** Search and replace                                               :search:
@@ -236,8 +235,8 @@ scratch buffer message are both removed.
 
 *** isearch
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
-  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+  (bind-key "C-s" 'isearch-forward-regexp)
+  (bind-key "C-r" 'isearch-backward-regexp)
 #+END_SRC
 
 *** Grep
@@ -264,7 +263,7 @@ scratch buffer message are both removed.
        (add-to-list 'grep-find-ignored-files ".*")
        ))
 
-  (global-set-key (kbd "C-c g") 'rgrep)
+  (bind-key "C-c g" 'rgrep)
 #+END_SRC
 
 *** Smartscan
@@ -355,7 +354,7 @@ scratch buffer message are both removed.
   (setq dabbrev-case-fold-search nil)
   (setq dabbrev-case-replace nil)
 
-  (global-set-key (kbd "C-<tab>") 'hippie-expand)
+  (bind-key "C-<tab>" 'hippie-expand)
   (define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
 #+END_SRC
 
@@ -398,7 +397,7 @@ scratch buffer message are both removed.
     (generate-new-buffer "*grep*")
     (set-window-buffer w2 "*grep*"))
 
-  (global-set-key (kbd "<f8>") 'config-buffers)
+  (bind-key "<f8>" 'config-buffers)
 #+END_SRC
 
 *** Ace window
@@ -415,7 +414,7 @@ scratch buffer message are both removed.
   (column-number-mode t)
   (setq frame-title-format "%b")
 
-  (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
+  (bind-key "C-x C-b" 'switch-to-buffer)
 #+END_SRC
 
 ** Instant feedback                                               :feedback:
@@ -480,8 +479,8 @@ scratch buffer message are both removed.
             (message "File '%s' successfully renamed to '%s'"
                      name (file-name-nondirectory new-name)))))))
 
-  (global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
-  (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
+  (bind-key "C-x C-k" 'delete-current-buffer-file)
+  (bind-key "C-x C-r" 'rename-current-buffer-file)
 #+END_SRC
 
 ** Building                                                       :building:
@@ -490,11 +489,11 @@ scratch buffer message are both removed.
 #+BEGIN_SRC emacs-lisp
   (setq compile-command "")
 
-  (global-set-key (kbd "<f5>") 'compile)
-  (global-set-key (kbd "<f6>") 'recompile)
-  (global-set-key (kbd "<f7>") 'kill-compilation)
-  (global-set-key (kbd "<f9>") 'previous-error)
-  (global-set-key (kbd "<f10>") 'next-error)
+  (bind-key "<f5>" 'compile)
+  (bind-key "<f6>" 'recompile)
+  (bind-key "<f7>" 'kill-compilation)
+  (bind-key "<f9>" 'previous-error)
+  (bind-key "<f10>" 'next-error)
 #+END_SRC
 
 *** Tests
@@ -589,11 +588,13 @@ scratch buffer message are both removed.
 
 *** Bindings
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<f12>") 'call-last-kbd-macro)
-  (global-set-key (kbd "C-z") 'undo)
+  (bind-key "<f12>" 'call-last-kbd-macro)
+  (bind-key "C-z" 'undo)
 #+END_SRC
 
 * History [7/7]
+** DONE Replace global key with bind key macro
+CLOSED: [2015-01-27 Tue 19:34]
 ** DONE Rewrite config using use-package                                :new:
 CLOSED: [2015-01-27 Tue 19:27]
 ** DONE Remove cask                                                    :cask:
