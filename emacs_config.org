@@ -77,9 +77,6 @@ scratch buffer message are both removed.
    package-enable-at-startup nil
    package-archives
    '(("melpa-stable" . "http://stable.melpa.org/packages/")
-     ("melpa"        . "http://melpa.org/packages/")
-     ("marmalade"    . "http://marmalade-repo.org/packages/")
-     ("org"          . "http://orgmode.org/elpa/")
      ("gnu"          . "http://elpa.gnu.org/packages/")))
 
   (eval-and-compile
@@ -203,6 +200,7 @@ Homepage: [[https://github.com/Fuco1/smartparens]]
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :ensure t
+    :diminish smartparens-mode
     :init
     (progn
       (smartparens-global-mode 1)
@@ -370,6 +368,7 @@ Homepage: [[https://github.com/capitaomorte/yasnippet]]
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :ensure t
+    :diminish yas-minor-mode
     :init
     (progn
       (yas-global-mode t)))
@@ -381,6 +380,7 @@ Homepage: [[https://github.com/auto-complete/auto-complete]]
 #+BEGIN_SRC emacs-lisp
   (use-package auto-complete
     :ensure t
+    :diminish auto-complete-mode
     :init
     (progn
       (ac-config-default)
@@ -423,7 +423,9 @@ Homepage: [[https://github.com/bbatsov/projectile]]
     :ensure t
     :init
     (progn
-      (projectile-global-mode))
+      (projectile-global-mode)
+      (setq projectile-mode-line
+        '(:eval (format " P[%s]" (projectile-project-name)))))
     :bind
     ( ("C-x f" . projectile-find-file)
       ("C-x b" . projectile-switch-to-buffer)
@@ -483,6 +485,7 @@ Homepage: [[https://github.com/abo-abo/ace-window]]
 *** White space mode
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
+  (diminish 'global-whitespace-mode)
   (setq whitespace-line-column 100)
   (setq whitespace-style '(face empty tabs trailing lines-tail indentation::space))
   (add-hook 'before-save-hook 'sanitize-whitespace)
@@ -508,6 +511,7 @@ I only use this for python and has [[Pylint]] installed.
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
+    :diminish flycheck-mode
     :init
     (progn
       (add-hook 'python-mode-hook 'flycheck-mode)))
@@ -581,7 +585,17 @@ Homepage: [[https://github.com/magit/magit]]
   (setq ediff-split-window-function (quote split-window-horizontally))
 #+END_SRC
 
-** Org mode                                                            :org:
+** Org                                                                  :org:
+Homepage: [[http://orgmode.org]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure t
+    :init
+    (progn
+      ))
+#+END_SRC
+
 *** Code blocks
 #+BEGIN_SRC emacs-lisp
   (setq org-src-fontify-natively t)
@@ -680,36 +694,37 @@ Homepage: [[https://github.com/mickeynp/discover.el]]
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [11/14]
+* Tasks [13/16]
 ** To do
-*** TODO Write descriptions in config sections                        :doc:
-*** TODO Write the ending words                                       :doc:
-*** TODO Check why src block background does not work             :bug:org:
-
+*** TODO Write descriptions in configuration sections                   :doc:
+*** TODO Check why src block background does not work               :bug:org:
+*** TODO Create task capture templates                                  :org:
 ** History
-*** DONE Link to packages on the internet                             :doc:
+*** DONE Diminish modes with use-package
+CLOSED: [2015-01-28 Wed 11:05]
+*** DONE Load org with use-package                                    :org:
+CLOSED: [2015-01-28 Wed 11:05]
+
+*** DONE Link to packages on the internet                               :doc:
 CLOSED: [2015-01-28 Wed 09:43]
 
-*** DONE Write the dependencies section                               :doc:
+*** DONE Write the dependencies section                                 :doc:
 CLOSED: [2015-01-27 Tue 22:08]
-*** DONE Get spell checking to work                                   :new:
+*** DONE Get spell checking to work                                     :new:
 CLOSED: [2015-01-27 Tue 20:18]
 *** DONE Replace global key with bind key macro
 CLOSED: [2015-01-27 Tue 19:34]
-*** DONE Rewrite config using use-package                             :new:
+*** DONE Rewrite configuration using use-package                        :new:
 CLOSED: [2015-01-27 Tue 19:27]
-*** DONE Remove cask                                                 :cask:
+*** DONE Remove cask                                                   :cask:
 CLOSED: [2015-01-27 Tue 19:26]
-*** DONE Create emacs-lisp source block template                      :org:
+*** DONE Create Emacs-lisp source block template                        :org:
 CLOSED: [2015-01-27 Tue 15:44]
-*** DONE Write introduction                                           :doc:
+*** DONE Write introduction                                             :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-*** DONE Redo config as an org mode file                              :doc:
+*** DONE Redo configuration as an org mode file                         :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-*** DONE Change C-w to remove line when no region                    :edit:
+*** DONE Change C-w to remove line when no region                      :edit:
 CLOSED: [2015-01-27 Tue 14:50]
-*** DONE Remove M-k binding                                          :edit:
+*** DONE Remove M-k binding                                            :edit:
 CLOSED: [2015-01-27 Tue 14:50]
-
-
-* Ending words.
