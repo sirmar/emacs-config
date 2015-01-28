@@ -51,7 +51,7 @@ pip install pylint
 #+END_SRC
 
 * Emacs configuration
-** Starting Emacs                                                   :startup:
+** Starting Emacs
 *** Cleaning up the interface
 The Emacs window should be as clean as possible. Therefor the
 menu bar, the tool bar and the scroll bar are removed.
@@ -95,7 +95,7 @@ Frame title is set to the current buffer name.
   (setq frame-title-format "%b")
 #+END_SRC
 
-** Packages                                                       :packages:
+** Packages
 *** Package system
 The built in package system needs to be initialized and the
 package archive for melpa is added.
@@ -141,7 +141,7 @@ the source has changed.
       (setq load-prefer-newer t)))
 #+END_SRC
 
-** Text manipulation                                                  :edit:
+** Text manipulation
 *** Indentation
 Setting lisp indentation to two spaces.
 
@@ -295,7 +295,7 @@ Why not bind delete to delete.
   (bind-key "<delete>" 'delete-char)
 #+END_SRC
 
-** Navigation                                                          :nav:
+** Navigation
 *** Smartparen
 Homepage: [[https://github.com/Fuco1/smartparens]]
 
@@ -394,7 +394,7 @@ Go to a specific line in current buffer.
   (bind-key "M-g" 'goto-line)
 #+END_SRC
 
-** Search and replace                                               :search:
+** Search and replace
 *** Casing
 Searches should ignore case. When replacing casing should be
 preserved.
@@ -477,7 +477,7 @@ the cursor.
       ("M-p" . smartscan-symbol-go-backward)))
 #+END_SRC
 
-** Fuzzy matching                                                    :fuzzy:
+** Fuzzy matching
 *** Flx ido mode
 Homepage: [[https://github.com/lewang/flx]]
 
@@ -527,7 +527,7 @@ Activate ido mode when looking for and running commands with M-x as well.
     ( ("M-x" . smex)))
 #+END_SRC
 
-** Completion                                                   :completion:
+** Completion
 *** YaSnippet
 Homepage: [[https://github.com/capitaomorte/yasnippet]]
 
@@ -588,7 +588,7 @@ completions.
   (define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
 #+END_SRC
 
-** Projects                                                           :proj:
+** Projects
 *** Projectile
 Homepage: [[https://github.com/bbatsov/projectile]]
 
@@ -614,7 +614,7 @@ in the project root.
       ("C-x t" . projectile-toggle-between-implementation-and-test)))
 #+END_SRC
 
-** Windows                                                         :windows:
+** Windows
 *** Full frame
 Homepage: [[https://github.com/tomterl/fullframe]]
 
@@ -651,7 +651,7 @@ Show cursors position in the status bar.
   (column-number-mode t)
 #+END_SRC
 
-** Instant feedback                                               :feedback:
+** Instant feedback
 *** White space mode
 Show trailing spaces, indentation made by tabs, too long lines and
 extra empty lines in the beginning or end of file.
@@ -694,7 +694,7 @@ when the cursor is above an error.
       (add-hook 'python-mode-hook 'flycheck-mode)))
 #+END_SRC
 
-** Files                                                             :files:
+** Files
 *** Current buffer operations
 Delete the file of the current buffer and kill the buffer
 at the same time.
@@ -740,7 +740,7 @@ list as well.
   (bind-key "C-x C-r" 'rename-current-buffer-file)
 #+END_SRC
 
-** Building                                                        :building:
+** Building
 *** Debugging
 *** Compiling
 Set the compile command and some related key bindings.
@@ -756,7 +756,7 @@ Set the compile command and some related key bindings.
 #+END_SRC
 
 *** Tests
-** Source control                                                      :scm:
+** Source control
 *** Magit
 Homepage: [[https://github.com/magit/magit]]
 
@@ -795,7 +795,7 @@ should also ignore white-space and new-lines.
   (bind-key "C-c d" 'ediff-buffers)
 #+END_SRC
 
-** Org                                                                  :org:
+** Org
 Homepage: [[http://orgmode.org]]
 
 Start org mode in indented mode, so that outlines are easier to
