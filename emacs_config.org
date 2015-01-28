@@ -598,16 +598,11 @@ Homepage: [[http://orgmode.org]]
 
 *** Code blocks
 #+BEGIN_SRC emacs-lisp
-  (setq org-src-fontify-natively t)
+  (set-face-background 'org-block-begin-line "#eeeee0")
+  (set-face-background 'org-block-background "#fefefa")
+  (set-face-background 'org-block-end-line "#eeeee0")
 
-  (defface org-block-begin-line
-    '((t (:foreground "#111111" :background "#DDDDDD"))) "")
-  (defface org-block
-    '((t (:background "#EEEEEE"))) "")
-  (defface org-block-background
-    '((t (:background "#EEEEEE"))) "")
-  (defface org-block-end-line
-    '((t (:foreground "#111111" :background "#DDDDDD"))) "")
+  (setq org-src-fontify-natively t)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -694,12 +689,13 @@ Homepage: [[https://github.com/mickeynp/discover.el]]
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [13/16]
+* Tasks [14/16]
 ** To do
 *** TODO Write descriptions in configuration sections                   :doc:
-*** TODO Check why src block background does not work               :bug:org:
 *** TODO Create task capture templates                                  :org:
 ** History
+*** DONE Check why src block background does not work             :bug:org:
+CLOSED: [2015-01-28 Wed 11:37]
 *** DONE Diminish modes with use-package
 CLOSED: [2015-01-28 Wed 11:05]
 *** DONE Load org with use-package                                    :org:
