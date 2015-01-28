@@ -10,6 +10,9 @@ Feel free to steal anything you find useful.
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
 * Dependencies
+This configuration have some external dependencies that need to be installed in order
+for everything to work. So far, I have only tried it on OS X.
+
 ** Mac
 *** Homebrew
 Homepage: [[http://brew.sh]]
@@ -62,39 +65,47 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** The emacs frame
+I prefer my Emacs to use most of the screen. Here the position and
+size of the program window are set.
+
 #+BEGIN_SRC emacs-lisp
   (when window-system (set-frame-size (selected-frame) 195 47))
   (when window-system (set-frame-position (selected-frame) 20 40))
 #+END_SRC
 
 ** Packages                                                       :packages:
-*** Package module
+*** Package system
+The built in package system needs to be initialized and the
+package archive for melpa is added.
+
 #+BEGIN_SRC emacs-lisp
   (setq package-enable-at-startup nil)
   (package-initialize)
-
-  (setq
-   package-enable-at-startup nil
-   package-archives
-   '(("melpa-stable" . "http://stable.melpa.org/packages/")
-     ("gnu"          . "http://elpa.gnu.org/packages/")))
-
-  (eval-and-compile
-    (require 'package)
-    (package-initialize t))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 #+END_SRC
 
 *** Use package
-Package Homepage: [[https://github.com/jwiegley/use-package]]
+Homepage: [[https://github.com/jwiegley/use-package]]
+
+I use "Use package" to ensure that all my packages are downloaded and
+installed if missing at start up. Also, it offers a neat way to define
+keys and initialize packages.
+
+Here "Use package" is installed the first time Emacs is started
+on a new computer.
 
 #+BEGIN_SRC emacs-lisp
   (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
     (package-install 'use-package))
   (require 'use-package)
 #+END_SRC
 
 *** Auto compile
 Homepage: [[https://github.com/tarsius/auto-compile]]
+
+This package makes sure that byte compiled files are recompiled when
+the source has changed.
 
 #+BEGIN_SRC emacs-lisp
   (use-package dash
@@ -110,9 +121,15 @@ Homepage: [[https://github.com/tarsius/auto-compile]]
 
 ** Text manipulation                                                  :edit:
 *** Indentation
+Setting lisp indentation to two spaces.
+
 #+BEGIN_SRC emacs-lisp
   (setq lisp-indent-offset 2)
+#+END_SRC
 
+A small utility function that indents the whole buffer.
+
+#+BEGIN_SRC emacs-lisp
   (defun indent-buffer ()
     "Indents whole buffer."
     (interactive)
@@ -120,23 +137,41 @@ Homepage: [[https://github.com/tarsius/auto-compile]]
 #+END_SRC
 
 *** Cut, copy and paste
+Make sure that active regions are deleted if I start writing. Also
+insert at Emacs cursor and not mouse cursor when pasting into buffer
+with the mouse.
 
 #+BEGIN_SRC emacs-lisp
   (delete-selection-mode)
   (setq mouse-yank-at-point t)
+#+END_SRC
 
+Make C-w context aware and remove the whole current line if
+no region is active. Otherwise let it work just as before.
+
+#+BEGIN_SRC emacs-lisp
   (defun kill-line-or-region ()
     "Cut region. If no region cut current symbol."
     (interactive)
     (if (use-region-p) (kill-region (region-beginning) (region-end))
       (kill-whole-line)))
 
-  (bind-key "M-C-<backspace>" 'sp-backward-kill-sexp)
   (bind-key "C-w" 'kill-line-or-region)
+#+END_SRC
+
+Bind M-C-backspace to remove a while balanced expression, i.e from
+the current ending parenthesis back to the starting.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-C-<backspace>" 'sp-backward-kill-sexp)
 #+END_SRC
 
 *** Change inner                                                  :package:
 Homepage: [[https://github.com/emacsmirror/change-inner]]
+
+While inside a pair like parentheses, quotation marks and the like,
+inner will remove every thing between the pair, while outer will
+remove everything including the pair itself.
 
 #+BEGIN_SRC emacs-lisp
   (use-package change-inner
@@ -148,6 +183,8 @@ Homepage: [[https://github.com/emacsmirror/change-inner]]
 *** Expand region                                                 :package:
 Homepage: [[https://github.com/emacsmirror/change-inner]]
 
+Marks in a syntax aware manner, starting with the current word.
+
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
@@ -155,6 +192,9 @@ Homepage: [[https://github.com/emacsmirror/change-inner]]
 #+END_SRC
 
 *** New lines
+It can be handy to be able to create new lines above and below
+the current one, regardless of cursor position.
+
 #+BEGIN_SRC emacs-lisp
   (defun open-line-below ()
     "Create new line below the current one."
@@ -173,11 +213,20 @@ Homepage: [[https://github.com/emacsmirror/change-inner]]
 
   (bind-key "<C-return>" 'open-line-above)
   (bind-key "<S-return>" 'open-line-below)
+#+END_SRC
+
+This binding join the current line with the next line regardless
+of the current cursor position.
+
+#+BEGIN_SRC emacs-lisp
   (bind-key "C-j" (lambda () (interactive) (join-line -1)))
 #+END_SRC
 
 *** Move text                                                     :package:
 Homepage: [[http://emacswiki.org/emacs/MoveText]]
+
+Makes it possible to move a whole region of text up and down past
+existing lines. The region will be indented as well.
 
 #+BEGIN_SRC emacs-lisp
   (use-package move-text
@@ -187,15 +236,33 @@ Homepage: [[http://emacswiki.org/emacs/MoveText]]
 #+END_SRC
 
 *** Other
+Comment a region. If no region is active, comment the current line.
+
 #+BEGIN_SRC emacs-lisp
   (bind-key "C-c C-c" 'comment-region)
-  (bind-key "<delete>" 'delete-char)
+#+END_SRC
+
+This will first remove all spaces but one between two words. Next it
+will remove that one as well and lastly it will restore the original
+spacing.
+
+#+BEGIN_SRC emacs-lisp
   (bind-key "M-S-SPC" 'cycle-spacing)
+#+END_SRC
+
+Why not bind delete to delete.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "<delete>" 'delete-char)
 #+END_SRC
 
 ** Navigation                                                          :nav:
 *** Smartparen
 Homepage: [[https://github.com/Fuco1/smartparens]]
+
+Use to navigate over and into pairs like parentheses. Also I set
+it to automatically create the pair sibling. Lastly quotes inside
+quotes will be escaped.
 
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
@@ -216,6 +283,9 @@ Homepage: [[https://github.com/Fuco1/smartparens]]
 *** Ace jump mode
 Homepage: [[https://github.com/winterTTr/ace-jump-mode]]
 
+This mode will let you jump to any word starting with the
+given head character. It even works between visible buffers.
+
 #+BEGIN_SRC emacs-lisp
   (use-package ace-jump-mode
     :ensure t
@@ -228,6 +298,8 @@ Homepage: [[https://github.com/winterTTr/ace-jump-mode]]
 #+END_SRC
 
 *** Other
+This function will let me go back to the last edited place in the buffer.
+
  #+BEGIN_SRC emacs-lisp
    (defun goto-last-edit-point ()
     "Sets the cursor on the last edit point."
@@ -242,6 +314,10 @@ Homepage: [[https://github.com/winterTTr/ace-jump-mode]]
    (bind-key "C-c SPC" 'goto-last-edit-point)
  #+END_SRC
 
+Make beginning of line context aware. It will now go back to the
+first non white space character on the current line. If pressed again
+it will go to the beginning of line and then to the beginning of the buffer.
+
 #+BEGIN_SRC emacs-lisp
   (defun my-home ()
     "Move to indentation, beginning of line and beginning of buffer."
@@ -250,36 +326,56 @@ Homepage: [[https://github.com/winterTTr/ace-jump-mode]]
       (skip-chars-backward " \t")
       (unless (bolp) (back-to-indentation))))
 
+  (bind-key "C-a" 'my-home)
+#+END_SRC
+
+Make end of line context aware. It will still go to the end of the line, but if
+pressed again the cursor will move to the very end of the buffer.
+
+#+BEGIN_SRC emacs-lisp
   (defun my-end ()
     "Move to end of line and end of buffer."
     (interactive)
     (if (eolp) (end-of-buffer)
       (end-of-line)))
 
-  (bind-key "C-a" 'my-home)
   (bind-key "C-e" 'my-end)
 #+END_SRC
+
+Up and down should move logical lines.
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "<down>" 'next-logical-line)
   (bind-key "<up>" 'previous-logical-line)
+#+END_SRC
+
+Go to a specific line in current buffer.
+
+#+BEGIN_SRC emacs-lisp
   (bind-key "M-g" 'goto-line)
 #+END_SRC
 
 ** Search and replace                                               :search:
 *** Casing
+Searches should ignore case. When replacing casing should be
+preserved.
+
 #+BEGIN_SRC emacs-lisp
   (setq case-fold-search t)
   (setq case-replace t)
 #+END_SRC
 
-*** isearch
+*** Isearch
+Regexp search should be the normal for isearch.
+
 #+BEGIN_SRC emacs-lisp
   (bind-key "C-s" 'isearch-forward-regexp)
   (bind-key "C-r" 'isearch-backward-regexp)
 #+END_SRC
 
 *** Grep
+Do not show the grep command in the grep buffer as it takes
+so much buffer space.
 
 #+BEGIN_SRC emacs-lisp
   (defun delete-grep-header ()
@@ -292,22 +388,39 @@ Homepage: [[https://github.com/winterTTr/ace-jump-mode]]
 
   (defadvice grep (after delete-grep-header activate) (delete-grep-header))
   (defadvice rgrep (after delete-grep-header activate) (delete-grep-header))
+#+END_SRC
 
-  ;; (setq grep-find-template "find . <X> -type f <F> -print0 | xargs -n 100 -0 -e grep <C> -nH -E <R>")
-  (add-hook 'next-error-hook 'recenter)
+Global ignore list for grep.
 
-  ;; Ignore directories and files
+#+BEGIN_SRC emacs-lisp
   (eval-after-load "grep"
     '(progn
        (add-to-list 'grep-find-ignored-directories ".*")
        (add-to-list 'grep-find-ignored-files ".*")
        ))
+#+END_SRC
 
+Change this template to make grep run in a different way. I used this to get
+rid of an error on Windows where to many processes were spawned by xargs.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (setq grep-find-template
+  ;;   "find . <X> -type f <F> -print0 | xargs -n 100 -0 -e grep <C> -nH -E <R>")
+#+END_SRC
+
+When using next and previous error to brows grep hits, recenter the hit in
+the buffer. Lastly, bind grep to something.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'next-error-hook 'recenter)
   (bind-key "C-c g" 'rgrep)
 #+END_SRC
 
 *** Smartscan
 Homepage: [[https://github.com/mickeynp/smart-scan]]
+
+Use to search for the next or previous occurrence of the symbol below
+the cursor.
 
 #+BEGIN_SRC emacs-lisp
   (use-package smartscan
