@@ -1,3 +1,6 @@
+#+TITLE: Emacs configuration using Org mode
+#+OPTIONS: toc:2 tags:nil todo:nil
+
 * Introduction
 Two things happened at the same time. I learned about the existence
 of org mode and I found new inspiration to play around with my Emacs
