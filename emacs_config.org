@@ -6,22 +6,22 @@ Two things happened at the same time. I learned about the existence
 of org mode and I found new inspiration to play around with my Emacs
 configuration. I figured, why not combine the two as a way to learn
 org mode and to find out what is out there in terms of helpful tools
-to use in my setup. This is the result.
+to use in my setup. This is the result so far.
 
 Feel free to steal anything you find useful.
 
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
 * Dependencies
-This configuration have some external dependencies that need to be installed in order
-for everything to work. So far, I have only tried it on OS X.
+This configuration has some external dependencies that need to be installed in order
+for everything to work. So far, I have only tried it on OS X, so there are currently
+no instructions for other operating systems.
 
 ** Mac
 *** Homebrew
 Homepage: [[http://brew.sh]]
 
-Download and install Homebrew.
-Instructions can be found on the website above.
+Download and install Homebrew. Instructions can be found on the website above.
 
 *** Aspell
 Homepage: [[http://aspell.net]]
@@ -51,8 +51,8 @@ pip install pylint
 #+END_SRC
 
 * Emacs configuration
-** Starting Emacs                                                  :startup:
-*** Cleaning the interface
+** Starting Emacs                                                   :startup:
+*** Cleaning up the interface
 The Emacs window should be as clean as possible. Therefor the
 menu bar, the tool bar and the scroll bar are removed.
 
@@ -60,20 +60,39 @@ Also I want the buffers to be clean, so start up message and
 scratch buffer message are both removed.
 
 #+BEGIN_SRC emacs-lisp
-  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
   (setq inhibit-startup-message t)
   (setq initial-scratch-message "")
 #+END_SRC
 
-*** The emacs frame
+*** The Emacs frame
 I prefer my Emacs to use most of the screen. Here the position and
 size of the program window are set.
 
 #+BEGIN_SRC emacs-lisp
   (when window-system (set-frame-size (selected-frame) 195 47))
   (when window-system (set-frame-position (selected-frame) 20 40))
+#+END_SRC
+
+Create the my standard configuration of windows.
+
+#+BEGIN_SRC emacs-lisp
+  (defun config-buffers ()
+    (setq left-window (selected-window))
+    (setq right-window (split-window left-window 97 t))
+    (setq grep-window (split-window right-window 35))
+    (generate-new-buffer "*grep*")
+    (set-window-buffer grep-window "*grep*"))
+
+  (config-buffers)
+#+END_SRC
+
+Frame title is set to the current buffer name.
+
+#+BEGIN_SRC emacs-lisp
+  (setq frame-title-format "%b")
 #+END_SRC
 
 ** Packages                                                       :packages:
@@ -154,7 +173,7 @@ no region is active. Otherwise let it work just as before.
 
 #+BEGIN_SRC emacs-lisp
   (defun kill-line-or-region ()
-    "Cut region. If no region cut current symbol."
+    "Cut region. If no region cut current line."
     (interactive)
     (if (use-region-p) (kill-region (region-beginning) (region-end))
       (kill-whole-line)))
@@ -162,8 +181,8 @@ no region is active. Otherwise let it work just as before.
   (bind-key "C-w" 'kill-line-or-region)
 #+END_SRC
 
-Bind M-C-backspace to remove a while balanced expression, i.e from
-the current ending parenthesis back to the starting.
+Bind key to remove a balanced expression, i.e from
+the current ending parenthesis back to the starting one.
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "M-C-<backspace>" 'sp-backward-kill-sexp)
@@ -173,8 +192,8 @@ the current ending parenthesis back to the starting.
 Homepage: [[https://github.com/emacsmirror/change-inner]]
 
 While inside a pair like parentheses, quotation marks and the like,
-inner will remove every thing between the pair, while outer will
-remove everything including the pair itself.
+inner will remove everything inside excluding the pair, while outer will
+remove everything inside including the pair itself.
 
 #+BEGIN_SRC emacs-lisp
   (use-package change-inner
@@ -187,6 +206,7 @@ remove everything including the pair itself.
 Homepage: [[https://github.com/emacsmirror/change-inner]]
 
 Marks in a syntax aware manner, starting with the current word.
+Keep pressing space to expand the region.
 
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -218,7 +238,7 @@ the current one, regardless of cursor position.
   (bind-key "<S-return>" 'open-line-below)
 #+END_SRC
 
-This binding join the current line with the next line regardless
+This binding joins the current line with the next line regardless
 of the current cursor position.
 
 #+BEGIN_SRC emacs-lisp
@@ -239,10 +259,26 @@ existing lines. The region will be indented as well.
 #+END_SRC
 
 *** Other
-Comment a region. If no region is active, comment the current line.
+Toggle comment on a region of code. If no region is active then toggle
+comment on the current line.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "C-c C-c" 'comment-region)
+  (defun comment-eclipse ()
+        (interactive)
+        (let ((start (line-beginning-position))
+              (end (line-end-position)))
+          (when (region-active-p)
+            (setq start (save-excursion
+                          (goto-char (region-beginning))
+                          (beginning-of-line)
+                          (point))
+                  end (save-excursion
+                        (goto-char (region-end))
+                        (end-of-line)
+                        (point))))
+          (comment-or-uncomment-region start end)))
+
+  (bind-key "M-C-c" 'comment-eclipse)
 #+END_SRC
 
 This will first remove all spaces but one between two words. Next it
@@ -441,6 +477,9 @@ the cursor.
 *** Flx ido mode
 Homepage: [[https://github.com/lewang/flx]]
 
+Flexible ido mode matching to find files and buffers more
+quickly.
+
 #+BEGIN_SRC emacs-lisp
   (use-package flx-ido
     :ensure t
@@ -456,6 +495,8 @@ Homepage: [[https://github.com/lewang/flx]]
 *** Ido verticle mode
 Homepage: [[https://github.com/gempesaw/ido-vertical-mode.el]]
 
+Let ido mode list things vertically instead horizontally in the mini buffer.
+
 #+BEGIN_SRC emacs-lisp
   (use-package ido-vertical-mode
     :ensure t
@@ -466,6 +507,8 @@ Homepage: [[https://github.com/gempesaw/ido-vertical-mode.el]]
 
 *** Smex
 Homepage: [[https://github.com/nonsequitur/smex]]
+
+Activate ido mode when looking for and running commands with M-x as well.
 
 #+BEGIN_SRC emacs-lisp
   (use-package smex
@@ -481,6 +524,9 @@ Homepage: [[https://github.com/nonsequitur/smex]]
 *** YaSnippet
 Homepage: [[https://github.com/capitaomorte/yasnippet]]
 
+Add snippets for a big number of languages. Press tab to
+expand them and shift to move to the next placeholder.
+
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :ensure t
@@ -492,6 +538,8 @@ Homepage: [[https://github.com/capitaomorte/yasnippet]]
 
 *** Auto Complete
 Homepage: [[https://github.com/auto-complete/auto-complete]]
+
+Shows a list of completions in buffer when completing with tab key.
 
 #+BEGIN_SRC emacs-lisp
   (use-package auto-complete
@@ -509,6 +557,9 @@ Homepage: [[https://github.com/auto-complete/auto-complete]]
 *** Jedi
 Homepage: [[https://github.com/tkf/emacs-jedi]]
 
+Context aware completion for Python. It also has a go to definition function and
+a way to pop back again.
+
 #+BEGIN_SRC emacs-lisp
   (use-package jedi
     :ensure t
@@ -522,10 +573,10 @@ Homepage: [[https://github.com/tkf/emacs-jedi]]
 #+END_SRC
 
 *** Hippie expand
-#+BEGIN_SRC emacs-lisp
-  (setq dabbrev-case-fold-search nil)
-  (setq dabbrev-case-replace nil)
+Textual complete that will look pretty much everywhere inside Emacs for
+completions.
 
+#+BEGIN_SRC emacs-lisp
   (bind-key "C-<tab>" 'hippie-expand)
   (define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
 #+END_SRC
@@ -533,6 +584,11 @@ Homepage: [[https://github.com/tkf/emacs-jedi]]
 ** Projects                                                           :proj:
 *** Projectile
 Homepage: [[https://github.com/bbatsov/projectile]]
+
+Add the possibility to define projects and perform project
+specific file, buffer, search and replace operations. It is
+possible to filter files and directories in a .projectile file
+in the project root.
 
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -551,9 +607,12 @@ Homepage: [[https://github.com/bbatsov/projectile]]
       ("C-x t" . projectile-toggle-between-implementation-and-test)))
 #+END_SRC
 
-** Buffers                                                         :buffers:
+** Windows                                                         :windows:
 *** Full frame
 Homepage: [[https://github.com/tomterl/fullframe]]
+
+Open Magit in full frame and restore the previous window
+configuration when quitting.
 
 #+BEGIN_SRC emacs-lisp
   (use-package fullframe
@@ -563,23 +622,12 @@ Homepage: [[https://github.com/tomterl/fullframe]]
       (fullframe magit-status magit-mode-quit-window)))
 #+END_SRC
 
-*** Standard windows
-#+BEGIN_SRC emacs-lisp
-  (defun config-buffers ()
-    "Create three columns and a bottom grep buffer."
-    (interactive)
-    (setq w (selected-window))
-    (split-window w 176 t)
-    (setq w2 (split-window w 50))
-    (split-window w 88 t)
-    (generate-new-buffer "*grep*")
-    (set-window-buffer w2 "*grep*"))
-
-  (bind-key "<f8>" 'config-buffers)
-#+END_SRC
-
 *** Ace window
 Homepage: [[https://github.com/abo-abo/ace-window]]
+
+Instead of going seemingly randomly through the windows, switch to
+a specific one. When three or more windows is opened a number will show
+up in the top left corner.
 
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
@@ -589,33 +637,35 @@ Homepage: [[https://github.com/abo-abo/ace-window]]
 #+END_SRC
 
 *** Other settings
+Show cursors position in the status bar.
+
 #+BEGIN_SRC emacs-lisp
   (line-number-mode t)
   (column-number-mode t)
-  (setq frame-title-format "%b")
-
-  (bind-key "C-x C-b" 'switch-to-buffer)
 #+END_SRC
 
 ** Instant feedback                                               :feedback:
 *** White space mode
+Show trailing spaces, indentation made by tabs, too long lines and
+extra empty lines in the beginning or end of file.
+
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
   (diminish 'global-whitespace-mode)
   (setq whitespace-line-column 100)
   (setq whitespace-style '(face empty tabs trailing lines-tail indentation::space))
-  (add-hook 'before-save-hook 'sanitize-whitespace)
 #+END_SRC
+
+Automatically remove tabs and trailing spaces when saving a file.
 
 #+BEGIN_SRC emacs-lisp
   (defun sanitize-whitespace ()
     "Converts all tabs to spaces."
     (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "[ \t]+$" nil t)
-        (replace-match "" nil nil))
-      (untabify (point-min) (point-max))))
+    (delete-trailing-whitespace)
+    (untabify (point-min) (point-max)))
+
+  (add-hook 'before-save-hook 'sanitize-whitespace)
 #+END_SRC
 
 *** Flycheck
@@ -623,6 +673,10 @@ Homepage: [[https://github.com/flycheck/flycheck]]
 
 This package need back-ends to do the actual analysis. As of now,
 I only use this for python and has [[Pylint]] installed.
+
+Run static code analysis in real time in python. The errors are marked in
+the buffer. Information about the errors are shown in the mini buffer
+when the cursor is above an error.
 
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -635,6 +689,9 @@ I only use this for python and has [[Pylint]] installed.
 
 ** Files                                                             :files:
 *** Current buffer operations
+Delete the file of the current buffer and kill the buffer
+at the same time.
+
 #+BEGIN_SRC emacs-lisp
   (defun delete-current-buffer-file ()
     "Removes file connected to current buffer and kills buffer."
@@ -649,6 +706,13 @@ I only use this for python and has [[Pylint]] installed.
           (kill-buffer buffer)
           (message "File '%s' successfully removed" filename)))))
 
+  (bind-key "C-x C-k" 'delete-current-buffer-file)
+#+END_SRC
+
+Rename the file in the current buffer and reflect the change in the buffer
+list as well.
+
+#+BEGIN_SRC emacs-lisp
   (defun rename-current-buffer-file ()
     "Renames current buffer and file it is visiting."
     (interactive)
@@ -666,13 +730,14 @@ I only use this for python and has [[Pylint]] installed.
             (message "File '%s' successfully renamed to '%s'"
                      name (file-name-nondirectory new-name)))))))
 
-  (bind-key "C-x C-k" 'delete-current-buffer-file)
   (bind-key "C-x C-r" 'rename-current-buffer-file)
 #+END_SRC
 
-** Building                                                       :building:
+** Building                                                        :building:
 *** Debugging
 *** Compiling
+Set the compile command and some related key bindings.
+
 #+BEGIN_SRC emacs-lisp
   (setq compile-command "")
 
@@ -688,6 +753,8 @@ I only use this for python and has [[Pylint]] installed.
 *** Magit
 Homepage: [[https://github.com/magit/magit]]
 
+A nice Git interface for Emacs. Just run status to start.
+
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
@@ -697,6 +764,8 @@ Homepage: [[https://github.com/magit/magit]]
 #+END_SRC
 
 *** Ediff
+Make sure Ediff is split with the windows beside each other.
+
 #+BEGIN_SRC emacs-lisp
   (setq ediff-split-window-function (quote split-window-horizontally))
 #+END_SRC
@@ -704,15 +773,22 @@ Homepage: [[https://github.com/magit/magit]]
 ** Org                                                                  :org:
 Homepage: [[http://orgmode.org]]
 
+Start org mode in indented mode, so that outlines are easier to
+read. Do not wrap lines.
+
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :ensure t
     :init
     (progn
-      ))
+      (setq org-startup-indented t)
+      (setq org-startup-truncated t)))
 #+END_SRC
 
 *** Code blocks
+Make source code blocks have prettier background colors and fontify code
+in them according to mode.
+
 #+BEGIN_SRC emacs-lisp
   (set-face-background 'org-block-begin-line "#eeeee0")
   (set-face-background 'org-block-background "#fefefa")
@@ -720,6 +796,8 @@ Homepage: [[http://orgmode.org]]
 
   (setq org-src-fontify-natively t)
 #+END_SRC
+
+Set code block template shortcuts.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-structure-template-alist
@@ -740,6 +818,9 @@ Homepage: [[http://orgmode.org]]
 #+END_SRC
 
 *** Tasks
+Make sure tasks only have two states. A time log should be generated
+when a task is set to done. To do items should be counted in sub-trees.
+
 #+BEGIN_SRC emacs-lisp
     (setq org-todo-keywords '((sequence "TODO" "DONE")))
     (setq org-log-done "time")
@@ -747,23 +828,20 @@ Homepage: [[http://orgmode.org]]
 #+END_SRC
 
 *** Capture
+Captured tasks should be but in todo.org in the org home directory.
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
-            (lambda ()
-              (setq org-default-notes-file (concat org-directory "/todo.org"))
-              (define-key global-map "\C-cc" 'org-capture)
-              ))
-#+END_SRC
-
-*** Indentation and wrapping
-#+BEGIN_SRC emacs-lisp
-  (setq org-startup-indented t)
-  (setq org-startup-truncated nil)
+    (lambda ()
+      (setq org-default-notes-file (concat org-directory "/todo.org"))
+      (define-key global-map "\C-cc" 'org-capture)))
 #+END_SRC
 
 ** Misc
 *** Discover
 Homepage: [[https://github.com/mickeynp/discover.el]]
+Press ? when in dired mode to get help. Press M-s to get help on isearch switches
+and see bindings for C-x r context.
 
 #+BEGIN_SRC emacs-lisp
   (use-package discover
@@ -774,6 +852,10 @@ Homepage: [[https://github.com/mickeynp/discover.el]]
 #+END_SRC
 
 *** Spelling
+Set language to English and use Aspell as dictionary software. Start spell
+checking in text and org mode. Also, start spell checking in source code
+comments.
+
 #+BEGIN_SRC emacs-lisp
   (setq ispell-dictionary "english")
   (setq ispell-program-name "aspell")
@@ -782,44 +864,54 @@ Homepage: [[https://github.com/mickeynp/discover.el]]
   (add-hook 'org-mode-hook  (lambda () (flyspell-mode 1)))
   (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
 
-  (eval-after-load "flyspell"
-    '(progn
-       (define-key flyspell-mode-map (kbd "C-.") nil)))
-
   (bind-key "C--" 'flyspell-auto-correct-word)
 #+END_SRC
 
 *** Backup
+No backup files.
+
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil)
 #+END_SRC
 
 *** Yes and no
+Answer y/n on questions instead of yes/no.
+
 #+BEGIN_SRC emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
 *** Bindings
+Some left over bindings with no obvious place to be.
+
 #+BEGIN_SRC emacs-lisp
+  (bind-key "C-x C-b" 'switch-to-buffer)
   (bind-key "<f12>" 'call-last-kbd-macro)
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [14/16]
+* Tasks [17/21]
 ** To do
-*** TODO Write descriptions in configuration sections                   :doc:
 *** TODO Create task capture templates                                  :org:
+*** TODO Consider using mail in Emacs                                   :new:
+*** TODO Ediff should ignore white space                                :scm:
+*** TODO Ediff should start in fullframe                                :scm:
 ** History
-*** DONE Check why src block background does not work             :bug:org:
+*** DONE Write descriptions in configuration sections                   :doc:
+CLOSED: [2015-01-28 Wed 17:05]
+*** DONE Context aware comment region                                  :edit:
+CLOSED: [2015-01-28 Wed 14:54]
+*** DONE Comment binding that fits python mode                         :edit:
+CLOSED: [2015-01-28 Wed 14:54]
+
+*** DONE Check why src block background does not work               :bug:org:
 CLOSED: [2015-01-28 Wed 11:37]
 *** DONE Diminish modes with use-package
 CLOSED: [2015-01-28 Wed 11:05]
-*** DONE Load org with use-package                                    :org:
+*** DONE Load org with use-package                                      :org:
 CLOSED: [2015-01-28 Wed 11:05]
-
 *** DONE Link to packages on the internet                               :doc:
 CLOSED: [2015-01-28 Wed 09:43]
-
 *** DONE Write the dependencies section                                 :doc:
 CLOSED: [2015-01-27 Tue 22:08]
 *** DONE Get spell checking to work                                     :new:
