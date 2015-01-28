@@ -405,11 +405,15 @@ preserved.
 #+END_SRC
 
 *** Isearch
-Regexp search should be the normal for isearch.
+Regexp search should be the normal for isearch. Make it easy to perform
+occur while in isearch-mode.
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "C-s" 'isearch-forward-regexp)
   (bind-key "C-r" 'isearch-backward-regexp)
+
+  (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+  (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 #+END_SRC
 
 *** Grep
@@ -489,7 +493,10 @@ quickly.
       (ido-everywhere 1)
       (flx-ido-mode 1)
       (setq ido-enable-flex-matching t)
-      (setq ido-use-faces nil)))
+      (setq ido-use-faces t)
+      (setq ido-use-filename-at-point nil)
+      (setq ido-auto-merge-work-directories-length 0)
+      (setq ido-use-virtual-buffers t)))
 #+END_SRC
 
 *** Ido verticle mode
@@ -763,6 +770,21 @@ A nice Git interface for Emacs. Just run status to start.
       ("C-c b" . magit-blame-mode)))
 #+END_SRC
 
+*** Diff HL
+Homepage: [[https://github.com/dgutov/diff-hl]]
+
+Highlight uncommitted changes in the left margin.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-hl
+    :ensure t
+    :diminish diff-hl-mode
+    :init
+    (progn
+      (add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
+      (add-hook 'org-mode-hook 'turn-on-diff-hl-mode)))
+#+END_SRC
+
 *** Ediff
 Make sure Ediff is split with the windows beside each other. It
 should also ignore white-space and new-lines.
@@ -857,7 +879,8 @@ and see bindings for C-x r context.
 *** Spelling
 Set language to English and use Aspell as dictionary software. Start spell
 checking in text and org mode. Also, start spell checking in source code
-comments.
+comments. Unbind some of the keys in fly-spell mode so that it does not
+conflict with global bindings.
 
 #+BEGIN_SRC emacs-lisp
   (setq ispell-dictionary "english")
@@ -866,6 +889,11 @@ comments.
   (add-hook 'text-mode-hook (lambda () (flyspell-mode 1)))
   (add-hook 'org-mode-hook  (lambda () (flyspell-mode 1)))
   (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
+
+  (eval-after-load "flyspell"
+    '(progn
+       (define-key flyspell-mode-map (kbd "C-.") nil)
+       (define-key flyspell-mode-map (kbd "C-,") nil)))
 
   (bind-key "C--" 'flyspell-auto-correct-word)
 #+END_SRC
@@ -893,11 +921,15 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [18/20]
+* Tasks [20/22]
 ** To do
 *** TODO Create task capture templates                                  :org:
 *** TODO Consider using mail in Emacs                                   :new:
 ** History
+*** DONE Add diff hl mode                                             :new:
+CLOSED: [2015-01-28 Wed 20:3]
+*** DONE Flyspell overwrite C-. and C-,
+CLOSED: [2015-01-28 Wed 19:56]
 *** DONE Ediff should ignore white space                                :scm:
 CLOSED: [2015-01-28 Wed 17:50]
 *** DONE Write descriptions in configuration sections                   :doc:
@@ -906,7 +938,6 @@ CLOSED: [2015-01-28 Wed 17:05]
 CLOSED: [2015-01-28 Wed 14:54]
 *** DONE Comment binding that fits python mode                         :edit:
 CLOSED: [2015-01-28 Wed 14:54]
-
 *** DONE Check why src block background does not work               :bug:org:
 CLOSED: [2015-01-28 Wed 11:37]
 *** DONE Diminish modes with use-package
