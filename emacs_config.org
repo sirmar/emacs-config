@@ -9,19 +9,17 @@ Feel free to steal anything you find useful.
 
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
-* Improvements [1/5]
-** TODO Write descriptions in config sections                           :doc:
-** TODO Write the ending words                                          :doc:
-** TODO Check why src block background does not work                :bug:org:
-** TODO Link to packages on the internet                                :doc:
-
 * Dependencies
 ** Mac
 *** Homebrew
+Homepage: [[http://brew.sh]]
+
 Download and install Homebrew.
-Instructions can be found on the [[http://brew.sh][Homebrew website]].
+Instructions can be found on the website above.
 
 *** Aspell
+Homepage: [[http://aspell.net]]
+
 Install the spell checker Aspell using brew.
 
 #+BEGIN_SRC sh
@@ -29,10 +27,21 @@ Install the spell checker Aspell using brew.
 #+END_SRC
 
 *** Virtualenv
+Homepage: [[http://docs.python-guide.org/en/latest/dev/virtualenvs/]]
+
 Install python virtual environment using pip:
 
 #+BEGIN_SRC sh
 pip install virtualenv
+#+END_SRC
+
+*** Pylint
+Homepage: [[http://www.pylint.org]]
+
+Install pylint using pip:
+
+#+BEGIN_SRC sh
+pip install pylint
 #+END_SRC
 
 * Emacs configuration
@@ -79,6 +88,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Use package
+Package Homepage: [[https://github.com/jwiegley/use-package]]
+
 #+BEGIN_SRC emacs-lisp
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
@@ -86,14 +97,18 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Auto compile
+Homepage: [[https://github.com/tarsius/auto-compile]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package dash
     :ensure t)
 
   (use-package auto-compile
     :ensure t
-    :init (auto-compile-on-load-mode))
-  (setq load-prefer-newer t)
+    :init
+    (progn
+      (auto-compile-on-load-mode)
+      (setq load-prefer-newer t)))
 #+END_SRC
 
 ** Text manipulation                                                  :edit:
@@ -124,6 +139,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Change inner                                                  :package:
+Homepage: [[https://github.com/emacsmirror/change-inner]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package change-inner
     :ensure t
@@ -132,6 +149,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Expand region                                                 :package:
+Homepage: [[https://github.com/emacsmirror/change-inner]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
@@ -161,6 +180,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Move text                                                     :package:
+Homepage: [[http://emacswiki.org/emacs/MoveText]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package move-text
     :ensure t
@@ -177,6 +198,8 @@ scratch buffer message are both removed.
 
 ** Navigation                                                          :nav:
 *** Smartparen
+Homepage: [[https://github.com/Fuco1/smartparens]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :ensure t
@@ -193,6 +216,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Ace jump mode
+Homepage: [[https://github.com/winterTTr/ace-jump-mode]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package ace-jump-mode
     :ensure t
@@ -283,7 +308,9 @@ scratch buffer message are both removed.
   (bind-key "C-c g" 'rgrep)
 #+END_SRC
 
-*** Smart scan
+*** Smartscan
+Homepage: [[https://github.com/mickeynp/smart-scan]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package smartscan
     :ensure t
@@ -298,6 +325,8 @@ scratch buffer message are both removed.
 
 ** Fuzzy matching                                                    :fuzzy:
 *** Flx ido mode
+Homepage: [[https://github.com/lewang/flx]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package flx-ido
     :ensure t
@@ -311,6 +340,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Ido verticle mode
+Homepage: [[https://github.com/gempesaw/ido-vertical-mode.el]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package ido-vertical-mode
     :ensure t
@@ -320,6 +351,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Smex
+Homepage: [[https://github.com/nonsequitur/smex]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package smex
     :ensure t
@@ -332,6 +365,8 @@ scratch buffer message are both removed.
 
 ** Completion                                                   :completion:
 *** YaSnippet
+Homepage: [[https://github.com/capitaomorte/yasnippet]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :ensure t
@@ -341,6 +376,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Auto Complete
+Homepage: [[https://github.com/auto-complete/auto-complete]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package auto-complete
     :ensure t
@@ -354,6 +391,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Jedi
+Homepage: [[https://github.com/tkf/emacs-jedi]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package jedi
     :ensure t
@@ -377,6 +416,8 @@ scratch buffer message are both removed.
 
 ** Projects                                                           :proj:
 *** Projectile
+Homepage: [[https://github.com/bbatsov/projectile]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
     :ensure t
@@ -394,6 +435,8 @@ scratch buffer message are both removed.
 
 ** Buffers                                                         :buffers:
 *** Full frame
+Homepage: [[https://github.com/tomterl/fullframe]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package fullframe
     :ensure t
@@ -418,6 +461,8 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Ace window
+Homepage: [[https://github.com/abo-abo/ace-window]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :ensure t
@@ -455,6 +500,11 @@ scratch buffer message are both removed.
 #+END_SRC
 
 *** Flycheck
+Homepage: [[https://github.com/flycheck/flycheck]]
+
+This package need back-ends to do the actual analysis. As of now,
+I only use this for python and has [[Pylint]] installed.
+
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
@@ -516,6 +566,8 @@ scratch buffer message are both removed.
 *** Tests
 ** Source control                                                      :scm:
 *** Magit
+Homepage: [[https://github.com/magit/magit]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
@@ -564,8 +616,9 @@ scratch buffer message are both removed.
 
 *** Tasks
 #+BEGIN_SRC emacs-lisp
-  (setq org-todo-keywords '((sequence "TODO" "DONE")))
-  (setq org-log-done "time")
+    (setq org-todo-keywords '((sequence "TODO" "DONE")))
+    (setq org-log-done "time")
+    (setq org-hierarchical-todo-statistics nil)
 #+END_SRC
 
 *** Capture
@@ -585,6 +638,8 @@ scratch buffer message are both removed.
 
 ** Misc
 *** Discover
+Homepage: [[https://github.com/mickeynp/discover.el]]
+
 #+BEGIN_SRC emacs-lisp
   (use-package discover
     :ensure t
@@ -603,9 +658,10 @@ scratch buffer message are both removed.
   (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
 
   (eval-after-load "flyspell"
-    '(define-key flyspell-mode-map (kbd "C-.") nil))
+    '(progn
+       (define-key flyspell-mode-map (kbd "C-.") nil)))
 
-  (bind-key "C-," 'flyspell-auto-correct-word)
+  (bind-key "C--" 'flyspell-auto-correct-word)
 #+END_SRC
 
 *** Backup
@@ -624,26 +680,36 @@ scratch buffer message are both removed.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* History [9/9]
-** DONE Write the dependencies section                                 :doc:
+* Tasks [11/14]
+** To do
+*** TODO Write descriptions in config sections                        :doc:
+*** TODO Write the ending words                                       :doc:
+*** TODO Check why src block background does not work             :bug:org:
+
+** History
+*** DONE Link to packages on the internet                             :doc:
+CLOSED: [2015-01-28 Wed 09:43]
+
+*** DONE Write the dependencies section                               :doc:
 CLOSED: [2015-01-27 Tue 22:08]
-** DONE Get spell checking to work                                     :new:
+*** DONE Get spell checking to work                                   :new:
 CLOSED: [2015-01-27 Tue 20:18]
-** DONE Replace global key with bind key macro
+*** DONE Replace global key with bind key macro
 CLOSED: [2015-01-27 Tue 19:34]
-** DONE Rewrite config using use-package                                :new:
+*** DONE Rewrite config using use-package                             :new:
 CLOSED: [2015-01-27 Tue 19:27]
-** DONE Remove cask                                                    :cask:
+*** DONE Remove cask                                                 :cask:
 CLOSED: [2015-01-27 Tue 19:26]
-** DONE Create emacs-lisp source block template                         :org:
+*** DONE Create emacs-lisp source block template                      :org:
 CLOSED: [2015-01-27 Tue 15:44]
-** DONE Write introduction                                              :doc:
+*** DONE Write introduction                                           :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-** DONE Redo config as an org mode file                                 :doc:
+*** DONE Redo config as an org mode file                              :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-** DONE Change C-w to remove line when no region                       :edit:
+*** DONE Change C-w to remove line when no region                    :edit:
 CLOSED: [2015-01-27 Tue 14:50]
-** DONE Remove M-k binding                                             :edit:
+*** DONE Remove M-k binding                                          :edit:
 CLOSED: [2015-01-27 Tue 14:50]
+
 
 * Ending words.
