@@ -619,7 +619,7 @@ configuration when quitting.
     :ensure t
     :init
     (progn
-      (fullframe magit-status magit-mode-quit-window)))
+      (fullframe magit-status magit-mode-quit-window t)))
 #+END_SRC
 
 *** Ace window
@@ -764,10 +764,13 @@ A nice Git interface for Emacs. Just run status to start.
 #+END_SRC
 
 *** Ediff
-Make sure Ediff is split with the windows beside each other.
+Make sure Ediff is split with the windows beside each other. It
+should also ignore white-space and new-lines.
 
 #+BEGIN_SRC emacs-lisp
   (setq ediff-split-window-function (quote split-window-horizontally))
+  (setq-default ediff-ignore-similar-regions t)
+  (bind-key "C-c d" 'ediff-buffers)
 #+END_SRC
 
 ** Org                                                                  :org:
@@ -890,13 +893,13 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [17/21]
+* Tasks [18/20]
 ** To do
 *** TODO Create task capture templates                                  :org:
 *** TODO Consider using mail in Emacs                                   :new:
-*** TODO Ediff should ignore white space                                :scm:
-*** TODO Ediff should start in fullframe                                :scm:
 ** History
+*** DONE Ediff should ignore white space                                :scm:
+CLOSED: [2015-01-28 Wed 17:50]
 *** DONE Write descriptions in configuration sections                   :doc:
 CLOSED: [2015-01-28 Wed 17:05]
 *** DONE Context aware comment region                                  :edit:
