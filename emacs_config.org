@@ -773,7 +773,8 @@ A nice Git interface for Emacs. Just run status to start.
 *** Diff HL
 Homepage: [[https://github.com/dgutov/diff-hl]]
 
-Highlight uncommitted changes in the left margin.
+Highlight uncommitted changes in the left margin. It is possible to revert hunk
+as well.
 
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
@@ -781,8 +782,10 @@ Highlight uncommitted changes in the left margin.
     :diminish diff-hl-mode
     :init
     (progn
-      (add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
-      (add-hook 'org-mode-hook 'turn-on-diff-hl-mode)))
+      (global-diff-hl-mode))
+    :bind
+    ( ("C-c r" . diff-hl-revert-hunk)))
+
 #+END_SRC
 
 *** Ediff
