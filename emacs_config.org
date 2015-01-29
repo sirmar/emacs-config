@@ -863,9 +863,9 @@ Make sure tasks only have two states. A time log should be generated
 when a task is set to done. To do items should be counted in sub-trees.
 
 #+BEGIN_SRC emacs-lisp
-    (setq org-todo-keywords '((sequence "TODO" "DONE")))
-    (setq org-log-done "time")
-    (setq org-hierarchical-todo-statistics nil)
+  (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+  (setq org-log-done "time")
+  (setq org-hierarchical-todo-statistics nil)
 #+END_SRC
 
 *** Capture
@@ -937,11 +937,13 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [20/29]
+* Tasks [21/30]
 ** Things to do
 Work to be done that is related to Emacs as such will be added below.
 The items is sorted in order of importance.
 
+*** DONE Add DOING state to tasks.                                :setting:
+CLOSED: [2015-01-29 Thu 22:02]
 *** TODO Do stuff in :config instead of :init for use-package     :setting:
 *** TODO Establish smart scan in my work flow                    :practice:
 *** TODO Establish ace jump in my work flow                      :practice:
