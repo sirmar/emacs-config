@@ -937,17 +937,23 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [20/26]
-** To do
+* Tasks [20/29]
+** Things to do
+Work to be done that is related to Emacs as such will be added below.
+The items is sorted in order of importance.
+
+*** TODO Do stuff in :config instead of :init for use-package     :setting:
+*** TODO Establish smart scan in my work flow                    :practice:
+*** TODO Establish ace jump in my work flow                      :practice:
 *** TODO Create task capture templates                            :setting:
 *** TODO Consider using mail in Emacs                             :explore:
-*** TODO Do stuff in :config instead of :init for use-package     :setting:
-*** TODO Learn debugging and make customizations for that         :explore:
+*** TODO Change theme to something nice                           :setting:
 *** TODO Run tests easy.                                              :add:
 *** TODO Go to test file from source file                             :add:
-** History
+*** TODO Learn debugging and make customizations for that         :explore:
+** Archive
 *** DONE Add diff hl mode                                         :package:
-CLOSED: [2015-01-28 Wed 20:3]
+CLOSED: [2015-01-28 Wed 20:30]
 *** DONE Flyspell overwrite C-. and C-,                               :bug:
 CLOSED: [2015-01-28 Wed 19:56]
 *** DONE Ediff should ignore white space                          :setting:
