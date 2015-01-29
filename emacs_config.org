@@ -1,5 +1,17 @@
 #+TITLE: Emacs configuration using Org mode
 #+OPTIONS: toc:2 tags:nil todo:nil
+#+TAGS: add bug doc explore package practice refactor remove setting
+#+BEGIN_COMMENT Tag descriptions
++ add - Add new functionality to the configuration.
++ bug - Something in the Emacs configuration are not working as intended.
++ doc - Changes to the structure or content of the documentation.
++ explore - Find out what out there.
++ package - Add a new package to the configuration.
++ practice - Try using a specific command or feature to learn it.
++ setting - Change settings or add content features already there.
++ refactor - Make the lisp code prettier without changing anything else.
++ remove - Remove something from the configuration.
+#+END_COMMENT
 
 * Introduction
 Two things happened at the same time. I learned about the existence
@@ -13,9 +25,9 @@ Feel free to steal anything you find useful.
 --- Marcus Veibäck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
 * Dependencies
-This configuration has some external dependencies that need to be installed in order
-for everything to work. So far, I have only tried it on OS X, so there are currently
-no instructions for other operating systems.
+This configuration has some external dependencies that need to be installed
+in order for everything to work. So far, I have only tried it on OS X, so
+there are currently no instructions for other operating systems.
 
 ** Mac
 *** Homebrew
@@ -96,9 +108,8 @@ Frame title is set to the current buffer name.
 #+END_SRC
 
 ** Packages
-*** Package system
-The built in package system needs to be initialized and the
-package archive for melpa is added.
+*** Built in package system
+Initialize and add the package archive for Melpa.
 
 #+BEGIN_SRC emacs-lisp
   (setq package-enable-at-startup nil)
@@ -127,7 +138,8 @@ on a new computer.
 Homepage: [[https://github.com/tarsius/auto-compile]]
 
 This package makes sure that byte compiled files are recompiled when
-the source has changed.
+the source has changed. Dash is a dependency to auto compile that is
+missing in.
 
 #+BEGIN_SRC emacs-lisp
   (use-package dash
@@ -188,7 +200,7 @@ the current ending parenthesis back to the starting one.
   (bind-key "M-C-<backspace>" 'sp-backward-kill-sexp)
 #+END_SRC
 
-*** Change inner                                                  :package:
+*** Change inner
 Homepage: [[https://github.com/emacsmirror/change-inner]]
 
 While inside a pair like parentheses, quotation marks and the like,
@@ -202,7 +214,7 @@ remove everything inside including the pair itself.
             ("M-o" . change-outer)))
 #+END_SRC
 
-*** Expand region                                                 :package:
+*** Expand region
 Homepage: [[https://github.com/emacsmirror/change-inner]]
 
 Marks in a syntax aware manner, starting with the current word.
@@ -245,7 +257,7 @@ of the current cursor position.
   (bind-key "C-j" (lambda () (interactive) (join-line -1)))
 #+END_SRC
 
-*** Move text                                                     :package:
+*** Move text
 Homepage: [[http://emacswiki.org/emacs/MoveText]]
 
 Makes it possible to move a whole region of text up and down past
@@ -258,7 +270,7 @@ existing lines. The region will be indented as well.
             ("<M-down>" . move-text-down)))
 #+END_SRC
 
-*** Other
+*** Commenting
 Toggle comment on a region of code. If no region is active then toggle
 comment on the current line.
 
@@ -281,6 +293,7 @@ comment on the current line.
   (bind-key "M-C-c" 'comment-eclipse)
 #+END_SRC
 
+*** Miscellaneous bindings
 This will first remove all spaces but one between two words. Next it
 will remove that one as well and lastly it will restore the original
 spacing.
@@ -289,7 +302,7 @@ spacing.
   (bind-key "M-S-SPC" 'cycle-spacing)
 #+END_SRC
 
-Why not bind delete to delete.
+Why not bind delete to delete?
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "<delete>" 'delete-char)
@@ -394,7 +407,7 @@ Go to a specific line in current buffer.
   (bind-key "M-g" 'goto-line)
 #+END_SRC
 
-** Search and replace
+** Searching
 *** Casing
 Searches should ignore case. When replacing casing should be
 preserved.
@@ -643,23 +656,15 @@ up in the top left corner.
     ( ("C-." . ace-window)))
 #+END_SRC
 
-*** Other settings
-Show cursors position in the status bar.
-
-#+BEGIN_SRC emacs-lisp
-  (line-number-mode t)
-  (column-number-mode t)
-#+END_SRC
-
 ** Instant feedback
 *** White space mode
-Show trailing spaces, indentation made by tabs, too long lines and
-extra empty lines in the beginning or end of file.
+Show trailing spaces and empty lines in the beginning or end of file. Tell me
+when lines are longer than 80 characters and show me tabs used for indentation.
 
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
   (diminish 'global-whitespace-mode)
-  (setq whitespace-line-column 100)
+  (setq whitespace-line-column 80)
   (setq whitespace-style '(face empty tabs trailing lines-tail indentation::space))
 #+END_SRC
 
@@ -694,8 +699,16 @@ when the cursor is above an error.
       (add-hook 'python-mode-hook 'flycheck-mode)))
 #+END_SRC
 
-** Files
-*** Current buffer operations
+*** Cursor position
+Show cursors position in the status bar.
+
+#+BEGIN_SRC emacs-lisp
+  (line-number-mode t)
+  (column-number-mode t)
+#+END_SRC
+
+** File system
+*** Delete buffer file
 Delete the file of the current buffer and kill the buffer
 at the same time.
 
@@ -716,6 +729,7 @@ at the same time.
   (bind-key "C-x C-k" 'delete-current-buffer-file)
 #+END_SRC
 
+*** Rename buffer file
 Rename the file in the current buffer and reflect the change in the buffer
 list as well.
 
@@ -741,7 +755,6 @@ list as well.
 #+END_SRC
 
 ** Building
-*** Debugging
 *** Compiling
 Set the compile command and some related key bindings.
 
@@ -755,7 +768,6 @@ Set the compile command and some related key bindings.
   (bind-key "<f10>" 'next-error)
 #+END_SRC
 
-*** Tests
 ** Source control
 *** Magit
 Homepage: [[https://github.com/magit/magit]]
@@ -773,8 +785,8 @@ A nice Git interface for Emacs. Just run status to start.
 *** Diff HL
 Homepage: [[https://github.com/dgutov/diff-hl]]
 
-Highlight uncommitted changes in the left margin. It is possible to revert hunk
-as well.
+Highlight uncommitted changes in the left margin of a buffer. It is possible
+to revert hunk as well.
 
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
@@ -799,6 +811,7 @@ should also ignore white-space and new-lines.
 #+END_SRC
 
 ** Org
+*** Initialization
 Homepage: [[http://orgmode.org]]
 
 Start org mode in indented mode, so that outlines are easier to
@@ -924,48 +937,52 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [20/22]
+* Tasks [20/26]
 ** To do
-*** TODO Create task capture templates                                  :org:
-*** TODO Consider using mail in Emacs                                   :new:
+*** TODO Create task capture templates                            :setting:
+*** TODO Consider using mail in Emacs                             :explore:
+*** TODO Do stuff in :config instead of :init for use-package     :setting:
+*** TODO Learn debugging and make customizations for that         :explore:
+*** TODO Run tests easy.                                              :add:
+*** TODO Go to test file from source file                             :add:
 ** History
-*** DONE Add diff hl mode                                             :new:
+*** DONE Add diff hl mode                                         :package:
 CLOSED: [2015-01-28 Wed 20:3]
-*** DONE Flyspell overwrite C-. and C-,
+*** DONE Flyspell overwrite C-. and C-,                               :bug:
 CLOSED: [2015-01-28 Wed 19:56]
-*** DONE Ediff should ignore white space                                :scm:
+*** DONE Ediff should ignore white space                          :setting:
 CLOSED: [2015-01-28 Wed 17:50]
-*** DONE Write descriptions in configuration sections                   :doc:
+*** DONE Write descriptions in configuration sections                 :doc:
 CLOSED: [2015-01-28 Wed 17:05]
-*** DONE Context aware comment region                                  :edit:
+*** DONE Context aware comment region                                 :add:
 CLOSED: [2015-01-28 Wed 14:54]
-*** DONE Comment binding that fits python mode                         :edit:
+*** DONE Comment binding that fits python mode                    :setting:
 CLOSED: [2015-01-28 Wed 14:54]
-*** DONE Check why src block background does not work               :bug:org:
+*** DONE Check why src block background does not work                 :bug:
 CLOSED: [2015-01-28 Wed 11:37]
-*** DONE Diminish modes with use-package
+*** DONE Diminish modes with use-package                          :setting:
 CLOSED: [2015-01-28 Wed 11:05]
-*** DONE Load org with use-package                                      :org:
+*** DONE Load org with use-package                                :setting:
 CLOSED: [2015-01-28 Wed 11:05]
-*** DONE Link to packages on the internet                               :doc:
+*** DONE Link to packages on the internet                             :doc:
 CLOSED: [2015-01-28 Wed 09:43]
-*** DONE Write the dependencies section                                 :doc:
+*** DONE Write the dependencies section                               :doc:
 CLOSED: [2015-01-27 Tue 22:08]
-*** DONE Get spell checking to work                                     :new:
+*** DONE Get spell checking to work                                   :add:
 CLOSED: [2015-01-27 Tue 20:18]
-*** DONE Replace global key with bind key macro
+*** DONE Replace global key with bind key macro                  :refactor:
 CLOSED: [2015-01-27 Tue 19:34]
-*** DONE Rewrite configuration using use-package                        :new:
+*** DONE Rewrite configuration using use-package                  :package:
 CLOSED: [2015-01-27 Tue 19:27]
-*** DONE Remove cask                                                   :cask:
+*** DONE Remove cask                                               :remove:
 CLOSED: [2015-01-27 Tue 19:26]
-*** DONE Create Emacs-lisp source block template                        :org:
+*** DONE Create Emacs-lisp source block template                  :setting:
 CLOSED: [2015-01-27 Tue 15:44]
-*** DONE Write introduction                                             :doc:
+*** DONE Write introduction                                           :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-*** DONE Redo configuration as an org mode file                         :doc:
+*** DONE Redo configuration as an org mode file                       :doc:
 CLOSED: [2015-01-27 Tue 14:50]
-*** DONE Change C-w to remove line when no region                      :edit:
+*** DONE Change C-w to remove line when no region                     :add:
 CLOSED: [2015-01-27 Tue 14:50]
-*** DONE Remove M-k binding                                            :edit:
+*** DONE Remove M-k binding                                        :remove:
 CLOSED: [2015-01-27 Tue 14:50]
