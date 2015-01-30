@@ -483,7 +483,7 @@ the cursor.
     :ensure t
     :init
     (progn
-      (smartscan-mode 1)
+      (global-smartscan-mode 1)
       (setq smartscan-symbol-selector "symbol"))
     :bind
     ( ("M-n" . smartscan-symbol-go-forward)
@@ -937,7 +937,7 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [21/30]
+* Tasks [21/32]
 ** Things to do
 Work to be done that is related to Emacs as such will be added below.
 The items is sorted in order of importance.
@@ -945,6 +945,8 @@ The items is sorted in order of importance.
 *** DONE Add DOING state to tasks.                                :setting:
 CLOSED: [2015-01-29 Thu 22:02]
 *** TODO Do stuff in :config instead of :init for use-package     :setting:
+*** TODO Smartscan commands should be case sensitive.                 :add:
+*** TODO Use Smartscan rename global and in function.             :setting:
 *** TODO Establish smart scan in my work flow                    :practice:
 *** TODO Establish ace jump in my work flow                      :practice:
 *** TODO Create task capture templates                            :setting:
