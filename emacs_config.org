@@ -20,9 +20,18 @@ configuration. I figured, why not combine the two as a way to learn
 org mode and to find out what is out there in terms of helpful tools
 to use in my setup. This is the result so far.
 
-Feel free to steal anything you find useful.
+The intention is that all packages needed will be downloaded and
+compiled automatically the first time you start Emacs with this
+configuration. This has been verified on Mac and Windows with
+Emacs version 24.4.1.
 
---- Marcus Veib√§ck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
+There are some dependencies external to Emacs. Instructions on how
+to get them can be found in the following chapter.
+
+This configuration is work in progress. Always. Feel free to steal
+anything you find useful.
+
+--- Marcus Veib‰ck ([[mailto:sirmar@gmail.com][sirmar@gmail.com]])
 
 * Dependencies
 This configuration has some external dependencies that need to be installed
@@ -63,6 +72,10 @@ pip install pylint
 #+END_SRC
 
 * Emacs configuration
+The configuration itself is devided in several sections. Above every block
+of elisp code there are a brief explaination expressing the intention of
+the code.
+
 ** Starting Emacs
 *** Cleaning up the interface
 The Emacs window should be as clean as possible. Therefor the
@@ -946,7 +959,7 @@ The items is sorted in order of importance.
 CLOSED: [2015-01-29 Thu 22:02]
 *** TODO Do stuff in :config instead of :init for use-package     :setting:
 *** TODO Smartscan commands should be case sensitive.                 :add:
-*** TODO Use Smartscan rename global and in function.             :setting:
+*** TODO Use and bind Smartscan rename global and in function.    :setting:
 *** TODO Establish smart scan in my work flow                    :practice:
 *** TODO Establish ace jump in my work flow                      :practice:
 *** TODO Create task capture templates                            :setting:
@@ -956,6 +969,9 @@ CLOSED: [2015-01-29 Thu 22:02]
 *** TODO Go to test file from source file                             :add:
 *** TODO Learn debugging and make customizations for that         :explore:
 ** Archive
+A place to save old done tasks. Maybe a fun read in a distant
+future.
+
 *** DONE Add diff hl mode                                         :package:
 CLOSED: [2015-01-28 Wed 20:30]
 *** DONE Flyspell overwrite C-. and C-,                               :bug:
