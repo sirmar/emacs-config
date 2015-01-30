@@ -122,12 +122,16 @@ Frame title is set to the current buffer name.
 
 ** Packages
 *** Built in package system
-Initialize and add the package archive for Melpa.
+Initialize and add the package archive for Melpa. Set proxy if needed.
 
 #+BEGIN_SRC emacs-lisp
   (setq package-enable-at-startup nil)
   (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+  ;; (setq url-proxy-services
+  ;;   '( ("no_proxy" . "work\\.com")
+  ;;      ("http" . "proxy1071.scansafe.net:8080")))
 #+END_SRC
 
 *** Use package
@@ -464,8 +468,9 @@ Global ignore list for grep.
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "grep"
     '(progn
-       (add-to-list 'grep-find-ignored-directories ".*")
-       (add-to-list 'grep-find-ignored-files ".*")
+       (add-to-list 'grep-find-ignored-directories "bin")
+       (add-to-list 'grep-find-ignored-files "*.exe")
+       (add-to-list 'grep-find-ignored-files "*.doc")
        ))
 #+END_SRC
 
@@ -932,6 +937,7 @@ No backup files.
 
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil)
+  (setq auto-save-default nil)
 #+END_SRC
 
 *** Yes and no
