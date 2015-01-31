@@ -340,7 +340,9 @@ quotes will be escaped.
     :init
     (progn
       (smartparens-global-mode 1)
-      (show-smartparens-global-mode t)
+      (show-smartparens-global-mode t))
+    :config
+    (progn
       (setq sp-autoescape-string-quote t))
     :bind
     ( ("<C-M-up>"    . sp-previous-sexp)
@@ -522,7 +524,9 @@ quickly.
     (progn
       (ido-mode 1)
       (ido-everywhere 1)
-      (flx-ido-mode 1)
+      (flx-ido-mode 1))
+    :config
+    (progn
       (setq ido-enable-flex-matching t)
       (setq ido-use-faces t)
       (setq ido-use-filename-at-point nil)
@@ -585,7 +589,9 @@ Shows a list of completions in buffer when completing with tab key.
     :diminish auto-complete-mode
     :init
     (progn
-      (ac-config-default)
+      (ac-config-default))
+    :config
+    (progn
       (setq ac-ignore-case nil)
       (setq ac-autos-tart nil)
       (ac-set-trigger-key "TAB")
@@ -603,7 +609,9 @@ a way to pop back again.
     :ensure t
     :init
     (progn
-      (add-hook 'python-mode-hook 'jedi:setup)
+      (add-hook 'python-mode-hook 'jedi:setup))
+    :config
+    (progn
       (setq jedi:complete-on-dot t))
     :bind
     ( ("M-." . jedi:goto-definition)
@@ -956,14 +964,15 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [21/32]
+* Tasks [22/32]
 ** Things to do
 Work to be done that is related to Emacs as such will be added below.
 The items is sorted in order of importance.
 
 *** DONE Add DOING state to tasks.                                :setting:
 CLOSED: [2015-01-29 Thu 22:02]
-*** TODO Do stuff in :config instead of :init for use-package     :setting:
+*** DONE Do stuff in :config instead of :init for use-package     :setting:
+CLOSED: [2015-01-31 Sat 21:30]
 *** TODO Smartscan commands should be case sensitive.                 :add:
 *** TODO Use and bind Smartscan rename global and in function.    :setting:
 *** TODO Establish smart scan in my work flow                    :practice:
