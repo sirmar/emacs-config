@@ -96,20 +96,21 @@ scratch buffer message are both removed.
 I prefer my Emacs to use most of the screen. Here the position and
 size of the program window are set.
 
-#+BEGIN_SRC emacs-lisp
-  (when window-system (set-frame-size (selected-frame) 195 47))
-  (when window-system (set-frame-position (selected-frame) 20 40))
+#+BEGIN_SRC emacs-lispX3
+  (when window-system (set-frame-size (selected-frame) 360 83))
+  (when window-system (set-frame-position (selected-frame) 10 30))
 #+END_SRC
 
 Create the my standard configuration of windows.
 
 #+BEGIN_SRC emacs-lisp
   (defun config-buffers ()
-    (setq left-window (selected-window))
-    (setq right-window (split-window left-window 97 t))
-    (setq grep-window (split-window right-window 35))
+    (setq first-window (selected-window))
+    (setq fourth-window (split-window first-window 270 t))
+    (setq third-window (split-window first-window 180 t))
+    (setq second-window (split-window first-window 90 t))
     (generate-new-buffer "*grep*")
-    (set-window-buffer grep-window "*grep*"))
+    (set-window-buffer fourth-window "*grep*"))
 
   (config-buffers)
 #+END_SRC
@@ -316,7 +317,7 @@ will remove that one as well and lastly it will restore the original
 spacing.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "M-S-SPC" 'cycle-spacing)
+  (bind-key "M-SPC" 'cycle-spacing)
 #+END_SRC
 
 Why not bind delete to delete?
