@@ -899,12 +899,14 @@ Set code block template shortcuts.
 
 *** Tasks
 Make sure tasks only have two states. A time log should be generated
-when a task is set to done. To do items should be counted in sub-trees.
+when a task is set to done. To do items should be counted in sub-trees and
+a parent task cannot be done if sub tasks are not.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
   (setq org-log-done "time")
   (setq org-hierarchical-todo-statistics nil)
+  (setq org-enforce-todo-dependencies t)
 #+END_SRC
 
 *** Capture
