@@ -910,6 +910,7 @@ a parent task cannot be done if sub tasks are not.
   (setq org-log-done "time")
   (setq org-hierarchical-todo-statistics nil)
   (setq org-enforce-todo-dependencies t)
+  (setq org-src-window-setup 'current-window)
 #+END_SRC
 
 *** Capture
