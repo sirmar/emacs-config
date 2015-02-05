@@ -905,6 +905,8 @@ a parent task cannot be done if sub tasks are not.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+  (setq org-todo-keyword-faces
+    '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "dark green")))
   (setq org-log-done "time")
   (setq org-hierarchical-todo-statistics nil)
   (setq org-enforce-todo-dependencies t)
@@ -980,7 +982,7 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-z" 'undo)
 #+END_SRC
 
-* Tasks [24/33]
+* Tasks [25/33]
 ** Things to do
 Work to be done that is related to Emacs as such will be added below.
 The items is sorted in order of importance.
@@ -993,9 +995,10 @@ CLOSED: [2015-01-31 Sat 21:30]
 CLOSED: [2015-02-01 Sun 17:00]
 *** DONE Use and bind Smartscan rename global and in function.    :setting:
 CLOSED: [2015-02-01 Sun 17:09]
-*** TODO Establish smart scan in my work flow                    :practice:
+*** DONE Yellow color on DOING tasks.                             :setting:
+CLOSED: [2015-02-05 Thu 16:10]
+*** DOING Establish smart scan in my work flow                   :practice:
 *** TODO Establish ace jump in my work flow                      :practice:
-*** TODO Yellow color on DOING tasks.                             :setting:
 *** TODO Create task capture templates                            :setting:
 *** TODO Consider using mail in Emacs                             :explore:
 *** TODO Change theme to something nice                           :setting:
