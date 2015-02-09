@@ -704,8 +704,8 @@ when lines are longer than 80 characters and show me tabs used for indentation.
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
   (diminish 'global-whitespace-mode)
-  (setq whitespace-line-column 80)
-  (setq whitespace-style '(face empty tabs trailing lines-tail indentation::space))
+  (setq whitespace-line-column 100)
+  (setq whitespace-style '(face empty tabs trailing lines-tail))
 #+END_SRC
 
 Automatically remove tabs and trailing spaces when saving a file.
@@ -809,15 +809,16 @@ Set the compile command and some related key bindings.
 #+END_SRC
 
 ** Major modes
-*** Coffee scripts
-Add mode for Coffee script.
+*** Coffeescript/Javascript
+Add mode for Coffee script and set indentation to two spaces.
 
 #+BEGIN_SRC emacs-lisp
   (use-package coffee-mode
     :ensure t
     :init
     (progn
-      (custom-set-variables '(coffee-tab-width 2))))
+      (setq coffee-tab-width 2)
+      (setq js-indent-level 2)))
 #+END_SRC
 
 ** Source control
