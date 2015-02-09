@@ -96,7 +96,7 @@ scratch buffer message are both removed.
 I prefer my Emacs to use most of the screen. Here the position and
 size of the program window are set.
 
-#+BEGIN_SRC emacs-lispX3
+#+BEGIN_SRC emacs-lisp
   (when window-system (set-frame-size (selected-frame) 360 83))
   (when window-system (set-frame-position (selected-frame) 10 30))
 #+END_SRC
@@ -704,8 +704,8 @@ when lines are longer than 80 characters and show me tabs used for indentation.
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
   (diminish 'global-whitespace-mode)
-  (setq whitespace-line-column 80)
-  (setq whitespace-style '(face empty tabs trailing lines-tail indentation::space))
+  (setq whitespace-line-column 100)
+  (setq whitespace-style '(face empty tabs trailing lines-tail))
 #+END_SRC
 
 Automatically remove tabs and trailing spaces when saving a file.
@@ -814,6 +814,19 @@ when saving.
   (bind-key "<f7>" 'kill-compilation)
   (bind-key "<f9>" 'previous-error)
   (bind-key "<f10>" 'next-error)
+#+END_SRC
+
+** Major modes
+*** Coffeescript/Javascript
+Add mode for Coffee script and set indentation to two spaces.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package coffee-mode
+    :ensure t
+    :init
+    (progn
+      (setq coffee-tab-width 2)
+      (setq js-indent-level 2)))
 #+END_SRC
 
 ** Source control
