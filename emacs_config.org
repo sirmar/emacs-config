@@ -96,7 +96,7 @@ scratch buffer message are both removed.
 I prefer my Emacs to use most of the screen. Here the position and
 size of the program window are set.
 
-#+BEGIN_SRC emacs-lispX3
+#+BEGIN_SRC emacs-lisp
   (when window-system (set-frame-size (selected-frame) 360 83))
   (when window-system (set-frame-position (selected-frame) 10 30))
 #+END_SRC
@@ -806,6 +806,18 @@ Set the compile command and some related key bindings.
   (bind-key "<f7>" 'kill-compilation)
   (bind-key "<f9>" 'previous-error)
   (bind-key "<f10>" 'next-error)
+#+END_SRC
+
+** Major modes
+*** Coffee scripts
+Add mode for Coffee script.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package coffee-mode
+    :ensure t
+    :init
+    (progn
+      (custom-set-variables '(coffee-tab-width 2))))
 #+END_SRC
 
 ** Source control
