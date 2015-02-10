@@ -182,7 +182,7 @@ Setting lisp indentation to two spaces.
 A small utility function that indents the whole buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (defun indent-buffer ()
+  (defun marcus-indent-buffer ()
     "Indents whole buffer."
     (interactive)
     (indent-region (point-min) (point-max) nil))
@@ -391,34 +391,41 @@ first non white space character on the current line. If pressed again
 it will go to the beginning of line and then to the beginning of the buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my-home ()
+  (defun marcus-home ()
     "Move to indentation, beginning of line and beginning of buffer."
     (interactive)
     (if (bolp) (beginning-of-buffer)
       (skip-chars-backward " \t")
       (unless (bolp) (back-to-indentation))))
 
-  (bind-key "C-a" 'my-home)
+  (bind-key "C-a" 'marcus-home)
 #+END_SRC
 
 Make end of line context aware. It will still go to the end of the line, but if
 pressed again the cursor will move to the very end of the buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my-end ()
+  (defun marcus-end ()
     "Move to end of line and end of buffer."
     (interactive)
     (if (eolp) (end-of-buffer)
       (end-of-line)))
 
-  (bind-key "C-e" 'my-end)
+  (bind-key "C-e" 'marcus-end)
 #+END_SRC
 
 Up and down should move logical lines.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "<down>" 'next-logical-line)
-  (bind-key "<up>" 'previous-logical-line)
+  (bind-key "C-ö" 'left-char)
+  (bind-key "C-'" 'right-char)
+  (bind-key "C-å" 'previous-logical-line)
+  (bind-key "C-ä" 'next-logical-line)
+
+  (bind-key "M-ö" 'left-word)
+  (bind-key "M-'" 'right-word)
+  (bind-key "M-å" 'backward-paragraph)
+  (bind-key "M-ä" 'forward-paragraph)
 #+END_SRC
 
 Go to a specific line in current buffer.
@@ -454,7 +461,7 @@ Do not show the grep command in the grep buffer as it takes
 so much buffer space.
 
 #+BEGIN_SRC emacs-lisp
-  (defun delete-grep-header ()
+  (defun marcus-delete-grep-header ()
     "Hide grep command in grep buffer."
     (save-excursion
       (with-current-buffer grep-last-buffer
@@ -462,8 +469,13 @@ so much buffer space.
         (end-of-line)
         (narrow-to-region (point) (point-max)))))
 
-  (defadvice grep (after delete-grep-header activate) (delete-grep-header))
-  (defadvice rgrep (after delete-grep-header activate) (delete-grep-header))
+  (defadvice grep
+    (after marcus-delete-grep-header activate)
+    (marcus-delete-grep-header))
+
+  (defadvice rgrep
+    (after marcus-delete-grep-header activate)
+    (marcus-delete-grep-header))
 #+END_SRC
 
 Global ignore list for grep.
@@ -499,11 +511,11 @@ Homepage: [[https://github.com/mickeynp/smart-scan]]
 Make smartscan searches and replacing case sensitive.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice smartscan-symbol-goto (around smartscan-symbol-goto)
+  (defadvice marcus-smartscan-symbol-goto (around smartscan-symbol-goto)
     (let ((case-fold-search nil))
       ad-do-it))
 
-  (defadvice smartscan-symbol-replace (around smartscan-symbol-replace)
+  (defadvice marcus-smartscan-symbol-replace (around smartscan-symbol-replace)
     (let ((case-fold-search nil))
       ad-do-it))
 #+END_SRC
@@ -521,7 +533,7 @@ the cursor.
     :bind
     ( ("M-n" . smartscan-symbol-go-forward)
       ("M-p" . smartscan-symbol-go-backward)
-      ("M-r" . smartscan-symbol-replace)))
+      ("M-r" . marcus-smartscan-symbol-replace)))
 #+END_SRC
 
 ** Fuzzy matching
@@ -711,13 +723,13 @@ when lines are longer than 80 characters and show me tabs used for indentation.
 Automatically remove tabs and trailing spaces when saving a file.
 
 #+BEGIN_SRC emacs-lisp
-  (defun sanitize-whitespace ()
+  (defun marcus-sanitize-whitespace ()
     "Converts all tabs to spaces."
     (interactive)
     (delete-trailing-whitespace)
     (untabify (point-min) (point-max)))
 
-  (add-hook 'before-save-hook 'sanitize-whitespace)
+  (add-hook 'before-save-hook 'marcus-sanitize-whitespace)
 #+END_SRC
 
 *** Flycheck
@@ -1012,7 +1024,7 @@ CLOSED: [2015-02-01 Sun 17:09]
 *** DONE Yellow color on DOING tasks.                             :setting:
 CLOSED: [2015-02-05 Thu 16:10]
 *** DOING Establish smart scan in my work flow                   :practice:
-*** TODO Establish ace jump in my work flow                      :practice:
+*** DOING Establish ace jump in my work flow                     :practice:
 *** TODO Create task capture templates                            :setting:
 *** TODO Consider using mail in Emacs                             :explore:
 *** TODO Change theme to something nice                           :setting:
