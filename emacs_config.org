@@ -808,10 +808,18 @@ list as well.
 
 ** Building
 *** Compiling
-Set the compile command and some related key bindings.
+Set the compile command and some related key bindings. Run test automatically
+when saving.
 
 #+BEGIN_SRC emacs-lisp
-  (setq compile-command "")
+  (setq compile-command "cd ~/code/tetris/tetris && python main.py")
+
+  (defun marcus-run-tests ()
+    (interactive)
+    (when (derived-mode-p 'python-mode)
+      (compile (concat "cd " (projectile-project-root) " && nosetests"))))
+
+  (add-hook 'after-save-hook 'marcus-run-tests)
 
   (bind-key "<f5>" 'compile)
   (bind-key "<f6>" 'recompile)
