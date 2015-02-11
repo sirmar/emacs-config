@@ -533,7 +533,7 @@ the cursor.
     :bind
     ( ("M-n" . smartscan-symbol-go-forward)
       ("M-p" . smartscan-symbol-go-backward)
-      ("M-r" . marcus-smartscan-symbol-replace)))
+      ("M-r" . smartscan-symbol-replace)))
 #+END_SRC
 
 ** Fuzzy matching
@@ -1033,16 +1033,6 @@ Some left over bindings with no obvious place to be.
 Work to be done that is related to Emacs as such will be added below.
 The items is sorted in order of importance.
 
-*** DONE Add DOING state to tasks.                                :setting:
-CLOSED: [2015-01-29 Thu 22:02]
-*** DONE Do stuff in :config instead of :init for use-package     :setting:
-CLOSED: [2015-01-31 Sat 21:30]
-*** DONE Smartscan commands should be case sensitive.                 :add:
-CLOSED: [2015-02-01 Sun 17:00]
-*** DONE Use and bind Smartscan rename global and in function.    :setting:
-CLOSED: [2015-02-01 Sun 17:09]
-*** DONE Yellow color on DOING tasks.                             :setting:
-CLOSED: [2015-02-05 Thu 16:10]
 *** DOING Establish smart scan in my work flow                   :practice:
 *** DOING Establish ace jump in my work flow                     :practice:
 *** TODO Create task capture templates                            :setting:
@@ -1055,6 +1045,16 @@ CLOSED: [2015-02-05 Thu 16:10]
 A place to save old done tasks. Maybe a fun read in a distant
 future.
 
+*** DONE Add DOING state to tasks.                                :setting:
+CLOSED: [2015-01-29 Thu 22:02]
+*** DONE Do stuff in :config instead of :init for use-package     :setting:
+CLOSED: [2015-01-31 Sat 21:30]
+*** DONE Smartscan commands should be case sensitive.                 :add:
+CLOSED: [2015-02-01 Sun 17:00]
+*** DONE Use and bind Smartscan rename global and in function.    :setting:
+CLOSED: [2015-02-01 Sun 17:09]
+*** DONE Yellow color on DOING tasks.                             :setting:
+CLOSED: [2015-02-05 Thu 16:10]
 *** DONE Add diff hl mode                                         :package:
 CLOSED: [2015-01-28 Wed 20:30]
 *** DONE Flyspell overwrite C-. and C-,                               :bug:
