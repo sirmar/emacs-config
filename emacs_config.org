@@ -73,7 +73,7 @@ pip install pylint
 
 * Emacs configuration
 The configuration itself is devided in several sections. Above every block
-of elisp code there are a brief explaination expressing the intention of
+of Elisp code there are a brief explanation expressing the intention of
 the code.
 
 ** Starting Emacs
@@ -830,6 +830,8 @@ when saving.
 
 ** Major modes
 *** Coffeescript/Javascript
+Homepage: [[https://github.com/defunkt/coffee-mode
+]]
 Add mode for Coffee script and set indentation to two spaces.
 
 #+BEGIN_SRC emacs-lisp
@@ -839,6 +841,16 @@ Add mode for Coffee script and set indentation to two spaces.
     (progn
       (setq coffee-tab-width 2)
       (setq js-indent-level 2)))
+#+END_SRC
+
+*** PHP
+Homepage: [[https://github.com/ejmr/php-mode]]
+
+Add mode for PHP.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package php-mode
+    :ensure t)
 #+END_SRC
 
 ** Source control
