@@ -806,20 +806,41 @@ list as well.
   (bind-key "C-x C-r" 'rename-current-buffer-file)
 #+END_SRC
 
-** Building
+** Development Cycle
+*** Python
+Bind key to run python package with one key stroke.
+
+#+BEGIN_SRC emacs-lisp
+  (defun marcus-run-python-program ()
+    (interactive)
+    (compile (concat
+               "python "
+               (projectile-project-root)
+               "bin/"
+               (projectile-project-name))))
+
+  (defun marcus-bind-run-python-program ()
+    (bind-key "<f5>" 'marcus-run-python-program))
+
+  (add-hook 'python-mode-hook 'marcus-bind-run-python-program)
+#+END_SRC
+
+Run tests automatically when saving a python file.
+
+#+BEGIN_SRC emacs-lisp
+  (defun marcus-run-python-tests ()
+    (interactive)
+    (when (derived-mode-p 'python-mode)
+      (compile (concat "cd " (projectile-project-root) " && nosetests"))))
+
+  (add-hook 'after-save-hook 'marcus-run-python-tests)
+#+END_SRC
+
 *** Compiling
 Set the compile command and some related key bindings. Run test automatically
 when saving.
 
 #+BEGIN_SRC emacs-lisp
-  (setq compile-command "cd ~/code/tetris/tetris && python main.py")
-
-  (defun marcus-run-tests ()
-    (interactive)
-    (when (derived-mode-p 'python-mode)
-      (compile (concat "cd " (projectile-project-root) " && nosetests"))))
-
-  (add-hook 'after-save-hook 'marcus-run-tests)
 
   (bind-key "<f5>" 'compile)
   (bind-key "<f6>" 'recompile)
