@@ -106,11 +106,10 @@ Create the my standard configuration of windows.
 #+BEGIN_SRC emacs-lisp
   (defun config-buffers ()
     (setq first-window (selected-window))
-    (setq fourth-window (split-window first-window 270 t))
-    (setq third-window (split-window first-window 180 t))
-    (setq second-window (split-window first-window 90 t))
+    (setq third-window (split-window first-window 260 t))
+    (setq second-window (split-window first-window 160 t))
     (generate-new-buffer "*grep*")
-    (set-window-buffer fourth-window "*grep*"))
+    (set-window-buffer third-window "*grep*"))
 
   (config-buffers)
 #+END_SRC
@@ -816,13 +815,14 @@ be 40 characters wide.
   (use-package neotree
     :ensure t
     :bind
-    ( ("<f8>" . neotree-toggle))
+    ( ("<f8>" . neotree-show))
     :config
     (progn
       (setq neo-show-hidden-files t)
-      (setq neo-window-width 40)
-      (setq projectile-switch-project-action 'neotree-projectile-action)
-      (neotree-show)))
+      (setq neo-window-width 60)
+      (setq projectile-switch-project-action 'neotree-projectile-action)))
+
+  (neotree-show)
 #+END_SRC
 
 ** Development Cycle
