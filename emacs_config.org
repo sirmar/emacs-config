@@ -806,6 +806,25 @@ list as well.
   (bind-key "C-x C-r" 'rename-current-buffer-file)
 #+END_SRC
 
+*** Neo tree
+Homepage: [[https://github.com/jaypei/emacs-neotree]]
+
+Adds a file tree at the left side of emacs. It should show hidden files and
+be 40 characters wide.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :ensure t
+    :bind
+    ( ("<f8>" . neotree-toggle))
+    :config
+    (progn
+      (setq neo-show-hidden-files t)
+      (setq neo-window-width 40)
+      (setq projectile-switch-project-action 'neotree-projectile-action)
+      (neotree-show)))
+#+END_SRC
+
 ** Development Cycle
 *** Python
 Bind key to run python package with one key stroke.
