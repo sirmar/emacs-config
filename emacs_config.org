@@ -106,11 +106,10 @@ Create the my standard configuration of windows.
 #+BEGIN_SRC emacs-lisp
   (defun config-buffers ()
     (setq first-window (selected-window))
-    (setq fourth-window (split-window first-window 270 t))
-    (setq third-window (split-window first-window 180 t))
-    (setq second-window (split-window first-window 90 t))
+    (setq third-window (split-window first-window 260 t))
+    (setq second-window (split-window first-window 160 t))
     (generate-new-buffer "*grep*")
-    (set-window-buffer fourth-window "*grep*"))
+    (set-window-buffer third-window "*grep*"))
 
   (config-buffers)
 #+END_SRC
@@ -543,8 +542,7 @@ the cursor.
 *** Flx ido mode
 Homepage: [[https://github.com/lewang/flx]]
 
-Flexible ido mode matching to find files and buffers more
-quickly.
+Flexible ido mode matching to find files and buffers more quickly.
 
 #+BEGIN_SRC emacs-lisp
   (use-package flx-ido
@@ -560,7 +558,7 @@ quickly.
       (setq ido-use-faces t)
       (setq ido-use-filename-at-point nil)
       (setq ido-auto-merge-work-directories-length 0)
-      (setq ido-use-virtual-buffers t)))
+      (setq ido-use-virtual-buffers nil)))
 #+END_SRC
 
 *** Ido verticle mode
@@ -697,18 +695,15 @@ configuration when quitting.
       (fullframe magit-status magit-mode-quit-window t)))
 #+END_SRC
 
-*** Ace window
-Homepage: [[https://github.com/abo-abo/ace-window]]
-
-Instead of going seemingly randomly through the windows, switch to
-a specific one. When three or more windows is opened a number will show
-up in the top left corner.
+*** Browse windows
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-window
-    :ensure t
-    :bind
-    ( ("C-." . ace-window)))
+  (defun marcus-window-back ()
+    (interactive)
+    (other-window -1))
+
+  (bind-key "C-." 'other-window)
+  (bind-key "C-," 'marcus-window-back)
 #+END_SRC
 
 ** Instant feedback
@@ -809,6 +804,26 @@ list as well.
   (bind-key "C-x C-r" 'rename-current-buffer-file)
 #+END_SRC
 
+*** Neo tree
+Homepage: [[https://github.com/jaypei/emacs-neotree]]
+
+Adds a file tree at the left side of emacs. It should show hidden files and
+be 40 characters wide.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :ensure t
+    :bind
+    ( ("<f8>" . neotree-show))
+    :config
+    (progn
+      (setq fneo-show-hidden-files t)
+      (setq neo-window-width 60)
+      (setq projectile-switch-project-action 'neotree-projectile-action)))
+
+  (neotree-show)
+#+END_SRC
+
 ** Development Cycle
 *** Python
 Bind key to run python package with one key stroke.
@@ -861,7 +876,7 @@ Add mode for Coffee script and set indentation to two spaces.
 #+BEGIN_SRC emacs-lisp
   (use-package coffee-mode
     :ensure t
-    :init
+    :config
     (progn
       (setq coffee-tab-width 2)
       (setq js-indent-level 2)))
@@ -874,6 +889,26 @@ Add mode for PHP.
 
 #+BEGIN_SRC emacs-lisp
   (use-package php-mode
+    :ensure t)
+#+END_SRC
+
+*** Markdown mode
+Homepage: [[http://jblevins.org/projects/markdown-mode/]]
+
+Add mode for markdown.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t)
+#+END_SRC
+
+*** Yaml mode
+Homepage: [[https://github.com/yoshiki/yaml-mode]]
+
+Add mode for yaml files.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
     :ensure t)
 #+END_SRC
 
@@ -933,6 +968,12 @@ read. Do not wrap lines.
     (progn
       (setq org-startup-indented t)
       (setq org-startup-truncated t)))
+
+  (eval-after-load "org"
+    '(progn
+       (define-key org-mode-map (kbd "C-.") nil)
+       (define-key org-mode-map (kbd "C-,") nil)))
+
 #+END_SRC
 
 *** Code blocks
