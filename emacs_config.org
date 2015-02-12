@@ -123,12 +123,15 @@ Frame title is set to the current buffer name.
 
 ** Packages
 *** Built in package system
-Initialize and add the package archive for Melpa. Set proxy if needed.
+Initialize and add the package archive for Melpa. Set proxy if needed. Refresh
+package content if needed.
 
 #+BEGIN_SRC emacs-lisp
   (setq package-enable-at-startup nil)
   (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+  ;;(package-refresh-contents)
 
   ;; (setq url-proxy-services
   ;;   '( ("no_proxy" . "work\\.com")
