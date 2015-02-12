@@ -858,7 +858,7 @@ Add mode for Coffee script and set indentation to two spaces.
 #+BEGIN_SRC emacs-lisp
   (use-package coffee-mode
     :ensure t
-    :init
+    :config
     (progn
       (setq coffee-tab-width 2)
       (setq js-indent-level 2)))
@@ -871,6 +871,26 @@ Add mode for PHP.
 
 #+BEGIN_SRC emacs-lisp
   (use-package php-mode
+    :ensure t)
+#+END_SRC
+
+*** Markdown mode
+Homepage: [[http://jblevins.org/projects/markdown-mode/]]
+
+Add mode for markdown.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t)
+#+END_SRC
+
+*** Yaml mode
+Homepage: [[https://github.com/yoshiki/yaml-mode]]
+
+Add mode for yaml files.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
     :ensure t)
 #+END_SRC
 
