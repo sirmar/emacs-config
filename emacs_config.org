@@ -130,7 +130,7 @@ package content if needed.
   (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
-  ;;(package-refresh-contents)
+  ;; (package-refresh-contents)
 
   ;; (setq url-proxy-services
   ;;   '( ("no_proxy" . "work\\.com")
@@ -218,6 +218,18 @@ the current ending parenthesis back to the starting one.
 
 #+BEGIN_SRC emacs-lisp
   (bind-key "M-C-<backspace>" 'sp-backward-kill-sexp)
+#+END_SRC
+
+*** Multiple cursors
+Homepage: [[https://github.com/magnars/multiple-cursors.el]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind ( ("C-ä" . mc/mark-next-symbol-like-this)
+            ("C-ö" . mc/mark-previous-symbol-like-this)
+            ("C-å" . mc/mark-all-symbols-like-this)
+            ("C-'" . mc/edit-lines)))
 #+END_SRC
 
 *** Change inner
@@ -419,15 +431,8 @@ pressed again the cursor will move to the very end of the buffer.
 Up and down should move logical lines.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "C-ö" 'left-char)
-  (bind-key "C-'" 'right-char)
-  (bind-key "C-å" 'previous-logical-line)
-  (bind-key "C-ä" 'next-logical-line)
-
-  (bind-key "M-ö" 'left-word)
-  (bind-key "M-'" 'right-word)
-  (bind-key "M-å" 'backward-paragraph)
-  (bind-key "M-ä" 'forward-paragraph)
+  (bind-key "<up>" 'previous-logical-line)
+  (bind-key "<down>" 'next-logical-line)
 #+END_SRC
 
 Go to a specific line in current buffer.
@@ -890,6 +895,11 @@ Add mode for PHP.
 #+BEGIN_SRC emacs-lisp
   (use-package php-mode
     :ensure t)
+
+  (eval-after-load "php-mode"
+    '(progn
+       (define-key php-mode-map (kbd "C-.") nil)
+       (define-key php-mode-map (kbd "C-,") nil)))
 #+END_SRC
 
 *** Markdown mode
@@ -973,7 +983,6 @@ read. Do not wrap lines.
     '(progn
        (define-key org-mode-map (kbd "C-.") nil)
        (define-key org-mode-map (kbd "C-,") nil)))
-
 #+END_SRC
 
 *** Code blocks
