@@ -240,7 +240,7 @@ Keep pressing space to expand the region.
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
-    :bind ( ("C-S-SPC" . er/expand-region)))
+    :bind ( ("C-M-SPC" . er/expand-region)))
 #+END_SRC
 
 *** New lines
@@ -510,11 +510,11 @@ Homepage: [[https://github.com/mickeynp/smart-scan]]
 Make smartscan searches and replacing case sensitive.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice marcus-smartscan-symbol-goto (around smartscan-symbol-goto)
+  (defadvice smartscan-symbol-goto (around smartscan-symbol-goto)
     (let ((case-fold-search nil))
       ad-do-it))
 
-  (defadvice marcus-smartscan-symbol-replace (around smartscan-symbol-replace)
+  (defadvice smartscan-symbol-replace (around smartscan-symbol-replace)
     (let ((case-fold-search nil))
       ad-do-it))
 #+END_SRC
