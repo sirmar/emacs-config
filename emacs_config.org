@@ -227,6 +227,18 @@ the current ending parenthesis back to the starting one.
   (bind-key "M-C-<backspace>" 'sp-backward-kill-sexp)
 #+END_SRC
 
+*** Multiple cursors
+Homepage: [[https://github.com/magnars/multiple-cursors.el]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind ( ("C-ä" . mc/mark-next-symbol-like-this)
+            ("C-ö" . mc/mark-previous-symbol-like-this)
+            ("C-å" . mc/mark-all-symbols-like-this)
+            ("C-'" . mc/edit-lines)))
+#+END_SRC
+
 *** Change inner
 Homepage: [[https://github.com/emacsmirror/change-inner]]
 
@@ -250,7 +262,7 @@ Keep pressing space to expand the region.
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
-    :bind ( ("C-S-SPC" . er/expand-region)))
+    :bind ( ("C-M-SPC" . er/expand-region)))
 #+END_SRC
 
 *** New lines
@@ -426,15 +438,8 @@ pressed again the cursor will move to the very end of the buffer.
 Up and down should move logical lines.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "C-ö" 'left-char)
-  (bind-key "C-'" 'right-char)
-  (bind-key "C-å" 'previous-logical-line)
-  (bind-key "C-ä" 'next-logical-line)
-
-  (bind-key "M-ö" 'left-word)
-  (bind-key "M-'" 'right-word)
-  (bind-key "M-å" 'backward-paragraph)
-  (bind-key "M-ä" 'forward-paragraph)
+  (bind-key "<up>" 'previous-logical-line)
+  (bind-key "<down>" 'next-logical-line)
 #+END_SRC
 
 Go to a specific line in current buffer.
@@ -520,11 +525,11 @@ Homepage: [[https://github.com/mickeynp/smart-scan]]
 Make smartscan searches and replacing case sensitive.
 
 #+BEGIN_SRC emacs-lisp
-  (defadvice marcus-smartscan-symbol-goto (around smartscan-symbol-goto)
+  (defadvice smartscan-symbol-goto (around smartscan-symbol-goto)
     (let ((case-fold-search nil))
       ad-do-it))
 
-  (defadvice marcus-smartscan-symbol-replace (around smartscan-symbol-replace)
+  (defadvice smartscan-symbol-replace (around smartscan-symbol-replace)
     (let ((case-fold-search nil))
       ad-do-it))
 #+END_SRC
@@ -596,6 +601,14 @@ Activate ido mode when looking for and running commands with M-x as well.
     ( ("M-x" . smex)))
 #+END_SRC
 
+*** Fuzzy
+Homepage: [[https://github.com/auto-complete/fuzzy-el]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package fuzzy
+    :ensure t)
+#+END_SRC
+
 ** Completion
 *** YaSnippet
 Homepage: [[https://github.com/capitaomorte/yasnippet]]
@@ -615,7 +628,7 @@ expand them and shift to move to the next placeholder.
 *** Auto Complete
 Homepage: [[https://github.com/auto-complete/auto-complete]]
 
-Shows a list of completions in buffer when completing with tab key.
+Shows a list of completions in buffer.
 
 #+BEGIN_SRC emacs-lisp
   (use-package auto-complete
@@ -627,9 +640,18 @@ Shows a list of completions in buffer when completing with tab key.
     :config
     (progn
       (setq ac-ignore-case nil)
-      (setq ac-autos-tart nil)
-      (ac-set-trigger-key "TAB")
-      (setq ac-auto-show-menu 0.1)))
+      (setq ac-auto-start 2)
+      (setq ac-delay 0)
+      (setq ac-auto-show-menu t)
+      (setq ac-use-fuzzy t)
+      (ac-set-trigger-key nil)
+      (ac-flyspell-workaround))
+    :bind
+    ( ("C-<tab>" . ac-fuzzy-complete)))
+
+  (defun marcus-ac-python-mode ()
+    (setq ac-sources '(ac-source-jedi-direct ac-source-yasnippet)))
+  (add-hook 'python-mode-hook 'marcus-ac-python-mode)
 #+END_SRC
 
 *** Jedi
@@ -650,15 +672,6 @@ a way to pop back again.
     :bind
     ( ("M-." . jedi:goto-definition)
       ("M-," . jedi:goto-definition-pop-marker)))
-#+END_SRC
-
-*** Hippie expand
-Textual complete that will look pretty much everywhere inside Emacs for
-completions.
-
-#+BEGIN_SRC emacs-lisp
-  (bind-key "C-<tab>" 'hippie-expand)
-  (define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
 #+END_SRC
 
 ** Projects
@@ -888,7 +901,8 @@ Add mode for Coffee script and set indentation to two spaces.
     :config
     (progn
       (setq coffee-tab-width 2)
-      (setq js-indent-level 2)))
+      (setq js-indent-level 2)
+      (add-to-list 'ac-modes 'coffee-mode)))
 #+END_SRC
 
 *** PHP
@@ -898,7 +912,15 @@ Add mode for PHP.
 
 #+BEGIN_SRC emacs-lisp
   (use-package php-mode
-    :ensure t)
+    :ensure t
+    :config
+    (progn
+      (add-to-list 'ac-modes 'php-mode)))
+
+  (eval-after-load "php-mode"
+    '(progn
+       (define-key php-mode-map (kbd "C-.") nil)
+       (define-key php-mode-map (kbd "C-,") nil)))
 #+END_SRC
 
 *** Markdown mode
@@ -908,7 +930,10 @@ Add mode for markdown.
 
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
-    :ensure t)
+    :ensure t
+    :init
+      (progn
+        (add-to-list 'ac-modes 'markdown-mode)))
 #+END_SRC
 
 *** Yaml mode
@@ -918,7 +943,10 @@ Add mode for yaml files.
 
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
-    :ensure t)
+    :ensure t
+    :init
+    (progn
+      (add-to-list 'ac-modes 'yaml-mode)))
 #+END_SRC
 
 ** Source control
@@ -976,13 +1004,13 @@ read. Do not wrap lines.
     :init
     (progn
       (setq org-startup-indented t)
-      (setq org-startup-truncated t)))
+      (setq org-startup-truncated t)
+      (add-to-list 'ac-modes 'org-mode)))
 
   (eval-after-load "org"
     '(progn
        (define-key org-mode-map (kbd "C-.") nil)
        (define-key org-mode-map (kbd "C-,") nil)))
-
 #+END_SRC
 
 *** Code blocks
