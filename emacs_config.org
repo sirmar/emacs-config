@@ -97,8 +97,11 @@ I prefer my Emacs to use most of the screen. Here the position and
 size of the program window are set.
 
 #+BEGIN_SRC emacs-lisp
-  (when window-system (set-frame-size (selected-frame) 360 83))
   (when window-system (set-frame-position (selected-frame) 10 30))
+
+  (if (> (display-pixel-width) 1500)
+      (when window-system (set-frame-size (selected-frame) 360 83))
+      (when window-system (set-frame-size (selected-frame) 200 83)))
 #+END_SRC
 
 Create the my standard configuration of windows.
@@ -106,10 +109,14 @@ Create the my standard configuration of windows.
 #+BEGIN_SRC emacs-lisp
   (defun config-buffers ()
     (setq first-window (selected-window))
-    (setq third-window (split-window first-window 260 t))
-    (setq second-window (split-window first-window 160 t))
-    (generate-new-buffer "*grep*")
-    (set-window-buffer third-window "*grep*"))
+    (if (> (display-pixel-width) 1500)
+      (progn
+        (setq third-window (split-window first-window 260 t))
+        (setq second-window (split-window first-window 160 t))
+        (generate-new-buffer "*grep*")
+        (set-window-buffer third-window "*grep*"))
+      (progn
+        (setq third-window (split-window first-window 115 t)))))
 
   (config-buffers)
 #+END_SRC
@@ -130,7 +137,7 @@ package content if needed.
   (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
-  ;;(package-refresh-contents)
+  ;; (package-refresh-contents)
 
   ;; (setq url-proxy-services
   ;;   '( ("no_proxy" . "work\\.com")
@@ -818,13 +825,15 @@ be 40 characters wide.
     :config
     (progn
       (setq fneo-show-hidden-files t)
-      (setq neo-window-width 60)
+      (if (> (display-pixel-width) 1500)
+        (setq neo-window-width 60)
+        (setq neo-window-width 30))
       (setq projectile-switch-project-action 'neotree-projectile-action)))
 
   (neotree-show)
 #+END_SRC
 
-** Development Cycle
+** Development cycle
 *** Python
 Bind key to run python package with one key stroke.
 
