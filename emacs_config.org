@@ -647,26 +647,6 @@ Shows a list of completions in buffer.
   (add-hook 'python-mode-hook 'marcus-ac-python-mode)
 #+END_SRC
 
-*** Jedi
-Homepage: [[https://github.com/tkf/emacs-jedi]]
-
-Context aware completion for Python. It also has a go to definition function and
-a way to pop back again.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package jedi
-    :ensure t
-    :init
-    (progn
-      (add-hook 'python-mode-hook 'jedi:setup))
-    :config
-    (progn
-      (setq jedi:complete-on-dot t))
-    :bind
-    ( ("M-." . jedi:goto-definition)
-      ("M-," . jedi:goto-definition-pop-marker)))
-#+END_SRC
-
 ** Projects
 *** Projectile
 Homepage: [[https://github.com/bbatsov/projectile]]
@@ -938,6 +918,54 @@ Add mode for yaml files.
     :init
     (progn
       (add-to-list 'ac-modes 'yaml-mode)))
+#+END_SRC
+
+*** Python
+**** Jedi
+Homepage: [[https://github.com/tkf/emacs-jedi]]
+
+Context aware completion for Python. It also has a go to definition function and
+a way to pop back again.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package jedi
+    :ensure t
+    :init
+    (progn
+      (add-hook 'python-mode-hook 'jedi:setup))
+    :config
+    (progn
+      (setq jedi:complete-on-dot t))
+    :bind
+    ( ("M-." . jedi:goto-definition)
+      ("M-," . jedi:goto-definition-pop-marker)))
+#+END_SRC
+
+**** Virtualenv Wrapper
+Homepage: [[https://github.com/porterjamesj/virtualenvwrapper.el]]
+
+A virtual environment tool.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package virtualenvwrapper
+    :ensure t
+    :init
+    (progn
+      (venv-initialize-interactive-shells)
+      (venv-initialize-eshell)
+      (setq venv-location "~/code/pingdom/envs")
+
+      (setq eshell-prompt-function
+        (lambda ()
+          (concat venv-current-name " $ ")))
+
+      (add-hook 'venv-postmkvirtualenv-hook
+        (lambda () (shell-command "pip install pylint")))
+
+      (add-hook 'venv-postactivate-hook
+        (lambda ()
+          (setq jedi:environment-root
+            (concat "~/code/pingdom/envs/" venv-current-name))))))
 #+END_SRC
 
 ** Source control
