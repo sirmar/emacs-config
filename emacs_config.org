@@ -622,6 +622,8 @@ expand them and shift to move to the next placeholder.
     :diminish yas-minor-mode
     :init
     (progn
+      (setq yas/root-directory "~/.emacs.d/snippets")
+      (yas/load-directory yas/root-directory)
       (yas-global-mode t)))
 #+END_SRC
 
@@ -650,7 +652,7 @@ Shows a list of completions in buffer.
     ( ("C-<tab>" . ac-fuzzy-complete)))
 
   (defun marcus-ac-python-mode ()
-    (setq ac-sources '(ac-source-jedi-direct ac-source-yasnippet)))
+    (setq ac-sources '(ac-source-jedi-direct ac-source-yasnippet ac-source-words-in-buffer)))
   (add-hook 'python-mode-hook 'marcus-ac-python-mode)
 #+END_SRC
 
@@ -746,6 +748,8 @@ when the cursor is above an error.
     :diminish flycheck-mode
     :init
     (progn
+      (setq flycheck-check-syntax-automatically '(idle-change new-line mode-enabled))
+      (setq flycheck-idle-change-delay 1)
       (add-hook 'python-mode-hook 'flycheck-mode)))
 #+END_SRC
 
@@ -833,11 +837,7 @@ Bind key to run python package with one key stroke.
 #+BEGIN_SRC emacs-lisp
   (defun marcus-run-python-program ()
     (interactive)
-    (compile (concat
-               "python "
-               (projectile-project-root)
-               "bin/"
-               (projectile-project-name))))
+    (compile (projectile-project-name)))
 
   (defun marcus-bind-run-python-program ()
     (bind-key "<f5>" 'marcus-run-python-program))
@@ -851,7 +851,7 @@ Run tests automatically when saving a python file.
   (defun marcus-run-python-tests ()
     (interactive)
     (when (derived-mode-p 'python-mode)
-      (compile (concat "cd " (projectile-project-root) " && nosetests"))))
+      (compile (concat "cd " (projectile-project-root) " && nosetests -q"))))
 
   (add-hook 'after-save-hook 'marcus-run-python-tests)
 #+END_SRC
@@ -962,7 +962,7 @@ A virtual environment tool.
     (progn
       (venv-initialize-interactive-shells)
       (venv-initialize-eshell)
-      (setq venv-location "~/code/pingdom/envs")
+      (setq venv-location "~/.virtualenvs/")
 
       (setq eshell-prompt-function
         (lambda ()
@@ -1156,6 +1156,16 @@ Some left over bindings with no obvious place to be.
   (bind-key "C-x C-b" 'switch-to-buffer)
   (bind-key "<f12>" 'call-last-kbd-macro)
   (bind-key "C-z" 'undo)
+#+END_SRC
+
+*** Casing
+#+BEGIN_SRC emacs-lisp
+  (defun camelize (s)
+    "Convert under_score string S to CamelCase string."
+    (mapconcat 'identity
+      (mapcar
+        '(lambda (word) (capitalize (downcase word)))
+        (split-string s "_")) ""))
 #+END_SRC
 
 * Tasks [25/33]
