@@ -1094,7 +1094,7 @@ Captured tasks should be but in todo.org in the org home directory.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
     (lambda ()
-      (setq org-default-notes-file (concat org-directory "/todo.org"))
+      (setq org-default-notes-file "~/notes.org")
       (define-key global-map "\C-cc" 'org-capture)))
 #+END_SRC
 
