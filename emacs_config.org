@@ -56,19 +56,24 @@ Install the spell checker Aspell using brew.
 *** Virtualenv
 Homepage: [[http://docs.python-guide.org/en/latest/dev/virtualenvs/]]
 
-Install python virtual environment using pip:
+Install python virtual environment using pip.
 
 #+BEGIN_SRC sh
-pip install virtualenv
+  pip install virtualenv
 #+END_SRC
 
-*** Pylint
+*** Flycheck backends
+Homepage: [[https://github.com/nodeca/js-yaml]]
+Homepage: [[http://jshint.com]]
+Homepage: [[http://coffeescript.org]]
+Homepage: [[http://www.coffeelint.org]]
 Homepage: [[http://www.pylint.org]]
 
-Install pylint using pip:
+Used for fly-checking. Install using npm:
 
 #+BEGIN_SRC sh
-pip install pylint
+  npm install -g js-yaml coffee-script coffeelint jshint
+  pip install pylint
 #+END_SRC
 
 * Emacs configuration
@@ -751,6 +756,9 @@ when the cursor is above an error.
       (setq flycheck-check-syntax-automatically '(idle-change new-line mode-enabled))
       (setq flycheck-idle-change-delay 1)
       (add-hook 'python-mode-hook 'flycheck-mode)
+      (add-hook 'coffee-mode-hook 'flycheck-mode)
+      (add-hook 'js-mode-hook 'flycheck-mode)
+      (add-hook 'yaml-mode-hook 'flycheck-mode)
       (add-hook 'php-mode-hook 'flycheck-mode)))
 #+END_SRC
 
