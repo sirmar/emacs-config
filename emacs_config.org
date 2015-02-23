@@ -750,7 +750,8 @@ when the cursor is above an error.
     (progn
       (setq flycheck-check-syntax-automatically '(idle-change new-line mode-enabled))
       (setq flycheck-idle-change-delay 1)
-      (add-hook 'python-mode-hook 'flycheck-mode)))
+      (add-hook 'python-mode-hook 'flycheck-mode)
+      (add-hook 'php-mode-hook 'flycheck-mode)))
 #+END_SRC
 
 *** Cursor position
