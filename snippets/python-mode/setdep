@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: method
-# key: def
+# name: setdep
+# key: par
 # --
-def $1(self$2):
-    $0
+self._$1 = ${1:param}
+$0
