@@ -973,10 +973,6 @@ A virtual environment tool.
       (venv-initialize-eshell)
       (setq venv-location "~/.virtualenvs/")
 
-      (setq eshell-prompt-function
-        (lambda ()
-          (concat venv-current-name " $ ")))
-
       (add-hook 'venv-postmkvirtualenv-hook
         (lambda () (shell-command "pip install pylint")))
 
@@ -1201,6 +1197,23 @@ Some left over bindings with no obvious place to be.
       (mapcar
         '(lambda (word) (capitalize (downcase word)))
         (split-string s "_")) ""))
+#+END_SRC
+
+*** Eshell
+Set eshell prompt to active virtualenv and the current directory.
+
+#+BEGIN_SRC emacs-lisp
+  (setq eshell-prompt-function
+    (lambda ()
+      (concat
+        venv-current-name
+        (propertize " [" 'face `(:foreground "black"))
+        (propertize (eshell/pwd) 'face `(:foreground "blue"))
+        (propertize "]" 'face `(:foreground "black"))
+        (propertize " $" 'face `(:foreground "red"))
+        (propertize " " 'face `(:foreground "black")))))
+
+  (setq eshell-highlight-prompt nil)
 #+END_SRC
 
 * Tasks [28/33]

@@ -1,4 +1,5 @@
-eshell/
+eshell/history
+eshell/lastdir
 .mc-lists.el
 .python-environments/
 ac-comphist.dat
