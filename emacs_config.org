@@ -703,7 +703,8 @@ configuration when quitting.
     :ensure t
     :init
     (progn
-      (fullframe magit-status magit-mode-quit-window t)))
+      (fullframe magit-status magit-mode-quit-window t)
+      (fullframe find-grep-dired quit-window t)))
 #+END_SRC
 
 *** Browse windows
