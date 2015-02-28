@@ -1,6 +1,10 @@
 #+TITLE: Emacs configuration using Org mode
+#+AUTHOR: Marcus Veibäck
+#+EMAIL: sirmar@gmail
+
 #+OPTIONS: toc:2 tags:nil todo:nil
 #+TAGS: add bug doc explore package practice refactor remove setting
+
 #+BEGIN_COMMENT Tag descriptions
 + add - Add new functionality to the configuration.
 + bug - Something in the Emacs configuration are not working as intended.
@@ -1190,9 +1194,11 @@ Some left over bindings with no obvious place to be.
 #+END_SRC
 
 *** Casing
+A utility function.
+
 #+BEGIN_SRC emacs-lisp
   (defun camelize (s)
-    "Convert under_score string S to CamelCase string."
+    "Convert under_score to CamelCase."
     (mapconcat 'identity
       (mapcar
         '(lambda (word) (capitalize (downcase word)))
@@ -1214,6 +1220,14 @@ Set eshell prompt to active virtualenv and the current directory.
         (propertize " " 'face `(:foreground "black")))))
 
   (setq eshell-highlight-prompt nil)
+#+END_SRC
+
+*** Me
+Set my personal info.
+
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Marcus Veibäck")
+  (setq user-mail-address "sirmar@gmail.com")
 #+END_SRC
 
 * Tasks [28/33]
