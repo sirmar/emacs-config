@@ -191,6 +191,7 @@ Setting lisp indentation to two spaces.
 
 #+BEGIN_SRC emacs-lisp
   (setq lisp-indent-offset 2)
+  (setq sgml-basic-offset 4)
 #+END_SRC
 
 A small utility function that indents the whole buffer.
