@@ -1,6 +1,10 @@
 #+TITLE: Emacs configuration using Org mode
+#+AUTHOR: Marcus Veibäck
+#+EMAIL: sirmar@gmail
+
 #+OPTIONS: toc:2 tags:nil todo:nil
 #+TAGS: add bug doc explore package practice refactor remove setting
+
 #+BEGIN_COMMENT Tag descriptions
 + add - Add new functionality to the configuration.
 + bug - Something in the Emacs configuration are not working as intended.
@@ -700,7 +704,8 @@ configuration when quitting.
     :ensure t
     :init
     (progn
-      (fullframe magit-status magit-mode-quit-window t)))
+      (fullframe magit-status magit-mode-quit-window t)
+      (fullframe find-grep-dired quit-window t)))
 #+END_SRC
 
 *** Browse windows
@@ -974,10 +979,6 @@ A virtual environment tool.
       (venv-initialize-eshell)
       (setq venv-location "~/.virtualenvs/")
 
-      (setq eshell-prompt-function
-        (lambda ()
-          (concat venv-current-name " $ ")))
-
       (add-hook 'venv-postmkvirtualenv-hook
         (lambda () (shell-command "pip install pylint")))
 
@@ -1067,20 +1068,20 @@ Set code block template shortcuts.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-structure-template-alist
-        '(("s" "#+BEGIN_SRC ?\n\n#+END_SRC" "<src lang=\"?\">\n\n</src>")
-          ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE" "<example>\n?\n</example>")
-          ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE" "<quote>\n?\n</quote>")
-          ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE" "<verse>\n?\n</verse>")
-          ("c" "#+BEGIN_COMMENT\n?\n#+END_COMMENT")
-          ("p" "#+BEGIN_PRACTICE\n?\n#+END_PRACTICE")
-          ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC" "<src lang=\"emacs-lisp\">\n?\n</src>")
-          ("L" "#+LATEX: " "<literal style=\"latex\">?</literal>")
-          ("h" "#+BEGIN_HTML\n?\n#+END_HTML" "<literal style=\"html\">\n?\n</literal>")
-          ("H" "#+HTML: " "<literal style=\"html\">?</literal>")
-          ("a" "#+BEGIN_ASCII\n?\n#+END_ASCII")
-          ("A" "#+ASCII: ")
-          ("i" "#+INDEX: ?" "#+index: ?")
-          ("I" "#+INCLUDE %file ?" "<include file=%file markup=\"?\">")))
+    '(("s" "#+BEGIN_SRC ?\n\n#+END_SRC" "<src lang=\"?\">\n\n</src>")
+       ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE" "<example>\n?\n</example>")
+       ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE" "<quote>\n?\n</quote>")
+       ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE" "<verse>\n?\n</verse>")
+       ("c" "#+BEGIN_COMMENT\n?\n#+END_COMMENT")
+       ("p" "#+BEGIN_PRACTICE\n?\n#+END_PRACTICE")
+       ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC" "<src lang=\"emacs-lisp\">\n?\n</src>")
+       ("L" "#+LATEX: " "<literal style=\"latex\">?</literal>")
+       ("h" "#+BEGIN_HTML\n?\n#+END_HTML" "<literal style=\"html\">\n?\n</literal>")
+       ("H" "#+HTML: " "<literal style=\"html\">?</literal>")
+       ("a" "#+BEGIN_ASCII\n?\n#+END_ASCII")
+       ("A" "#+ASCII: ")
+       ("i" "#+INDEX: ?" "#+index: ?")
+       ("I" "#+INCLUDE %file ?" "<include file=%file markup=\"?\">")))
 #+END_SRC
 
 *** Tasks
@@ -1195,13 +1196,40 @@ Some left over bindings with no obvious place to be.
 #+END_SRC
 
 *** Casing
+A utility function.
+
 #+BEGIN_SRC emacs-lisp
   (defun camelize (s)
-    "Convert under_score string S to CamelCase string."
+    "Convert under_score to CamelCase."
     (mapconcat 'identity
       (mapcar
         '(lambda (word) (capitalize (downcase word)))
         (split-string s "_")) ""))
+#+END_SRC
+
+*** Eshell
+Set eshell prompt to active virtualenv and the current directory.
+
+#+BEGIN_SRC emacs-lisp
+  (setq eshell-prompt-function
+    (lambda ()
+      (concat
+        venv-current-name
+        (propertize " [" 'face `(:foreground "black"))
+        (propertize (eshell/pwd) 'face `(:foreground "blue"))
+        (propertize "]" 'face `(:foreground "black"))
+        (propertize " $" 'face `(:foreground "red"))
+        (propertize " " 'face `(:foreground "black")))))
+
+  (setq eshell-highlight-prompt nil)
+#+END_SRC
+
+*** Me
+Set my personal info.
+
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Marcus Veibäck")
+  (setq user-mail-address "sirmar@gmail.com")
 #+END_SRC
 
 * Tasks [28/33]
