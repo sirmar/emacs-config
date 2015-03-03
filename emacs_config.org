@@ -191,11 +191,14 @@ missing in.
 
 ** Text manipulation
 *** Indentation
-Setting lisp indentation to two spaces.
+Setting lisp indentation to two spaces. Others to four.
 
 #+BEGIN_SRC emacs-lisp
   (setq lisp-indent-offset 2)
   (setq sgml-basic-offset 4)
+  (setq coffee-tab-width 4)
+  (setq js-indent-level 4)
+  (setq python-indent 4)
 #+END_SRC
 
 A small utility function that indents the whole buffer.
@@ -895,8 +898,6 @@ Add mode for Coffee script and set indentation to two spaces.
     :ensure t
     :config
     (progn
-      (setq coffee-tab-width 2)
-      (setq js-indent-level 2)
       (add-to-list 'ac-modes 'coffee-mode)))
 #+END_SRC
 
@@ -1211,12 +1212,23 @@ A utility function.
 Set eshell prompt to active virtualenv and the current directory.
 
 #+BEGIN_SRC emacs-lisp
+  (defun pwd-replace-home (pwd)
+    "Replace home in PWD with tilde (~) character."
+    (interactive)
+    (let* ((home (expand-file-name (getenv "HOME")))
+           (home-len (length home)))
+      (if (and
+           (>= (length pwd) home-len)
+           (equal home (substring pwd 0 home-len)))
+          (concat "~" (substring pwd home-len))
+        pwd)))
+
   (setq eshell-prompt-function
     (lambda ()
       (concat
         venv-current-name
         (propertize " [" 'face `(:foreground "black"))
-        (propertize (eshell/pwd) 'face `(:foreground "blue"))
+        (propertize (pwd-replace-home (eshell/pwd)) 'face `(:foreground "blue"))
         (propertize "]" 'face `(:foreground "black"))
         (propertize " $" 'face `(:foreground "red"))
         (propertize " " 'face `(:foreground "black")))))
