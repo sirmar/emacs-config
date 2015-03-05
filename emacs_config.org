@@ -507,8 +507,10 @@ Global ignore list for grep.
   (eval-after-load "grep"
     '(progn
        (add-to-list 'grep-find-ignored-directories "bin")
+       (add-to-list 'grep-find-ignored-directories "__pycache__")
        (add-to-list 'grep-find-ignored-files "*.exe")
        (add-to-list 'grep-find-ignored-files "*.doc")
+       (add-to-list 'grep-find-ignored-files "*.pyc")
        ))
 #+END_SRC
 
