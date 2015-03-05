@@ -1056,17 +1056,6 @@ read. Do not wrap lines.
 #+END_SRC
 
 *** Code blocks
-Make source code blocks have prettier background colors and fontify code
-in them according to mode.
-
-#+BEGIN_SRC emacs-lisp
-  (set-face-background 'org-block-begin-line "#eeeee0")
-  (set-face-background 'org-block-background "#fefefa")
-  (set-face-background 'org-block-end-line "#eeeee0")
-
-  (setq org-src-fontify-natively t)
-#+END_SRC
-
 Set code block template shortcuts.
 
 #+BEGIN_SRC emacs-lisp
@@ -1138,6 +1127,21 @@ Define templates:
 #+END_SRC
 
 ** Misc
+*** Theme
+Load a nice looking dark theme. Make source code blocks have
+prettier background colors and fontify code in them according to mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package monokai-theme
+    :ensure t)
+
+  (set-face-background 'org-block-begin-line "#222211")
+  (set-face-background 'org-block-background "#333322")
+  (set-face-background 'org-block-end-line "#222211")
+
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
 *** Discover
 Homepage: [[https://github.com/mickeynp/discover.el]]
 Press ? when in dired mode to get help. Press M-s to get help on isearch switches
