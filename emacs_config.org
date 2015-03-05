@@ -1126,7 +1126,7 @@ Define templates:
          "* TODO %?\nADDED: %U"
          :empty-lines 1)
 
-       ("q" "Add Question" entry
+       ("f" "Add Question" entry
          (file+headline org-default-notes-file "Things to do")
          "* TODO (Q): %??\n(A):\nADDED: %U"
          :empty-lines 1)
