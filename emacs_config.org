@@ -585,7 +585,8 @@ Flexible ido mode matching to find files and buffers more quickly.
       (setq ido-use-faces t)
       (setq ido-use-filename-at-point nil)
       (setq ido-auto-merge-work-directories-length 0)
-      (setq ido-use-virtual-buffers nil)))
+      (setq ido-use-virtual-buffers nil)
+      (setq org-completion-use-ido t)))
 #+END_SRC
 
 *** Ido verticle mode
@@ -1047,7 +1048,10 @@ read. Do not wrap lines.
     (progn
       (setq org-startup-indented t)
       (setq org-startup-truncated t)
-      (add-to-list 'ac-modes 'org-mode)))
+      (add-to-list 'ac-modes 'org-mode)
+      (setq org-goto-interface 'outline-path-completion
+        org-goto-max-level 10)
+      (setq org-outline-path-complete-in-steps nil)))
 
   (eval-after-load "org"
     '(progn
