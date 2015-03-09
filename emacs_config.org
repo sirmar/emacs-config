@@ -662,14 +662,32 @@ Shows a list of completions in buffer.
       (setq ac-delay 0)
       (setq ac-auto-show-menu t)
       (setq ac-use-fuzzy t)
+      (setq ac-use-quick-help t)
+      (setq ac-quick-help-delay 0.5)
+      (setq ac-quick-help-prefer-pos-tip t)
       (ac-set-trigger-key nil)
       (ac-flyspell-workaround))
     :bind
     ( ("C-<tab>" . ac-fuzzy-complete)))
+#+END_SRC
 
+Use jedi source for python mode.
+
+#+BEGIN_SRC emacs-lisp
   (defun marcus-ac-python-mode ()
-    (setq ac-sources '(ac-source-jedi-direct ac-source-yasnippet ac-source-words-in-buffer)))
+    (setq ac-sources
+      '( ac-source-jedi-direct
+         ac-source-yasnippet
+         ac-source-words-in-buffer)))
   (add-hook 'python-mode-hook 'marcus-ac-python-mode)
+#+END_SRC
+
+Make popup span over buffer limit.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pos-tip
+    :ensure t
+    :init)
 #+END_SRC
 
 ** Projects
@@ -727,14 +745,12 @@ configuration when quitting.
 
 ** Instant feedback
 *** White space mode
-Show trailing spaces and empty lines in the beginning or end of file. Tell me
-when lines are longer than 80 characters and show me tabs used for indentation.
+Show trailing spaces and show me tabs used for indentation.
 
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
   (diminish 'global-whitespace-mode)
-  (setq whitespace-line-column 100)
-  (setq whitespace-style '(face empty tabs trailing lines-tail))
+  (setq whitespace-style '(face tabs trailing))
 #+END_SRC
 
 Automatically remove tabs and trailing spaces when saving a file.
@@ -747,6 +763,30 @@ Automatically remove tabs and trailing spaces when saving a file.
     (untabify (point-min) (point-max)))
 
   (add-hook 'before-save-hook 'marcus-sanitize-whitespace)
+#+END_SRC
+
+*** Fill column indicator
+Homepage: [[https://github.com/alpaker/Fill-Column-Indicator]]
+
+Show a vertical line at 78 characters when in programming modes.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package fill-column-indicator
+    :ensure t
+    :diminish fci-mode
+    :init
+    (progn
+      (setq fci-rule-column 78)
+      (setq fci-rule-width 1)
+      (setq fci-rule-use-dashes t)
+      (setq fci-rule-color "darkred")
+      (add-hook 'prog-mode-hook 'fci-mode)))
+
+  (defadvice popup-create (before suppress-fci-mode activate)
+      (turn-off-fci-mode))
+
+  (defadvice popup-delete (after restore-fci-mode activate)
+      (turn-on-fci-mode))
 #+END_SRC
 
 *** Flycheck
@@ -1138,13 +1178,44 @@ prettier background colors and fontify code in them according to mode.
 #+BEGIN_SRC emacs-lisp
   (use-package monokai-theme
     :ensure t)
+#+END_SRC
 
+Set colors for org mode code blocks.
+
+#+BEGIN_SRC emacs-lisp
   (set-face-background 'org-block-begin-line "#222211")
   (set-face-background 'org-block-background "#333322")
   (set-face-background 'org-block-end-line "#222211")
-
   (setq org-src-fontify-natively t)
 #+END_SRC
+
+Set colors for auto complete popup.
+
+#+BEGIN_SRC emacs-lisp
+  (set-face-background 'ac-candidate-face "#333322")
+  (set-face-foreground 'ac-candidate-face "#E6DB74")
+  (set-face-underline 'ac-candidate-face nil)
+
+  (set-face-background 'ac-selection-face "#E6DB74")
+  (set-face-foreground 'ac-selection-face "black")
+  (set-face-underline 'ac-selection-face nil)
+
+  (set-face-background 'ac-yasnippet-candidate-face "#333322")
+  (set-face-foreground 'ac-yasnippet-candidate-face "red")
+  (set-face-underline 'ac-yasnippet-candidate-face nil)
+
+  (set-face-background 'ac-yasnippet-selection-face "red")
+  (set-face-foreground 'ac-yasnippet-selection-face "black")
+  (set-face-underline 'ac-yasnippet-selection-face nil)
+
+  (set-face-background 'popup-face "#333322")
+  (set-face-foreground 'popup-face "#E6DB74")
+  (set-face-background 'popup-summary-face "#333322")
+  (set-face-foreground 'popup-summary-face "white")
+#+END_SRC
+
+#+RESULTS:
+
 
 *** Discover
 Homepage: [[https://github.com/mickeynp/discover.el]]
@@ -1254,16 +1325,17 @@ Set my personal info.
   (setq user-mail-address "sirmar@gmail.com")
 #+END_SRC
 
-* Tasks [28/33]
+* Tasks [29/32]
 ** Things to do
 Work to be done that is related to Emacs as such will be added below.
 The items is sorted in order of importance.
 
 *** DONE Create task capture templates                            :setting:
 CLOSED: [2015-02-25 Wed 22:56]
+*** DONE Change theme to something nice                           :setting:
+CLOSED: [2015-03-07 Sat 18:18]
 *** DOING Establish smart scan in my work flow                   :practice:
 *** DOING Establish ace jump in my work flow                     :practice:
-*** TODO Change theme to something nice                           :setting:
 *** TODO Learn debugging and make customizations for that         :explore:
 ** Archive
 A place to save old done tasks. Maybe a fun read in a distant
