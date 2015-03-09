@@ -80,6 +80,15 @@ Used for fly-checking. Install using npm:
   pip install pylint
 #+END_SRC
 
+*** Python documentation
+Homepage: [[https://bitbucket.org/jonwaltman/pydoc-info/]]
+
+#+BEGIN_SRC sh
+  wget https://bitbucket.org/jonwaltman/pydoc-info/downloads/python.info.gz
+  gunzip python.info
+  sudo cp python.info /usr/share/info
+  sudo install-info --info-dir=/usr/share/info python.info
+#+END_SRC
 * Emacs configuration
 The configuration itself is devided in several sections. Above every block
 of Elisp code there are a brief explanation expressing the intention of
@@ -1006,7 +1015,8 @@ a way to pop back again.
       (setq jedi:complete-on-dot t))
     :bind
     ( ("M-." . jedi:goto-definition)
-      ("M-," . jedi:goto-definition-pop-marker)))
+      ("M-," . jedi:goto-definition-pop-marker)
+      ("M-+" . jedi:get-in-function-call)))
 #+END_SRC
 
 **** Virtualenv Wrapper
@@ -1031,6 +1041,20 @@ A virtual environment tool.
           (setq jedi:environment-root
             (concat "~/code/pingdom/envs/" venv-current-name))))))
 #+END_SRC
+
+**** Documentation
+Homepage: [[https://bitbucket.org/jonwaltman/pydoc-info/]]
+
+Use python docs inside emacs. Needs installation of python
+documentation as well.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pydoc-info
+    :ensure t
+    :bind
+    ( ("C-+" . info-lookup-symbol)))
+#+END_SRC
+
 
 ** Source control
 *** Magit
