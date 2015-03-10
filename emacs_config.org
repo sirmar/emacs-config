@@ -1185,7 +1185,7 @@ a parent task cannot be done if sub tasks are not.
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
   (setq org-todo-keyword-faces
-    '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "dark green")))
+    '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green")))
   (setq org-log-done "time")
   (setq org-hierarchical-todo-statistics nil)
   (setq org-enforce-todo-dependencies t)
@@ -1270,9 +1270,6 @@ Set colors for auto complete popup.
   (set-face-background 'popup-summary-face "#333322")
   (set-face-foreground 'popup-summary-face "white")
 #+END_SRC
-
-#+RESULTS:
-
 
 *** Discover
 Homepage: [[https://github.com/mickeynp/discover.el]]
