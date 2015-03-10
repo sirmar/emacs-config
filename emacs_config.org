@@ -785,17 +785,51 @@ Show a vertical line at 78 characters when in programming modes.
     :diminish fci-mode
     :init
     (progn
-      (setq fci-rule-column 78)
-      (setq fci-rule-width 1)
-      (setq fci-rule-use-dashes t)
-      (setq fci-rule-color "darkred")
-      (add-hook 'prog-mode-hook 'fci-mode)))
+      (add-hook 'prog-mode-hook
+        (lambda ()
+          (fci-mode)
+          (setq fci-rule-column 78)
+          (setq fci-rule-width 1)
+          (setq fci-rule-use-dashes t)
+          (setq fci-rule-color "darkred")))))
 
   (defadvice popup-create (before suppress-fci-mode activate)
-      (turn-off-fci-mode))
+    (turn-off-fci-mode))
 
   (defadvice popup-delete (after restore-fci-mode activate)
-      (turn-on-fci-mode))
+    (turn-on-fci-mode))
+#+END_SRC
+
+*** Highlight line
+Highlight the current line in all modes.
+
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode t)
+  (set-face-background 'hl-line "#444400")
+#+END_SRC
+
+*** Highlight indentation
+Homepage: [[https://github.com/antonj/Highlight-Indentation-for-Emacs]]
+
+Show indentation levels in general and the current line level in
+particular.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-indentation
+    :ensure t
+    :diminish highlight-indentation-mode highlight-indentation-current-column-mode
+    :init
+    (progn
+      (add-hook 'prog-mode-hook
+        (lambda ()
+          (highlight-indentation-mode)
+          (set-face-background 'highlight-indentation-face "#252520")))
+
+      (add-hook 'prog-mode-hook
+        (lambda ()
+          (highlight-indentation-current-column-mode)
+          (set-face-background
+            'highlight-indentation-current-column-face "#202010")))))
 #+END_SRC
 
 *** Flycheck
@@ -910,7 +944,7 @@ Bind key to run python package with one key stroke.
     (compile (projectile-project-name)))
 
   (defun marcus-bind-run-python-program ()
-    (bind-key "<f5>" 'marcus-run-python-program))
+    (bind-key "C-c r" 'marcus-run-python-program))
 
   (add-hook 'python-mode-hook 'marcus-bind-run-python-program)
 #+END_SRC
@@ -918,20 +952,19 @@ Bind key to run python package with one key stroke.
 Run tests automatically when saving a python file.
 
 #+BEGIN_SRC emacs-lisp
-  (defun marcus-run-python-tests ()
-    (interactive)
-    (when (derived-mode-p 'python-mode)
-      (compile (concat "cd " (projectile-project-root) " && nosetests -q"))))
+  (use-package nose
+    :ensure t
+    :bind
+    ( ("C-c a" . nosetests-all)
+      ("C-c t" . nosetests-one)))
 
-  (add-hook 'after-save-hook 'marcus-run-python-tests)
+  (defvar nose-use-verbose nil)
 #+END_SRC
 
 *** Compiling
-Set the compile command and some related key bindings. Run test automatically
-when saving.
+Set the compile command and some related key bindings.
 
 #+BEGIN_SRC emacs-lisp
-
   (bind-key "<f5>" 'compile)
   (bind-key "<f6>" 'recompile)
   (bind-key "<f7>" 'kill-compilation)
@@ -1039,7 +1072,7 @@ A virtual environment tool.
       (add-hook 'venv-postactivate-hook
         (lambda ()
           (setq jedi:environment-root
-            (concat "~/code/pingdom/envs/" venv-current-name))))))
+            (concat venv-location venv-current-name))))))
 #+END_SRC
 
 **** Documentation
@@ -1054,7 +1087,6 @@ documentation as well.
     :bind
     ( ("C-+" . info-lookup-symbol)))
 #+END_SRC
-
 
 ** Source control
 *** Magit
