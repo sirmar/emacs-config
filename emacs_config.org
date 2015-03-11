@@ -957,6 +957,7 @@ Run tests automatically when saving a python file.
     :ensure t
     :bind
     ( ("C-c a" . nosetests-all)
+      ("C-c m" . nosetests-module)
       ("C-c t" . nosetests-one)))
 
   (defvar nose-use-verbose nil)
@@ -1235,6 +1236,8 @@ prettier background colors and fontify code in them according to mode.
 #+BEGIN_SRC emacs-lisp
   (use-package monokai-theme
     :ensure t)
+
+  (set-face-background 'region "#226622")
 #+END_SRC
 
 Set colors for org mode code blocks.
