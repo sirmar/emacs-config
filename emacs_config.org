@@ -824,13 +824,13 @@ particular.
       (add-hook 'prog-mode-hook
         (lambda ()
           (highlight-indentation-mode)
-          (set-face-background 'highlight-indentation-face "#252520")))
+          (set-face-background 'highlight-indentation-face "#353520")))
 
       (add-hook 'prog-mode-hook
         (lambda ()
           (highlight-indentation-current-column-mode)
           (set-face-background
-            'highlight-indentation-current-column-face "#202010")))))
+            'highlight-indentation-current-column-face "#151510")))))
 #+END_SRC
 
 *** Flycheck
