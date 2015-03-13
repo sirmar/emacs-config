@@ -132,8 +132,8 @@ Create the my standard configuration of windows.
       (progn
         (setq third-window (split-window first-window 260 t))
         (setq second-window (split-window first-window 160 t))
-        (generate-new-buffer "*grep*")
-        (set-window-buffer third-window "*grep*"))
+        (generate-new-buffer "*nosetests*")
+        (set-window-buffer third-window "*nosetests*"))
       (progn
         (setq third-window (split-window first-window 115 t)))))
 
@@ -522,10 +522,12 @@ Global ignore list for grep.
     '(progn
        (add-to-list 'grep-find-ignored-directories "bin")
        (add-to-list 'grep-find-ignored-directories "__pycache__")
+       (add-to-list 'grep-find-ignored-directories "*.egg-info")
        (add-to-list 'grep-find-ignored-files "*.exe")
        (add-to-list 'grep-find-ignored-files "*.doc")
        (add-to-list 'grep-find-ignored-files "*.pyc")
-       ))
+       (add-to-list 'grep-find-ignored-files ".coverage")
+       (add-to-list 'grep-find-ignored-files ".gitignore")))
 #+END_SRC
 
 Change this template to make grep run in a different way. I used this to get
@@ -1197,10 +1199,8 @@ a parent task cannot be done if sub tasks are not.
 Captured tasks should be but in notes.org in the home directory.
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook
-    (lambda ()
-      (setq org-default-notes-file "~/notes.org")
-      (define-key global-map "\C-cc" 'org-capture)))
+  (setq org-default-notes-file "~/notes.org")
+  (bind-key "C-c c" 'org-capture)
 #+END_SRC
 
 Define templates:
@@ -1407,10 +1407,6 @@ Set my personal info.
 Work to be done that is related to Emacs as such will be added below.
 The items is sorted in order of importance.
 
-*** DONE Create task capture templates                            :setting:
-CLOSED: [2015-02-25 Wed 22:56]
-*** DONE Change theme to something nice                           :setting:
-CLOSED: [2015-03-07 Sat 18:18]
 *** DOING Establish smart scan in my work flow                   :practice:
 *** DOING Establish ace jump in my work flow                     :practice:
 *** TODO Learn debugging and make customizations for that         :explore:
@@ -1418,6 +1414,10 @@ CLOSED: [2015-03-07 Sat 18:18]
 A place to save old done tasks. Maybe a fun read in a distant
 future.
 
+*** DONE Create task capture templates                            :setting:
+CLOSED: [2015-02-25 Wed 22:56]
+*** DONE Change theme to something nice                           :setting:
+CLOSED: [2015-03-07 Sat 18:18]
 *** DONE Run tests easy.                                              :add:
 CLOSED: [2015-02-24 Tue 22:33]
 *** DONE Go to test file from source file                             :add:
