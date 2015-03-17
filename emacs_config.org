@@ -72,12 +72,13 @@ Homepage: [[http://jshint.com]]
 Homepage: [[http://coffeescript.org]]
 Homepage: [[http://www.coffeelint.org]]
 Homepage: [[http://www.pylint.org]]
+Homepage: [[https://pypi.python.org/pypi/flake8]]
 
 Used for fly-checking. Install using npm:
 
 #+BEGIN_SRC sh
   npm install -g js-yaml coffee-script coffeelint jshint
-  pip install pylint
+  pip install pylint flake8
 #+END_SRC
 
 *** Python documentation
@@ -195,8 +196,10 @@ missing in.
     :ensure t
     :init
     (progn
-      (auto-compile-on-load-mode)
-      (setq load-prefer-newer t)))
+      (setq load-prefer-newer t))
+    :config
+    (progn
+      (auto-compile-on-load-mode)))
 #+END_SRC
 
 ** Text manipulation
@@ -650,8 +653,9 @@ expand them and shift to move to the next placeholder.
     :diminish yas-minor-mode
     :init
     (progn
-      (setq yas/root-directory "~/.emacs.d/snippets")
-      (yas/load-directory yas/root-directory)
+      (setq yas-snippet-dirs '("~/.emacs.d/snippets")))
+    :config
+    (progn
       (yas-global-mode t)))
 #+END_SRC
 
@@ -774,7 +778,7 @@ Automatically remove tabs and trailing spaces when saving a file.
     (delete-trailing-whitespace)
     (untabify (point-min) (point-max)))
 
-  (add-hook 'before-save-hook 'marcus-sanitize-whitespace)
+;;  (add-hook 'before-save-hook 'marcus-sanitize-whitespace)
 #+END_SRC
 
 *** Fill column indicator
@@ -785,7 +789,6 @@ Show a vertical line at 78 characters when in programming modes.
 #+BEGIN_SRC emacs-lisp
   (use-package fill-column-indicator
     :ensure t
-    :diminish fci-mode
     :init
     (progn
       (add-hook 'prog-mode-hook
@@ -853,11 +856,10 @@ when the cursor is above an error.
     (progn
       (setq flycheck-check-syntax-automatically '(idle-change new-line mode-enabled))
       (setq flycheck-idle-change-delay 1)
-      (add-hook 'python-mode-hook 'flycheck-mode)
-      (add-hook 'coffee-mode-hook 'flycheck-mode)
-      (add-hook 'js-mode-hook 'flycheck-mode)
-      (add-hook 'yaml-mode-hook 'flycheck-mode)
-      (add-hook 'php-mode-hook 'flycheck-mode)))
+      (add-hook 'after-init-hook 'global-flycheck-mode))
+    :config
+    (progn
+      (flycheck-add-next-checker 'python-flake8 'python-pylint)))
 #+END_SRC
 
 *** Cursor position
@@ -1101,6 +1103,7 @@ A nice Git interface for Emacs. Just run status to start.
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
+    :diminish magit-auto-revert-mode
     :bind
     ( ("C-c s" . magit-status)
       ("C-c b" . magit-blame-mode)))
@@ -1146,17 +1149,19 @@ read. Do not wrap lines.
     :ensure t
     :init
     (progn
+      (add-to-list 'ac-modes 'org-mode)
       (setq org-startup-indented t)
       (setq org-startup-truncated t)
-      (add-to-list 'ac-modes 'org-mode)
       (setq org-goto-interface 'outline-path-completion
         org-goto-max-level 10)
-      (setq org-outline-path-complete-in-steps nil)))
-
-  (eval-after-load "org"
-    '(progn
-       (define-key org-mode-map (kbd "C-.") nil)
-       (define-key org-mode-map (kbd "C-,") nil)))
+      (setq org-outline-path-complete-in-steps nil)
+      (add-hook 'org-mode-hook
+        (lambda ()
+          (diminish 'org-indent-mode))))
+    :config
+    (progn
+      (define-key org-mode-map (kbd "C-.") nil)
+      (define-key org-mode-map (kbd "C-,") nil)))
 #+END_SRC
 
 *** Code blocks
@@ -1311,15 +1316,26 @@ and see bindings for C-x r context.
 Set language to English and use Aspell as dictionary software. Start spell
 checking in text and org mode. Also, start spell checking in source code
 comments. Unbind some of the keys in fly-spell mode so that it does not
-conflict with global bindings.
+conflict with global bindings. 
 
 #+BEGIN_SRC emacs-lisp
   (setq ispell-dictionary "english")
   (setq ispell-program-name "aspell")
 
-  (add-hook 'text-mode-hook (lambda () (flyspell-mode 1)))
-  (add-hook 'org-mode-hook  (lambda () (flyspell-mode 1)))
-  (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
+  (add-hook 'text-mode-hook
+    (lambda ()
+      (flyspell-mode 1)
+      (diminish 'flyspell-mode)))
+
+  (add-hook 'org-mode-hook
+    (lambda ()
+      (flyspell-mode 1)
+      (diminish 'flyspell-mode)))
+
+  (add-hook 'prog-mode-hook
+    (lambda ()
+      (flyspell-prog-mode)
+        (diminish 'flyspell-mode)))
 
   (eval-after-load "flyspell"
     '(progn
