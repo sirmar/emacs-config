@@ -778,7 +778,7 @@ Automatically remove tabs and trailing spaces when saving a file.
     (delete-trailing-whitespace)
     (untabify (point-min) (point-max)))
 
-;;  (add-hook 'before-save-hook 'marcus-sanitize-whitespace)
+  (add-hook 'before-save-hook 'marcus-sanitize-whitespace)
 #+END_SRC
 
 *** Fill column indicator
@@ -868,6 +868,7 @@ Show cursors position in the status bar.
 #+BEGIN_SRC emacs-lisp
   (line-number-mode t)
   (column-number-mode t)
+  (global-linum-mode t)
 #+END_SRC
 
 ** File system
