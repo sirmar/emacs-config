@@ -940,6 +940,12 @@ be 40 characters wide.
   (neotree-show)
 #+END_SRC
 
+*** Tramp mode
+
+#+BEGIN_SRC emacs-lisp
+  (setq tramp-default-method "ssh")
+  (setq tramp-default-user "marcus.veiback")
+#+END_SRC
 ** Development cycle
 *** Python
 Bind key to run python package with one key stroke.
@@ -1317,7 +1323,7 @@ and see bindings for C-x r context.
 Set language to English and use Aspell as dictionary software. Start spell
 checking in text and org mode. Also, start spell checking in source code
 comments. Unbind some of the keys in fly-spell mode so that it does not
-conflict with global bindings. 
+conflict with global bindings.
 
 #+BEGIN_SRC emacs-lisp
   (setq ispell-dictionary "english")
