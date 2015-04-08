@@ -1101,6 +1101,16 @@ documentation as well.
     ( ("C-+" . info-lookup-symbol)))
 #+END_SRC
 
+*** Dockerfile mode
+Homepage: [[https://github.com/spotify/dockerfile-mode]]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dockerfile-mode
+    :ensure t
+    :init
+    (progn
+      (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))))
+#+END_SRC
 ** Source control
 *** Magit
 Homepage: [[https://github.com/magit/magit]]
