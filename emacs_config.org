@@ -131,12 +131,9 @@ Create the my standard configuration of windows.
     (setq first-window (selected-window))
     (if (> (display-pixel-width) 1500)
       (progn
-        (setq third-window (split-window first-window 260 t))
-        (setq second-window (split-window first-window 160 t))
-        (generate-new-buffer "*nosetests*")
-        (set-window-buffer third-window "*nosetests*"))
+        (setq second-window (split-window first-window 200 t)))
       (progn
-        (setq third-window (split-window first-window 115 t)))))
+        (setq second-window (split-window first-window 115 t)))))
 
   (config-buffers)
 #+END_SRC
@@ -675,7 +672,7 @@ Shows a list of completions in buffer.
     (progn
       (setq ac-ignore-case nil)
       (setq ac-auto-start 2)
-      (setq ac-delay 0)
+      (setq ac-delay 0.3)
       (setq ac-auto-show-menu t)
       (setq ac-use-fuzzy t)
       (setq ac-use-quick-help t)
@@ -784,7 +781,7 @@ Automatically remove tabs and trailing spaces when saving a file.
 *** Fill column indicator
 Homepage: [[https://github.com/alpaker/Fill-Column-Indicator]]
 
-Show a vertical line at 78 characters when in programming modes.
+Show a vertical line at 120 characters when in programming modes.
 
 #+BEGIN_SRC emacs-lisp
   (use-package fill-column-indicator
@@ -794,7 +791,7 @@ Show a vertical line at 78 characters when in programming modes.
       (add-hook 'prog-mode-hook
         (lambda ()
           (fci-mode)
-          (setq fci-rule-column 78)
+          (setq fci-rule-column 120)
           (setq fci-rule-width 1)
           (setq fci-rule-use-dashes t)
           (setq fci-rule-color "darkred")))))
@@ -987,8 +984,7 @@ Set the compile command and some related key bindings.
 
 ** Major modes
 *** Coffeescript/Javascript
-Homepage: [[https://github.com/defunkt/coffee-mode
-]]
+Homepage: [[https://github.com/defunkt/coffee-mode]]
 Add mode for Coffee script and set indentation to two spaces.
 
 #+BEGIN_SRC emacs-lisp
@@ -997,6 +993,15 @@ Add mode for Coffee script and set indentation to two spaces.
     :config
     (progn
       (add-to-list 'ac-modes 'coffee-mode)))
+#+END_SRC
+*** C sharp
+Homepage: [[https://github.com/josteink/csharp-mode]]
+
+Add mode for c sharp
+
+#+BEGIN_SRC emacs-lisp
+  (use-package csharp-mode
+    :ensure t)
 #+END_SRC
 
 *** PHP
@@ -1077,7 +1082,7 @@ A virtual environment tool.
     (progn
       (venv-initialize-interactive-shells)
       (venv-initialize-eshell)
-      (setq venv-location "~/.virtualenvs/")
+      (setq venv-location "~/code/pingdom/pretenders/")
 
       (add-hook 'venv-postmkvirtualenv-hook
         (lambda () (shell-command "pip install pylint")))
@@ -1124,6 +1129,9 @@ A nice Git interface for Emacs. Just run status to start.
     :bind
     ( ("C-c s" . magit-status)
       ("C-c b" . magit-blame-mode)))
+
+  (setq magit-last-seen-setup-instructions "1.4.0")
+
 #+END_SRC
 
 *** Diff HL
