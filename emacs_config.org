@@ -523,6 +523,13 @@ Global ignore list for grep.
        (add-to-list 'grep-find-ignored-directories "bin")
        (add-to-list 'grep-find-ignored-directories "__pycache__")
        (add-to-list 'grep-find-ignored-directories "*.egg-info")
+       (add-to-list 'grep-find-ignored-directories ".tox")
+       (add-to-list 'grep-find-ignored-directories ".git")
+       (add-to-list 'grep-find-ignored-directories "dist")
+       (add-to-list 'grep-find-ignored-directories "env")
+       (add-to-list 'grep-find-ignored-directories "node_modules")
+       (add-to-list 'grep-find-ignored-directories "test_results")
+       (add-to-list 'grep-find-ignored-directories "build")
        (add-to-list 'grep-find-ignored-files "*.exe")
        (add-to-list 'grep-find-ignored-files "*.doc")
        (add-to-list 'grep-find-ignored-files "*.pyc")
@@ -772,8 +779,7 @@ Automatically remove tabs and trailing spaces when saving a file.
   (defun marcus-sanitize-whitespace ()
     "Converts all tabs to spaces."
     (interactive)
-    (delete-trailing-whitespace)
-    (untabify (point-min) (point-max)))
+    (delete-trailing-whitespace))
 
   (add-hook 'before-save-hook 'marcus-sanitize-whitespace)
 #+END_SRC
@@ -794,7 +800,7 @@ Show a vertical line at 120 characters when in programming modes.
           (setq fci-rule-column 120)
           (setq fci-rule-width 1)
           (setq fci-rule-use-dashes t)
-          (setq fci-rule-color "darkred")))))
+          (setq fci-rule-color "red")))))
 
   (defadvice popup-create (before suppress-fci-mode activate)
     (turn-off-fci-mode))
@@ -808,7 +814,8 @@ Highlight the current line in all modes.
 
 #+BEGIN_SRC emacs-lisp
   (global-hl-line-mode t)
-  (set-face-background 'hl-line "#444400")
+;;  (set-face-background 'hl-line "#444400")
+  (set-face-background 'hl-line "#F9F9DD")
 #+END_SRC
 
 *** Highlight indentation
@@ -826,13 +833,16 @@ particular.
       (add-hook 'prog-mode-hook
         (lambda ()
           (highlight-indentation-mode)
-          (set-face-background 'highlight-indentation-face "#353520")))
+          (set-face-background 'highlight-indentation-face "#EEEEDD")
+          ;; (set-face-background 'highlight-indentation-face "#353520")
+      ))
 
       (add-hook 'prog-mode-hook
         (lambda ()
           (highlight-indentation-current-column-mode)
           (set-face-background
-            'highlight-indentation-current-column-face "#151510")))))
+            ;; 'highlight-indentation-current-column-face "#151510"
+            'highlight-indentation-current-column-face "#CCCCAA")))))
 #+END_SRC
 
 *** Flycheck
@@ -1082,7 +1092,7 @@ A virtual environment tool.
     (progn
       (venv-initialize-interactive-shells)
       (venv-initialize-eshell)
-      (setq venv-location "~/code/pingdom/pretenders/")
+      (setq venv-location "~/code/heroku-proxy/")
 
       (add-hook 'venv-postmkvirtualenv-hook
         (lambda () (shell-command "pip install pylint")))
@@ -1116,6 +1126,21 @@ Homepage: [[https://github.com/spotify/dockerfile-mode]]
     (progn
       (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))))
 #+END_SRC
+
+*** Erlang mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package erlang
+    :ensure t)
+#+END_SRC
+
+*** Rest Client
+
+#+BEGIN_SRC emacs-lisp
+  (use-package restclient
+    :ensure t)
+#+END_SRC
+
 ** Source control
 *** Magit
 Homepage: [[https://github.com/magit/magit]]
@@ -1123,14 +1148,16 @@ Homepage: [[https://github.com/magit/magit]]
 A nice Git interface for Emacs. Just run status to start.
 
 #+BEGIN_SRC emacs-lisp
+;;    :diminish magit-auto-revert-mode
+
   (use-package magit
     :ensure t
-    :diminish magit-auto-revert-mode
     :bind
     ( ("C-c s" . magit-status)
       ("C-c b" . magit-blame-mode)))
 
   (setq magit-last-seen-setup-instructions "1.4.0")
+  (setq magit-push-always-verify nil)
 
 #+END_SRC
 
@@ -1264,44 +1291,48 @@ Load a nice looking dark theme. Make source code blocks have
 prettier background colors and fontify code in them according to mode.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package monokai-theme
-    :ensure t)
-
-  (set-face-background 'region "#226622")
+  ;;(use-package monokai-theme
+  ;;  :ensure t)
+  ;;
+  ;;(set-face-background 'region "#226622")
 #+END_SRC
 
 Set colors for org mode code blocks.
 
 #+BEGIN_SRC emacs-lisp
-  (set-face-background 'org-block-begin-line "#222211")
-  (set-face-background 'org-block-background "#333322")
-  (set-face-background 'org-block-end-line "#222211")
-  (setq org-src-fontify-natively t)
+ (set-face-background 'org-block-begin-line "#DDDDDD")
+;;  (set-face-background 'org-block-background "#EEEEEE")
+(set-face-background 'org-block-end-line "#DDDDDD")
+(setq org-src-fontify-natively t)
+;;  (set-face-background 'org-block-begin-line "#222211")
+;;  (set-face-background 'org-block-background "#333322")
+;;  (set-face-background 'org-block-end-line "#222211")
+;;  (setq org-src-fontify-natively t)
 #+END_SRC
 
 Set colors for auto complete popup.
 
 #+BEGIN_SRC emacs-lisp
-  (set-face-background 'ac-candidate-face "#333322")
-  (set-face-foreground 'ac-candidate-face "#E6DB74")
-  (set-face-underline 'ac-candidate-face nil)
-
-  (set-face-background 'ac-selection-face "#E6DB74")
-  (set-face-foreground 'ac-selection-face "black")
-  (set-face-underline 'ac-selection-face nil)
-
-  (set-face-background 'ac-yasnippet-candidate-face "#333322")
-  (set-face-foreground 'ac-yasnippet-candidate-face "red")
-  (set-face-underline 'ac-yasnippet-candidate-face nil)
-
-  (set-face-background 'ac-yasnippet-selection-face "red")
-  (set-face-foreground 'ac-yasnippet-selection-face "black")
-  (set-face-underline 'ac-yasnippet-selection-face nil)
-
-  (set-face-background 'popup-face "#333322")
-  (set-face-foreground 'popup-face "#E6DB74")
-  (set-face-background 'popup-summary-face "#333322")
-  (set-face-foreground 'popup-summary-face "white")
+;;  (set-face-background 'ac-candidate-face "#333322")
+;;  (set-face-foreground 'ac-candidate-face "#E6DB74")
+;;  (set-face-underline 'ac-candidate-face nil)
+;;
+;;  (set-face-background 'ac-selection-face "#E6DB74")
+;;  (set-face-foreground 'ac-selection-face "black")
+;;  (set-face-underline 'ac-selection-face nil)
+;;
+;;  (set-face-background 'ac-yasnippet-candidate-face "#333322")
+;;  (set-face-foreground 'ac-yasnippet-candidate-face "red")
+;;  (set-face-underline 'ac-yasnippet-candidate-face nil)
+;;
+;;  (set-face-background 'ac-yasnippet-selection-face "red")
+;;  (set-face-foreground 'ac-yasnippet-selection-face "black")
+;;  (set-face-underline 'ac-yasnippet-selection-face nil)
+;;
+;;  (set-face-background 'popup-face "#333322")
+;;  (set-face-foreground 'popup-face "#E6DB74")
+;;  (set-face-background 'popup-summary-face "#333322")
+;;  (set-face-foreground 'popup-summary-face "white")
 #+END_SRC
 
 *** Stack Overflow
@@ -1427,10 +1458,10 @@ Set eshell prompt to active virtualenv and the current directory.
       (concat
         venv-current-name
         (propertize " [" 'face `(:foreground "black"))
-        (propertize (pwd-replace-home (eshell/pwd)) 'face `(:foreground "green"))
+        (propertize (pwd-replace-home (eshell/pwd)) 'face `(:foreground "darkgreen"))
         (propertize "]" 'face `(:foreground "black"))
         (propertize " $" 'face `(:foreground "red"))
-        (propertize " " 'face `(:foreground "white")))))
+        (propertize " " 'face `(:foreground "black")))))
 
   (setq eshell-highlight-prompt nil)
 #+END_SRC
