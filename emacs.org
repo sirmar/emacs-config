@@ -1,0 +1,382 @@
+#+TITLE: Emacs configuration
+#+AUTHOR: Marcus Veibäck
+#+EMAIL: sirmar@gmail
+
+* Package handling
+
+#+BEGIN_SRC emacs-lisp
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (eval-when-compile
+    (require 'use-package))
+  (setq use-package-always-ensure t)
+
+  (use-package diminish)
+  (use-package bind-key)
+#+END_SRC
+
+* Built in
+
+** The interface
+
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+
+  (setq ring-bell-function 'ignore)
+
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  (setq frame-title-format "%b")
+  (when window-system (set-frame-position (selected-frame) 10 30))
+  (when window-system (set-frame-size (selected-frame) 360 83))
+  (setq first-window (selected-window))
+  (setq second-window (split-window first-window 180 t))
+
+  (delete-selection-mode)
+  (setq mouse-yank-at-point t)
+
+  (line-number-mode t)
+  (column-number-mode t)
+
+  (setq user-full-name "Marcus Veibäck")
+  (setq user-mail-address "sirmar@gmail.com")
+#+END_SRC
+
+** Backup files
+
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+#+END_SRC
+
+** Modes
+
+#+BEGIN_SRC emacs-lisp
+  (global-whitespace-mode t)
+  (diminish 'global-whitespace-mode)
+  (add-hook 'text-mode-hook (function (lambda () (setq whitespace-style '(face tabs trailing)))))
+  (add-hook 'prog-mode-hook (function (lambda () (setq whitespace-style '(face tabs trailing)))))
+  (add-hook 'go-mode-hook (function (lambda () (setq whitespace-style '(face trailing)))))
+
+  (electric-pair-mode 1)
+  (show-paren-mode 1)
+#+END_SRC
+
+** Hooks
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+* Interface
+
+** Theme
+
+#+BEGIN_SRC emacs-lisp
+  (use-package zenburn-theme
+    :init (load-theme 'zenburn t))
+#+END_SRC
+
+** Fill comlumn indicator
+
+#+BEGIN_SRC emacs-lisp
+  (use-package fill-column-indicator
+    :hook (prog-mode . fci-mode)
+    :config (setq fci-rule-column 120))
+
+  (defadvice popup-create (before suppress-fci-mode activate)
+    (turn-off-fci-mode))
+
+  (defadvice popup-delete (after restore-fci-mode activate)
+    (turn-on-fci-mode))
+#+END_SRC
+
+* Editing
+** Multiple cursors
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :bind (("C-+" . mc/mark-next-symbol-like-this)
+           ("C-´" . mc/mark-all-symbols-like-this)
+           ("C-¨" . mc/edit-lines)))
+#+END_SRC
+
+** Move text
+
+#+BEGIN_SRC emacs-lisp
+  (use-package move-text
+    :bind ( ("<M-up>"   . move-text-up)
+            ("<M-down>" . move-text-down)))
+#+END_SRC
+** Auto complete
+
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-complete
+    :diminish (auto-complete-mode)
+    :init
+    (progn
+      (ac-config-default)
+      (global-auto-complete-mode t)))
+#+END_SRC
+
+* Search
+
+** Swiper
+
+#+BEGIN_SRC emacs-lisp
+    (use-package smex)
+
+    (use-package ivy
+      :diminish (ivy-mode)
+      :config (ivy-mode 1))
+
+    (use-package counsel
+      :diminish (counsel-mode)
+      :config (counsel-mode))
+
+    (use-package swiper
+      :bind (("C-s" . swiper)))
+#+END_SRC
+
+** Avy
+
+#+BEGIN_SRC emacs-lisp
+    (use-package avy
+      :init (avy-setup-default)
+      :bind (("C-r" . avy-goto-char-timer))
+      :config (setq avy-timeout-seconds 0.3))
+#+END_SRC
+
+** Ace Window
+
+#+BEGIN_SRC emacs-lisp
+    (use-package ace-window
+      :bind (("M-o" . ace-window))
+      :config (custom-set-faces '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 2.0))))))
+#+END_SRC
+
+* Major modes
+
+** Dockerfile mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dockerfile-mode
+    :commands (dockerfile-mode)
+    :mode (("Dockerfile\\'" . dockerfile-mode))
+    :config (add-to-list 'ac-modes 'dockerfile-mode))
+#+END_SRC
+
+** Yaml mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :commands (yaml-mode)
+    :mode (("\\.yml\\'" . yaml-mode))
+    :config (add-to-list 'ac-modes 'yaml-mode))
+#+END_SRC
+
+** Markdown mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :commands (markdown-mode)
+    :config (add-to-list 'ac-modes 'markdown-mode))
+#+END_SRC
+
+** PHP mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package php-mode
+    :commands (php-mode)
+    :config (add-to-list 'ac-modes 'php-mode))
+#+END_SRC
+
+** Go mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :commands (go-mode)
+    :config (add-to-list 'ac-modes 'go-mode))
+#+END_SRC
+
+** Org mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :bind (("C-c c" . org-capture))
+    :init
+    (progn
+      (setq org-default-notes-file "~/notes.org")
+      (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+      (setq org-todo-keyword-faces '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green")))
+      (setq org-log-done "time")
+      (setq org-src-fontify-natively t)
+      (setq org-capture-templates
+            '(("r" "Refactor me" entry
+               (file+headline org-default-notes-file "Code refactor")
+               "* TODO %?\nADDED: %U\nLINK: %l"
+               :empty-lines 1)
+
+              ("t" "Add TODO item" entry
+               (file+headline org-default-notes-file "Things to do")
+               "* TODO %?\nADDED: %U"
+               :empty-lines 1)
+
+              ("f" "Add Question" entry
+               (file+headline org-default-notes-file "Things to do")
+               "* TODO (Q): %??\n(A):\nADDED: %U"
+               :empty-lines 1)
+
+              ("n" "Add Note" entry
+               (file+headline org-default-notes-file "General notes")
+               "* %?\nADDED: %U"
+                       :empty-lines 1)))))
+
+  (use-package org-ac
+    :init (org-ac/config-default))
+#+END_SRC
+
+* Global key changes
+
+** Custom functions
+
+#+BEGIN_SRC emacs-lisp
+   (defun marcus-kill-line-or-region ()
+     "Cut region. If no region cut current line."
+     (interactive)
+     (if (use-region-p) (kill-region (region-beginning) (region-end))
+       (kill-whole-line)))
+
+   (defun marcus-home ()
+     "Move to indentation, beginning of line and beginning of buffer."
+     (interactive)
+     (if (bolp) (beginning-of-buffer)
+       (skip-chars-backward " \t")
+       (unless (bolp) (back-to-indentation))))
+
+
+   (defun marcus-end ()
+     "Move to end of line and end of buffer."
+     (interactive)
+     (if (eolp) (end-of-buffer)
+       (end-of-line)))
+
+   (defun marcus-delete-current-buffer-file ()
+     "Removes file connected to current buffer and kills buffer."
+     (interactive)
+     (let ((filename (buffer-file-name))
+           (buffer (current-buffer))
+           (name (buffer-name)))
+       (if (not (and filename (file-exists-p filename)))
+           (ido-kill-buffer)
+         (when (yes-or-no-p "Are you sure you want to remove this file? ")
+           (delete-file filename)
+           (kill-buffer buffer)
+           (message "File '%s' successfully removed" filename)))))
+
+   (defun marcus-rename-current-buffer-file ()
+     "Renames current buffer and file it is visiting."
+     (interactive)
+     (let ((name (buffer-name))
+           (filename (buffer-file-name)))
+       (if (not (and filename (file-exists-p filename)))
+           (error "Buffer '%s' is not visiting a file!" name)
+         (let ((new-name (read-file-name "New name: " filename)))
+           (if (get-buffer new-name)
+               (error "A buffer named '%s' already exists!" new-name)
+             (rename-file filename new-name 1)
+             (rename-buffer new-name)
+             (set-visited-file-name new-name)
+             (set-buffer-modified-p nil)
+             (message "File '%s' successfully renamed to '%s'"
+                      name (file-name-nondirectory new-name)))))))
+
+   (defun marcus-comment ()
+     "Commend eclipce style"
+         (interactive)
+         (let ((start (line-beginning-position))
+               (end (line-end-position)))
+           (when (region-active-p)
+             (setq start (save-excursion
+                           (goto-char (region-beginning))
+                           (beginning-of-line)
+                           (point))
+                   end (save-excursion
+                         (goto-char (region-end))
+                         (end-of-line)
+                         (point))))
+           (comment-or-uncomment-region start end)))
+
+  (defun marcus-goto-last-edit-point ()
+   "Sets the cursor on the last edit point."
+   (interactive)
+   (let ((undos buffer-undo-list))
+     (if (listp undos)
+         (while (and undos
+                     (let ((pos (or (cdr-safe (car undos)) (car undos))))
+                       (not (and (integerp pos) (goto-char (abs pos))))))
+           (setq undos (cdr undos))))))
+#+END_SRC
+
+** Bindings
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-z" 'undo)
+  (bind-key "C-x C-z" 'undo)
+  (bind-key "<delete>" 'delete-char)
+  (bind-key "C-j" (lambda () (interactive) (join-line -1)))
+  (bind-key "C-w" 'marcus-kill-line-or-region)
+  (bind-key "C-a" 'marcus-home)
+  (bind-key "C-e" 'marcus-end)
+  (bind-key "M-g" 'goto-line)
+  (bind-key "C-x C-k" 'marcus-delete-current-buffer-file)
+  (bind-key "C-x C-r" 'marcus-rename-current-buffer-file)
+  (bind-key "C-x C-b" 'switch-to-buffer)
+  (bind-key "M-C-c" 'marcus-comment)
+  (bind-key "S-SPC" 'cycle-spacing)
+  (bind-key "S-M SPC" 'marcus-goto-last-edit-point)
+#+END_SRC
+
+* Projects
+
+** Projectile
+
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel-projectile
+    :init (counsel-projectile-mode)
+    :config (setq projectile-mode-line '(:eval (format " P[%s]" (projectile-project-name)))))
+#+END_SRC
+
+** Magit
+
+#+BEGIN_SRC emacs-lisp
+    (use-package magit
+      :bind (("C-x g" . magit-status)))
+#+END_SRC
+
+* Help
+
+** Key stroke help
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :diminish (which-key-mode)
+    :init (which-key-mode))
+#+END_SRC
+
+** Discover
+
+#+BEGIN_SRC emacs-lisp
+  (use-package discover
+    :init (global-discover-mode 1))
+#+END_SRC

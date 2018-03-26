@@ -1,1 +1,3 @@
-(org-babel-load-file "~/.emacs.d/emacs_config.org")
+(package-initialize)
+
+(org-babel-load-file "~/.emacs.d/emacs.org")

@@ -1,7 +1,7 @@
 .mc-lists.el
 ac-comphist.dat
 bookmarks
-emacs_config.el
+emacs.el
 eshell/history
 eshell/lastdir
 ido.last*
