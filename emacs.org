@@ -134,18 +134,20 @@
 ** Swiper
 
 #+BEGIN_SRC emacs-lisp
-    (use-package smex)
+      (use-package smex)
+      (use-package flx)
 
-    (use-package ivy
-      :diminish (ivy-mode)
-      :config (ivy-mode 1))
+      (use-package ivy
+        :diminish (ivy-mode)
+        :init (setq magit-completing-read-function 'ivy-completing-read)
+        :config (ivy-mode 1))
 
-    (use-package counsel
-      :diminish (counsel-mode)
-      :config (counsel-mode))
+      (use-package counsel
+        :diminish (counsel-mode)
+        :config (counsel-mode))
 
-    (use-package swiper
-      :bind (("C-s" . swiper)))
+      (use-package swiper
+        :bind (("C-s" . swiper)))
 #+END_SRC
 
 ** Avy
