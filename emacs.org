@@ -64,9 +64,9 @@
 #+BEGIN_SRC emacs-lisp
   (global-whitespace-mode t)
   (diminish 'global-whitespace-mode)
-  (add-hook 'text-mode-hook (function (lambda () (setq whitespace-style '(face tabs trailing)))))
-  (add-hook 'prog-mode-hook (function (lambda () (setq whitespace-style '(face tabs trailing)))))
-  (add-hook 'go-mode-hook (function (lambda () (setq whitespace-style '(face trailing)))))
+  (add-hook 'text-mode-hook (lambda () (setq whitespace-style '(face tabs trailing))))
+  (add-hook 'prog-mode-hook (lambda () (setq whitespace-style '(face tabs trailing))))
+  (add-hook 'go-mode-hook (lambda () (setq whitespace-style '(face trailing))))
 
   (electric-pair-mode 1)
   (show-paren-mode 1)
@@ -248,7 +248,7 @@
     :init (org-ac/config-default))
 
   (use-package org-bullets
-    :init (org-bullets-mode 1))
+    :hook (org-mode . (lambda () (org-bullets-mode 1))))
 
 #+END_SRC
 
