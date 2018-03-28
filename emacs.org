@@ -84,7 +84,8 @@
 
 #+BEGIN_SRC emacs-lisp
   (use-package zenburn-theme
-    :init (load-theme 'zenburn t))
+    :init (load-theme 'zenburn t)
+    :config (set-face-attribute 'region nil :background "#900"))
 #+END_SRC
 
 ** Fill comlumn indicator
@@ -107,8 +108,8 @@
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
     :bind (("C-+" . mc/mark-next-like-this)
-           ("C-´" . mc/mark-all-like-this)
-           ("C-¨" . mc/edit-lines)))
+           ("C-M-+" . mc/mark-all-like-this)
+           ("C-´" . mc/edit-lines)))
 #+END_SRC
 
 ** Move text
