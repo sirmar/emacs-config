@@ -224,6 +224,8 @@
       (setq org-todo-keyword-faces '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green")))
       (setq org-log-done "time")
       (setq org-src-fontify-natively t)
+      (setq org-ellipsis " ⤵")
+      (setq org-src-tab-acts-natively t)
       (setq org-capture-templates
             '(("r" "Refactor me" entry
                (file+headline org-default-notes-file "Code refactor")
@@ -243,14 +245,13 @@
               ("n" "Add Note" entry
                (file+headline org-default-notes-file "General notes")
                "* %?\nADDED: %U"
-                       :empty-lines 1)))))
+               :empty-lines 1)))))
 
   (use-package org-ac
     :init (org-ac/config-default))
 
   (use-package org-bullets
     :hook (org-mode . (lambda () (org-bullets-mode 1))))
-
 #+END_SRC
 
 * Global key changes
