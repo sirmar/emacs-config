@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: method
-# key: def
-# --
-def $1(self$2):
-    $0

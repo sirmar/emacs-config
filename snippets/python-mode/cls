@@ -1,8 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: class
-# key: cls
-# expand-env: ((yas-indent-line 'fixed))
-# --
-class `(camelize (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`($1):
-    def __init__(self):
-        pass$0

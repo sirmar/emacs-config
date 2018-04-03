@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: setdep
-# key: par
-# --
-self._$1 = ${1:param}$0
