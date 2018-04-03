@@ -29,6 +29,9 @@
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
 
+  (setq display-time-24hr-format t)
+  (display-time-mode 1)
+
   (setq inhibit-startup-message t)
   (setq initial-scratch-message "")
 
@@ -45,8 +48,15 @@
   (delete-selection-mode)
   (setq mouse-yank-at-point t)
 
+  (global-hl-line-mode 1)
   (line-number-mode t)
   (column-number-mode t)
+
+  (setq redisplay-dont-pause t
+        scroll-margin 1
+        scroll-step 1
+        scroll-conservatively 10000
+        scroll-preserve-screen-position 1)
 
   (setq user-full-name "Marcus Veibäck")
   (setq user-mail-address "sirmar@gmail.com")
@@ -85,7 +95,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package zenburn-theme
     :init (load-theme 'zenburn t)
-    :config (set-face-attribute 'region nil :background "#900"))
+    :config (set-face-attribute 'region nil :background "#522"))
 #+END_SRC
 
 ** Fill comlumn indicator
@@ -100,6 +110,30 @@
 
   (defadvice popup-delete (after restore-fci-mode activate)
     (turn-on-fci-mode))
+#+END_SRC
+
+** Rainbow delimiters
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+** Dashboard
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :config
+    (dashboard-setup-startup-hook)
+    (setq dashboard-startup-banner 'logo)
+    (setq dashboard-items '((projects . 10)
+                            (recents  . 10))))
+#+END_SRC
+
+** Powerline
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :init (powerline-default-theme))
 #+END_SRC
 
 * Editing
@@ -119,15 +153,49 @@
     :bind ( ("<M-up>"   . move-text-up)
             ("<M-down>" . move-text-down)))
 #+END_SRC
-** Auto complete
+** Company
 
 #+BEGIN_SRC emacs-lisp
-  (use-package auto-complete
-    :diminish (auto-complete-mode)
-    :init
-    (progn
-      (ac-config-default)
-      (global-auto-complete-mode t)))
+  (use-package company
+    :diminish (company-mode)
+    :init (global-company-mode t)
+    :config (setq company-idle-delay 0))
+#+END_SRC
+
+** Expand region
+
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :bind (("M-SPC" . er/expand-region)))
+#+END_SRC
+
+** WGrep
+
+#+BEGIN_SRC emacs-lisp
+  (use-package wgrep)
+#+END_SRC
+
+** Yasnippet
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :init (yas-global-mode 1)
+    :diminish yas-minor-mode)
+#+END_SRC
+
+** Hungry delete
+
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :init (global-hungry-delete-mode)
+    :diminish hungry-delete-mode)
+#+END_SRC
+
+** Aggressive indent
+
+#+BEGIN_SRC emacs-lisp
+  (use-package aggressive-indent
+    :init (global-aggressive-indent-mode 1))
 #+END_SRC
 
 * Search
@@ -135,20 +203,23 @@
 ** Swiper
 
 #+BEGIN_SRC emacs-lisp
-      (use-package smex)
-      (use-package flx)
+  (use-package smex)
+  (use-package flx)
 
-      (use-package ivy
-        :diminish (ivy-mode)
-        :init (setq magit-completing-read-function 'ivy-completing-read)
-        :config (ivy-mode 1))
+  (use-package ivy
+    :diminish (ivy-mode)
+    :init (setq magit-completing-read-function 'ivy-completing-read)
+    :config (ivy-mode 1))
 
-      (use-package counsel
-        :diminish (counsel-mode)
-        :config (counsel-mode))
+  (use-package counsel
+    :diminish (counsel-mode)
+    :config
+    (counsel-mode)
+    (setq counsel-grep-base-command
+          "rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
-      (use-package swiper
-        :bind (("C-s" . swiper)))
+  (use-package swiper
+    :bind (("C-s" . counsel-grep-or-swiper)))
 #+END_SRC
 
 ** Avy
@@ -175,8 +246,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package dockerfile-mode
     :commands (dockerfile-mode)
-    :mode (("Dockerfile\\'" . dockerfile-mode))
-    :config (add-to-list 'ac-modes 'dockerfile-mode))
+    :mode (("Dockerfile\\'" . dockerfile-mode)))
 #+END_SRC
 
 ** Yaml mode
@@ -184,71 +254,64 @@
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
     :commands (yaml-mode)
-    :mode (("\\.yml\\'" . yaml-mode))
-    :config (add-to-list 'ac-modes 'yaml-mode))
+    :mode (("\\.yml\\'" . yaml-mode)))
 #+END_SRC
 
 ** Markdown mode
 
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
-    :commands (markdown-mode)
-    :config (add-to-list 'ac-modes 'markdown-mode))
+    :commands (markdown-mode))
 #+END_SRC
 
 ** PHP mode
 
 #+BEGIN_SRC emacs-lisp
   (use-package php-mode
-    :commands (php-mode)
-    :config (add-to-list 'ac-modes 'php-mode))
+    :commands (php-mode))
 #+END_SRC
 
 ** Go mode
 
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
-    :commands (go-mode)
-    :config (add-to-list 'ac-modes 'go-mode))
+    :commands (go-mode))
 #+END_SRC
 
 ** Org mode
-
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :bind (("C-c c" . org-capture))
     :init
-    (progn
-      (setq org-default-notes-file "~/notes.org")
-      (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
-      (setq org-todo-keyword-faces '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green")))
-      (setq org-log-done "time")
-      (setq org-src-fontify-natively t)
-      (setq org-ellipsis " ⤵")
-      (setq org-src-tab-acts-natively t)
-      (setq org-capture-templates
-            '(("r" "Refactor me" entry
-               (file+headline org-default-notes-file "Code refactor")
-               "* TODO %?\nADDED: %U\nLINK: %l"
-               :empty-lines 1)
+    (setq org-default-notes-file "~/notes.org")
+    (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+    (setq org-todo-keyword-faces '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green")))
+    (setq org-log-done "time")
+    (setq org-src-fontify-natively t)
+    (setq org-ellipsis " ⤵")
+    (setq org-src-tab-acts-natively t)
+    (setq org-src-window-setup 'current-window)
+    (setq org-capture-templates
+          '(("r" "Refactor me" entry
+             (file+headline org-default-notes-file "Code refactor")
+             "* TODO %?\nADDED: %U\nLINK: %l"
+             :empty-lines 1)
 
-              ("t" "Add TODO item" entry
-               (file+headline org-default-notes-file "Things to do")
-               "* TODO %?\nADDED: %U"
-               :empty-lines 1)
+            ("t" "Add TODO item" entry
+             (file+headline org-default-notes-file "Things to do")
+             "* TODO %?\nADDED: %U"
+             :empty-lines 1)
 
-              ("f" "Add Question" entry
-               (file+headline org-default-notes-file "Things to do")
-               "* TODO (Q): %??\n(A):\nADDED: %U"
-               :empty-lines 1)
+            ("f" "Add Question" entry
+             (file+headline org-default-notes-file "Things to do")
+             "* TODO (Q): %??\n(A):\nADDED: %U"
+             :empty-lines 1)
 
-              ("n" "Add Note" entry
-               (file+headline org-default-notes-file "General notes")
-               "* %?\nADDED: %U"
-               :empty-lines 1)))))
-
-  (use-package org-ac
-    :init (org-ac/config-default))
+            ("n" "Add Note" entry
+             (file+headline org-default-notes-file "General notes")
+             "* %?\nADDED: %U"
+             :empty-lines 1)))
+    (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")))
 
   (use-package org-bullets
     :hook (org-mode . (lambda () (org-bullets-mode 1))))
@@ -349,9 +412,8 @@
   (bind-key "M-g" 'goto-line)
   (bind-key "C-x C-k" 'marcus-delete-current-buffer-file)
   (bind-key "C-x C-r" 'marcus-rename-current-buffer-file)
-  (bind-key "C-x C-b" 'switch-to-buffer)
+  (bind-key "C-x C-b" 'ibuffer)
   (bind-key "M-C-c" 'marcus-comment)
-  (bind-key "S-SPC" 'cycle-spacing)
   (bind-key "S-M SPC" 'marcus-goto-last-edit-point)
 #+END_SRC
 
@@ -362,7 +424,8 @@
 #+BEGIN_SRC emacs-lisp
   (use-package counsel-projectile
     :init (counsel-projectile-mode)
-    :config (setq projectile-mode-line '(:eval (format " P[%s]" (projectile-project-name)))))
+    :config (setq projectile-mode-line '(:eval (format " P[%s]" (projectile-project-name))))
+    :bind (("C-c g" . counsel-projectile-rg)))
 #+END_SRC
 
 ** Magit
