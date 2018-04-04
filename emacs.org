@@ -58,6 +58,9 @@
         scroll-conservatively 10000
         scroll-preserve-screen-position 1)
 
+  (eval-after-load "term"
+    '(define-key term-raw-map (kbd "C-c C-y") 'term-paste))
+
   (setq user-full-name "Marcus Veibäck")
   (setq user-mail-address "sirmar@gmail.com")
 #+END_SRC
@@ -159,7 +162,9 @@
   (use-package company
     :diminish (company-mode)
     :init (global-company-mode t)
-    :config (setq company-idle-delay 0))
+    :config
+    (setq company-idle-delay 0)
+    (company-tng-configure-default))
 #+END_SRC
 
 ** Expand region
