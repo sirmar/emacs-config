@@ -208,7 +208,8 @@
 
   (use-package ivy
     :diminish (ivy-mode)
-    :init (setq magit-completing-read-function 'ivy-completing-read)
+    :init (setq magit-completing-read-function 'ivy-completing-read
+                ivy-height 25)
     :config (ivy-mode 1))
 
   (use-package counsel
@@ -415,6 +416,7 @@
   (bind-key "C-x C-b" 'ibuffer)
   (bind-key "M-C-c" 'marcus-comment)
   (bind-key "S-M SPC" 'marcus-goto-last-edit-point)
+  (bind-key "C-c s" '(lambda ()  (interactive) (ansi-term "/bin/bash")))
 #+END_SRC
 
 * Projects
