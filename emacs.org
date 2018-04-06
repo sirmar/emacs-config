@@ -422,6 +422,7 @@
   (bind-key "M-C-c" 'marcus-comment)
   (bind-key "S-M SPC" 'marcus-goto-last-edit-point)
   (bind-key "C-c s" '(lambda ()  (interactive) (ansi-term "/bin/bash")))
+  (bind-key "<f10>" 'next-match)
 #+END_SRC
 
 * Projects
