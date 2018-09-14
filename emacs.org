@@ -21,7 +21,6 @@
 #+END_SRC
 
 * Built in
-
 ** The interface
 
 #+BEGIN_SRC emacs-lisp
@@ -92,7 +91,6 @@
 #+END_SRC
 
 * Interface
-
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
@@ -186,21 +184,6 @@
   (use-package yasnippet
     :init (yas-global-mode 1)
     :diminish yas-minor-mode)
-#+END_SRC
-
-** Hungry delete
-
-#+BEGIN_SRC emacs-lisp
-  (use-package hungry-delete
-    :init (global-hungry-delete-mode)
-    :diminish hungry-delete-mode)
-#+END_SRC
-
-** Aggressive indent
-
-#+BEGIN_SRC emacs-lisp
-  (use-package aggressive-indent
-    :init (global-aggressive-indent-mode 1))
 #+END_SRC
 
 * Search
@@ -324,7 +307,6 @@
 #+END_SRC
 
 * Global key changes
-
 ** Custom functions
 
 #+BEGIN_SRC emacs-lisp
@@ -420,7 +402,8 @@
   (bind-key "C-x C-r" 'marcus-rename-current-buffer-file)
   (bind-key "C-x C-b" 'ibuffer)
   (bind-key "M-C-c" 'marcus-comment)
-  (bind-key "S-M SPC" 'marcus-goto-last-edit-point)
+  (bind-key "M-C-SPC" 'marcus-goto-last-edit-point)
+  (bind-key "S-SPC" 'cycle-spacing)
   (bind-key "C-c s" '(lambda ()  (interactive) (ansi-term "/bin/bash")))
   (bind-key "<f10>" 'next-match)
 #+END_SRC
