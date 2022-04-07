@@ -2,10 +2,24 @@
 #+AUTHOR: Marcus Veibäck
 #+EMAIL: sirmar@gmail
 
+* Performance
+#+BEGIN_SRC emacs-lisp
+  ;; The default is 800 kilobytes.  Measured in bytes.
+  (setq gc-cons-threshold (* 50 1000 1000))
+
+  (defun efs/display-startup-time ()
+    (message "Emacs loaded in %s with %d garbage collections."
+      (format "%.2f seconds"
+        (float-time
+        (time-subtract after-init-time before-init-time)))
+      gcs-done))
+
+  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+#+END_SRC
+
 * Package handling
 
 #+BEGIN_SRC emacs-lisp
-  (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
   (unless (package-installed-p 'use-package)
@@ -82,6 +96,10 @@
 
   (electric-pair-mode 1)
   (show-paren-mode 1)
+
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom ((doom-modeline-height 15)))
 #+END_SRC
 
 ** Hooks
@@ -131,11 +149,6 @@
                             (recents  . 10))))
 #+END_SRC
 
-** Powerline
-#+BEGIN_SRC emacs-lisp
-  (use-package powerline
-    :init (powerline-default-theme))
-#+END_SRC
 
 * Editing
 ** Multiple cursors
@@ -161,8 +174,11 @@
     :diminish (company-mode)
     :init (global-company-mode t)
     :config
-    (setq company-idle-delay 0)
-    (company-tng-configure-default))
+      (setq company-idle-delay 0)
+      (company-tng-configure-default))
+
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
 #+END_SRC
 
 ** Expand region
@@ -199,6 +215,11 @@
     :init (setq magit-completing-read-function 'ivy-completing-read
                 ivy-height 25)
     :config (ivy-mode 1))
+
+  (use-package ivy-rich
+    :after ivy
+    :init
+    (ivy-rich-mode 1))
 
   (use-package counsel
     :diminish (counsel-mode)
@@ -416,6 +437,7 @@
   (use-package counsel-projectile
     :init (counsel-projectile-mode)
     :config (setq projectile-mode-line '(:eval (format " P[%s]" (projectile-project-name))))
+            (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     :bind (("C-c g" . counsel-projectile-rg)))
 #+END_SRC
 
