@@ -55,8 +55,6 @@
   (setq frame-title-format "%b")
   (when window-system (set-frame-position (selected-frame) 10 30))
   (when window-system (set-frame-size (selected-frame) 360 83))
-  (setq first-window (selected-window))
-  (setq second-window (split-window first-window 180 t))
 
   (delete-selection-mode)
   (setq mouse-yank-at-point t)
@@ -108,6 +106,39 @@
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
 
+** Dired
+#+BEGIN_SRC emacs-lisp
+
+  (use-package dired
+    :ensure nil
+    :commands (dired dired-jump)
+    :bind (("C-x C-d" . dired-jump))
+    :config
+    (progn
+      (define-key dired-mode-map "." 'dired-single-up-directory)
+      (setq dired-listing-switches "-alGhvF --group-directories-first")))
+
+  (use-package dired-single)
+
+  (use-package dired-hide-dotfiles
+    :hook (dired-mode . dired-hide-dotfiles-mode)
+    :config
+    (define-key dired-mode-map "H" 'dired-hide-dotfiles-mode))
+
+  (defun my-dired-init ()
+    (define-key dired-mode-map [remap dired-find-file]
+      'dired-single-buffer)
+    (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+      'dired-single-buffer-mouse)
+    (define-key dired-mode-map [remap dired-up-directory]
+      'dired-single-up-directory))
+
+  (if (boundp 'dired-mode-map)
+      (my-dired-init)
+    (add-hook 'dired-load-hook 'my-dired-init))
+
+#+END_SRC
+
 * Interface
 ** Theme
 
@@ -148,7 +179,6 @@
     (setq dashboard-items '((projects . 10)
                             (recents  . 10))))
 #+END_SRC
-
 
 * Editing
 ** Multiple cursors
@@ -284,8 +314,15 @@
 ** Go mode
 
 #+BEGIN_SRC emacs-lisp
+  (defun lsp-go-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
   (use-package go-mode
-    :commands (go-mode))
+    :commands (go-mode)
+    :hook
+       (go-mode . lsp)
+       (go-mode . lsp-go-save-hooks))
 #+END_SRC
 
 ** Org mode
@@ -446,6 +483,21 @@
 #+BEGIN_SRC emacs-lisp
     (use-package magit
       :bind (("C-x g" . magit-status)))
+#+END_SRC
+
+** Lsp
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :init
+      (setq lsp-keymap-prefix "C-c l")
+      (setq read-process-output-max (* 1024 1024)) ;; 1mb
+    :hook
+       (lsp-mode . lsp-enable-which-key-integration)
+    :commands lsp)
+
+  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+
+  (use-package all-the-icons)
 #+END_SRC
 
 * Help
