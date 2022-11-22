@@ -324,10 +324,7 @@
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
   (use-package go-mode
-    :commands (go-mode)
-    :hook
-       (go-mode . lsp)
-       (go-mode . lsp-go-save-hooks))
+    :commands (go-mode))
 #+END_SRC
 
 ** Org mode
@@ -497,7 +494,10 @@
       (setq lsp-keymap-prefix "C-c l")
       (setq read-process-output-max (* 1024 1024)) ;; 1mb
     :hook
-       (lsp-mode . lsp-enable-which-key-integration)
+       ((lsp-mode . lsp-enable-which-key-integration)
+        (go-mode . lsp)
+        (go-mode . lsp-go-save-hooks)
+        (python-mode . lsp))
     :commands lsp)
 
   (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
