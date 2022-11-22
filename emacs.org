@@ -103,7 +103,12 @@
 ** Hooks
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (defun marcus-before-save-hook ()
+    (delete-trailing-whitespace)
+    (when (eq major-mode 'sh-mode)
+      (untabify (point-min) (point-max))))
+
+  (add-hook 'before-save-hook 'marcus-before-save-hook)
 #+END_SRC
 
 ** Dired
