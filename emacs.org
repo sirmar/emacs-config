@@ -3,9 +3,10 @@
 #+EMAIL: sirmar@gmail
 
 * Performance
+
 #+BEGIN_SRC emacs-lisp
-  ;; The default is 800 kilobytes.  Measured in bytes.
-  (setq gc-cons-threshold (* 50 1000 1000))
+
+  (setq gc-cons-threshold (* 100 1000 1000))
 
   (defun efs/display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
@@ -15,11 +16,13 @@
       gcs-done))
 
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+
 #+END_SRC
 
 * Package handling
 
 #+BEGIN_SRC emacs-lisp
+
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
   (unless (package-installed-p 'use-package)
@@ -32,12 +35,14 @@
 
   (use-package diminish)
   (use-package bind-key)
+
 #+END_SRC
 
 * Built in
 ** The interface
 
 #+BEGIN_SRC emacs-lisp
+
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -74,18 +79,22 @@
 
   (setq user-full-name "Marcus Veibäck")
   (setq user-mail-address "sirmar@gmail.com")
+
 #+END_SRC
 
 ** Backup files
 
 #+BEGIN_SRC emacs-lisp
+
   (setq make-backup-files nil)
   (setq auto-save-default nil)
+
 #+END_SRC
 
 ** Modes
 
 #+BEGIN_SRC emacs-lisp
+
   (global-whitespace-mode t)
   (diminish 'global-whitespace-mode)
   (add-hook 'text-mode-hook (lambda () (setq whitespace-style '(face tabs trailing))))
@@ -98,20 +107,24 @@
   (use-package doom-modeline
     :init (doom-modeline-mode 1)
     :custom ((doom-modeline-height 15)))
+
 #+END_SRC
 
 ** Hooks
 
 #+BEGIN_SRC emacs-lisp
-  (defun marcus-before-save-hook ()
+
+(defun marcus-before-save-hook ()
     (delete-trailing-whitespace)
     (when (eq major-mode 'sh-mode)
       (untabify (point-min) (point-max))))
 
   (add-hook 'before-save-hook 'marcus-before-save-hook)
+
 #+END_SRC
 
 ** Dired
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package dired
@@ -142,20 +155,34 @@
       (my-dired-init)
     (add-hook 'dired-load-hook 'my-dired-init))
 
+  (use-package all-the-icons-dired
+    :hook (dired-mode . all-the-icons-dired-mode)
+    :config (setq all-the-icons-dired-monochrome nil))
+
 #+END_SRC
 
 * Interface
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package zenburn-theme
     :init (load-theme 'zenburn t)
     :config (set-face-attribute 'region nil :background "#522"))
+
+  (defvar efs/default-font-size 120)
+  (defvar efs/default-variable-font-size 120)
+
+  (set-face-attribute 'default nil :font "Fira Code Retina" :height efs/default-font-size)
+  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height efs/default-font-size)
+  (set-face-attribute 'variable-pitch nil :font "Cantarell" :height efs/default-variable-font-size :weight 'regular)
+
 #+END_SRC
 
 ** Fill comlumn indicator
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package fill-column-indicator
     :hook (prog-mode . fci-mode)
     :config (setq fci-rule-column 120))
@@ -165,46 +192,56 @@
 
   (defadvice popup-delete (after restore-fci-mode activate)
     (turn-on-fci-mode))
+
 #+END_SRC
 
 ** Rainbow delimiters
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
+
 #+END_SRC
 
 ** Dashboard
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package dashboard
     :config
     (dashboard-setup-startup-hook)
     (setq dashboard-startup-banner 'logo)
     (setq dashboard-items '((projects . 10)
                             (recents  . 10))))
+
 #+END_SRC
 
 * Editing
 ** Multiple cursors
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package multiple-cursors
     :bind (("C-+" . mc/mark-next-like-this)
            ("C-M-+" . mc/mark-all-like-this)
            ("C-´" . mc/edit-lines)))
+
 #+END_SRC
 
 ** Move text
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package move-text
     :bind ( ("<M-up>"   . move-text-up)
             ("<M-down>" . move-text-down)))
+
 #+END_SRC
 ** Company
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package company
     :diminish (company-mode)
     :init (global-company-mode t)
@@ -214,34 +251,41 @@
 
   (use-package company-box
     :hook (company-mode . company-box-mode))
+
 #+END_SRC
 
 ** Expand region
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package expand-region
     :bind (("M-SPC" . er/expand-region)))
+
 #+END_SRC
 
 ** WGrep
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package wgrep)
+
 #+END_SRC
 
 ** Yasnippet
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package yasnippet
     :init (yas-global-mode 1)
     :diminish yas-minor-mode)
+
 #+END_SRC
 
 * Search
-
 ** Swiper
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package smex)
   (use-package flx)
 
@@ -265,79 +309,129 @@
 
   (use-package swiper
     :bind (("C-s" . counsel-grep-or-swiper)))
+
 #+END_SRC
 
 ** Avy
 
 #+BEGIN_SRC emacs-lisp
-    (use-package avy
-      :init (avy-setup-default)
-      :bind (("C-r" . avy-goto-char-timer))
-      :config (setq avy-timeout-seconds 0.3))
+
+  (use-package avy
+    :init (avy-setup-default)
+    :bind (("C-r" . avy-goto-char-timer))
+    :config (setq avy-timeout-seconds 0.3))
+
 #+END_SRC
 
 ** Ace Window
 
 #+BEGIN_SRC emacs-lisp
-    (use-package ace-window
-      :bind (("M-o" . ace-window))
-      :config (custom-set-faces '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 2.0))))))
+
+  (use-package ace-window
+    :bind (("M-o" . ace-window))
+    :config (custom-set-faces '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 2.0))))))
+
 #+END_SRC
 
 * Major modes
-
 ** Dockerfile mode
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package dockerfile-mode
     :commands (dockerfile-mode)
     :mode (("Dockerfile\\'" . dockerfile-mode)))
+
 #+END_SRC
 
 ** Yaml mode
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package yaml-mode
     :commands (yaml-mode)
     :mode (("\\.yml\\'" . yaml-mode)))
+
 #+END_SRC
 
 ** Markdown mode
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package markdown-mode
     :commands (markdown-mode))
+
 #+END_SRC
 
 ** PHP mode
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package php-mode
     :commands (php-mode))
+
 #+END_SRC
 
 ** Go mode
 
 #+BEGIN_SRC emacs-lisp
+
   (defun lsp-go-save-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer t t)
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
   (use-package go-mode
     :commands (go-mode))
+
 #+END_SRC
 
 ** Org mode
+
 #+BEGIN_SRC emacs-lisp
+
+  (defun org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil  :weight 'regular :height (cdr face)))
+
+    (set-face-attribute 'org-block-begin-line nil :background "#393939" :extend t)
+    (set-face-attribute 'org-block-end-line nil :background "#393939" :extend t)
+
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+
   (use-package org
     :bind (("C-c c" . org-capture))
-    :init
+    :config
+    (setq org-startup-indented t)
     (setq org-default-notes-file "~/notes.org")
     (setq org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
     (setq org-todo-keyword-faces '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green")))
     (setq org-log-done "time")
     (setq org-src-fontify-natively t)
-    (setq org-ellipsis " ⤵")
+    (setq org-ellipsis " ▾")
     (setq org-src-tab-acts-natively t)
     (setq org-src-window-setup 'current-window)
     (setq org-capture-templates
@@ -360,16 +454,19 @@
              (file+headline org-default-notes-file "Notes")
              "* %?\nADDED: %U"
              :empty-lines 1)))
-    (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")))
+    (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+    (org-font-setup))
 
   (use-package org-bullets
     :hook (org-mode . (lambda () (org-bullets-mode 1))))
+
 #+END_SRC
 
 * Global key changes
 ** Custom functions
 
 #+BEGIN_SRC emacs-lisp
+
    (defun marcus-kill-line-or-region ()
      "Cut region. If no region cut current line."
      (interactive)
@@ -382,7 +479,6 @@
      (if (bolp) (beginning-of-buffer)
        (skip-chars-backward " \t")
        (unless (bolp) (back-to-indentation))))
-
 
    (defun marcus-end ()
      "Move to end of line and end of buffer."
@@ -445,11 +541,13 @@
                      (let ((pos (or (cdr-safe (car undos)) (car undos))))
                        (not (and (integerp pos) (goto-char (abs pos))))))
            (setq undos (cdr undos))))))
+
 #+END_SRC
 
 ** Bindings
 
 #+BEGIN_SRC emacs-lisp
+
   (bind-key "C-z" 'undo)
   (bind-key "C-x C-z" 'undo)
   (bind-key "<delete>" 'delete-char)
@@ -466,29 +564,35 @@
   (bind-key "S-SPC" 'cycle-spacing)
   (bind-key "C-c s" '(lambda ()  (interactive) (ansi-term "/bin/bash")))
   (bind-key "<f10>" 'next-match)
+
 #+END_SRC
 
 * Projects
-
 ** Projectile
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package counsel-projectile
     :init (counsel-projectile-mode)
     :config (setq projectile-mode-line '(:eval (format " P[%s]" (projectile-project-name))))
             (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     :bind (("C-c g" . counsel-projectile-rg)))
+
 #+END_SRC
 
 ** Magit
 
 #+BEGIN_SRC emacs-lisp
-    (use-package magit
-      :bind (("C-x g" . magit-status)))
+
+  (use-package magit
+    :bind (("C-x g" . magit-status)))
+
 #+END_SRC
 
 ** Lsp
+
 #+BEGIN_SRC emacs-lisp
+
   (use-package lsp-mode
     :init
       (setq lsp-keymap-prefix "C-c l")
@@ -497,27 +601,37 @@
        ((lsp-mode . lsp-enable-which-key-integration)
         (go-mode . lsp)
         (go-mode . lsp-go-save-hooks)
-        (python-mode . lsp))
+        (python-mode . lsp)
+        (dockerfile-mode . lsp)
+        (sh-mode . lsp))
     :commands lsp)
 
   (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
   (use-package all-the-icons)
+
+  (use-package flycheck
+    :ensure t
+    :init (global-flycheck-mode))
+
 #+END_SRC
 
 * Help
-
 ** Key stroke help
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package which-key
     :diminish (which-key-mode)
     :init (which-key-mode))
+
 #+END_SRC
 
 ** Discover
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package discover
     :init (global-discover-mode 1))
+
 #+END_SRC
