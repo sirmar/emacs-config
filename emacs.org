@@ -8,14 +8,14 @@
 
   (setq gc-cons-threshold (* 100 1000 1000))
 
-  (defun efs/display-startup-time ()
+  (defun marcus-display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
       (format "%.2f seconds"
         (float-time
         (time-subtract after-init-time before-init-time)))
       gcs-done))
 
-  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+  (add-hook 'emacs-startup-hook #'marcus-display-startup-time)
 
 #+END_SRC
 
@@ -106,7 +106,11 @@
 
   (use-package doom-modeline
     :init (doom-modeline-mode 1)
-    :custom ((doom-modeline-height 15)))
+    :custom ((doom-modeline-height 15)
+             (doom-modeline-time nil)
+             (display-time-default-load-average nil)
+             (doom-modeline-buffer-encoding nil)
+             (doom-modeline-vcs-max-length 50)))
 
 #+END_SRC
 
@@ -170,12 +174,12 @@
     :init (load-theme 'zenburn t)
     :config (set-face-attribute 'region nil :background "#522"))
 
-  (defvar efs/default-font-size 120)
-  (defvar efs/default-variable-font-size 120)
+  (defvar marcus-default-font-size 120)
+  (defvar marcus-default-variable-font-size 120)
 
-  (set-face-attribute 'default nil :font "Fira Code Retina" :height efs/default-font-size)
-  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height efs/default-font-size)
-  (set-face-attribute 'variable-pitch nil :font "Cantarell" :height efs/default-variable-font-size :weight 'regular)
+  (set-face-attribute 'default nil :font "Fira Code Retina" :height marcus-default-font-size)
+  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height marcus-default-font-size)
+  (set-face-attribute 'variable-pitch nil :font "Cantarell" :height marcus-default-variable-font-size :weight 'regular)
 
 #+END_SRC
 
@@ -225,7 +229,7 @@
   (use-package multiple-cursors
     :bind (("C-+" . mc/mark-next-like-this)
            ("C-M-+" . mc/mark-all-like-this)
-           ("C-´" . mc/edit-lines)))
+           ("C-'" . mc/edit-lines)))
 
 #+END_SRC
 
@@ -408,6 +412,7 @@
 
     (set-face-attribute 'org-block-begin-line nil :background "#393939" :extend t)
     (set-face-attribute 'org-block-end-line nil :background "#393939" :extend t)
+    (set-face-underline 'org-ellipsis nil)
 
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
     (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
@@ -431,7 +436,7 @@
     (setq org-todo-keyword-faces '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green")))
     (setq org-log-done "time")
     (setq org-src-fontify-natively t)
-    (setq org-ellipsis " ▾")
+    (setq org-ellipsis "▾")
     (setq org-src-tab-acts-natively t)
     (setq org-src-window-setup 'current-window)
     (setq org-capture-templates
@@ -462,85 +467,93 @@
 
 #+END_SRC
 
+** Restclient
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package restclient)
+
+#+END_SRC
+
 * Global key changes
 ** Custom functions
 
 #+BEGIN_SRC emacs-lisp
 
-   (defun marcus-kill-line-or-region ()
-     "Cut region. If no region cut current line."
-     (interactive)
-     (if (use-region-p) (kill-region (region-beginning) (region-end))
-       (kill-whole-line)))
+  (defun marcus-kill-line-or-region ()
+    "Cut region. If no region cut current line."
+    (interactive)
+    (if (use-region-p) (kill-region (region-beginning) (region-end))
+      (kill-whole-line)))
 
-   (defun marcus-home ()
-     "Move to indentation, beginning of line and beginning of buffer."
-     (interactive)
-     (if (bolp) (beginning-of-buffer)
-       (skip-chars-backward " \t")
-       (unless (bolp) (back-to-indentation))))
+  (defun marcus-home ()
+    "Move to indentation, beginning of line and beginning of buffer."
+    (interactive)
+    (if (bolp) (beginning-of-buffer)
+      (skip-chars-backward " \t")
+      (unless (bolp) (back-to-indentation))))
 
-   (defun marcus-end ()
-     "Move to end of line and end of buffer."
-     (interactive)
-     (if (eolp) (end-of-buffer)
-       (end-of-line)))
+  (defun marcus-end ()
+    "Move to end of line and end of buffer."
+    (interactive)
+    (if (eolp) (end-of-buffer)
+      (end-of-line)))
 
-   (defun marcus-delete-current-buffer-file ()
-     "Removes file connected to current buffer and kills buffer."
-     (interactive)
-     (let ((filename (buffer-file-name))
-           (buffer (current-buffer))
-           (name (buffer-name)))
-       (if (not (and filename (file-exists-p filename)))
-           (ido-kill-buffer)
-         (when (yes-or-no-p "Are you sure you want to remove this file? ")
-           (delete-file filename)
-           (kill-buffer buffer)
-           (message "File '%s' successfully removed" filename)))))
+  (defun marcus-delete-current-buffer-file ()
+    "Removes file connected to current buffer and kills buffer."
+    (interactive)
+    (let ((filename (buffer-file-name))
+          (buffer (current-buffer))
+          (name (buffer-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (ido-kill-buffer)
+        (when (yes-or-no-p "Are you sure you want to remove this file? ")
+          (delete-file filename)
+          (kill-buffer buffer)
+          (message "File '%s' successfully removed" filename)))))
 
-   (defun marcus-rename-current-buffer-file ()
-     "Renames current buffer and file it is visiting."
-     (interactive)
-     (let ((name (buffer-name))
-           (filename (buffer-file-name)))
-       (if (not (and filename (file-exists-p filename)))
-           (error "Buffer '%s' is not visiting a file!" name)
-         (let ((new-name (read-file-name "New name: " filename)))
-           (if (get-buffer new-name)
-               (error "A buffer named '%s' already exists!" new-name)
-             (rename-file filename new-name 1)
-             (rename-buffer new-name)
-             (set-visited-file-name new-name)
-             (set-buffer-modified-p nil)
-             (message "File '%s' successfully renamed to '%s'"
-                      name (file-name-nondirectory new-name)))))))
+  (defun marcus-rename-current-buffer-file ()
+    "Renames current buffer and file it is visiting."
+    (interactive)
+    (let ((name (buffer-name))
+          (filename (buffer-file-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (error "Buffer '%s' is not visiting a file!" name)
+        (let ((new-name (read-file-name "New name: " filename)))
+          (if (get-buffer new-name)
+              (error "A buffer named '%s' already exists!" new-name)
+            (rename-file filename new-name 1)
+            (rename-buffer new-name)
+            (set-visited-file-name new-name)
+            (set-buffer-modified-p nil)
+            (message "File '%s' successfully renamed to '%s'"
+                     name (file-name-nondirectory new-name)))))))
 
-   (defun marcus-comment ()
-     "Commend eclipce style"
-         (interactive)
-         (let ((start (line-beginning-position))
-               (end (line-end-position)))
-           (when (region-active-p)
-             (setq start (save-excursion
-                           (goto-char (region-beginning))
-                           (beginning-of-line)
-                           (point))
-                   end (save-excursion
-                         (goto-char (region-end))
-                         (end-of-line)
-                         (point))))
-           (comment-or-uncomment-region start end)))
+  (defun marcus-comment ()
+    "Comment eclipse style"
+    (interactive)
+    (let ((start (line-beginning-position))
+          (end (line-end-position)))
+      (when (region-active-p)
+        (setq start (save-excursion
+                      (goto-char (region-beginning))
+                      (beginning-of-line)
+                      (point))
+              end (save-excursion
+                    (goto-char (region-end))
+                    (end-of-line)
+                    (point))))
+      (comment-or-uncomment-region start end)))
 
   (defun marcus-goto-last-edit-point ()
-   "Sets the cursor on the last edit point."
-   (interactive)
-   (let ((undos buffer-undo-list))
-     (if (listp undos)
-         (while (and undos
-                     (let ((pos (or (cdr-safe (car undos)) (car undos))))
-                       (not (and (integerp pos) (goto-char (abs pos))))))
-           (setq undos (cdr undos))))))
+    "Sets the cursor on the last edit point."
+    (interactive)
+    (let ((undos buffer-undo-list))
+      (if (listp undos)
+          (while (and undos
+                      (let ((pos (or (cdr-safe (car undos)) (car undos))))
+                        (not (and (integerp pos) (goto-char (abs pos))))))
+            (setq undos (cdr undos))))))
 
 #+END_SRC
 
@@ -585,6 +598,7 @@
 #+BEGIN_SRC emacs-lisp
 
   (use-package magit
+    :commands magit-status magit-log-buffer-file
     :bind (("C-x g" . magit-status)))
 
 #+END_SRC
