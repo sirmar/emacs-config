@@ -121,6 +121,8 @@
 (defun marcus-before-save-hook ()
     (delete-trailing-whitespace)
     (when (eq major-mode 'sh-mode)
+      (untabify (point-min) (point-max)))
+    (when (eq major-mode 'restclient-mode)
       (untabify (point-min) (point-max))))
 
   (add-hook 'before-save-hook 'marcus-before-save-hook)
@@ -471,7 +473,9 @@
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package restclient)
+  (use-package restclient
+    :init
+    (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode)))
 
 #+END_SRC
 
