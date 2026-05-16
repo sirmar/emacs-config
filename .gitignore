@@ -18,3 +18,9 @@
 /transient/
 /tree-sitter/
 /var/
+/history
+/places
+/url/
+*.elc
+*~
+\#*\#

@@ -14,9 +14,4 @@ Run the setup script to install all dependencies:
 ./setup.sh
 ```
 
-After first launch, run in Emacs:
-
-- `M-x all-the-icons-install-fonts`
-- `M-x treesit-install-language-grammar` (for each language)
-
-Or run `M-x marcus-check-dependencies` to see what's missing.
+Fonts and tree-sitter grammars are installed automatically on first launch. Run `M-x marcus-check-dependencies` to see any missing dependencies.
