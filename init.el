@@ -17,6 +17,7 @@
 (use-package emacs
   :ensure nil
   :custom
+  (inhibit-startup-echo-area-message "marcus")
   (gc-cons-threshold (* 100 1000 1000))
   (read-process-output-max (* 1024 1024))
   (inhibit-startup-message t)
@@ -48,7 +49,7 @@
     (set-frame-size (selected-frame) 210 80))
   (delete-selection-mode 1)
   (global-hl-line-mode 1)
-  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+  (global-display-line-numbers-mode 1)
   (add-hook 'before-save-hook #'delete-trailing-whitespace)
   (column-number-mode t)
   (electric-pair-mode 1)
@@ -72,6 +73,8 @@
 (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 130)
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 130 :weight 'regular)
 
+(use-package nerd-icons)
+
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
@@ -88,6 +91,11 @@
 
 (use-package vertico
   :init (vertico-mode 1))
+
+(use-package savehist
+  :ensure nil
+  :custom (savehist-additional-variables '(extended-command-history))
+  :init (savehist-mode 1))
 
 (use-package orderless
   :custom
@@ -180,8 +188,21 @@
 (use-package all-the-icons)
 
 (use-package all-the-icons-dired
-  :hook (dired-mode . all-the-icons-dired-mode)
+  :hook (dired-mode . (lambda ()
+                        (when (display-graphic-p)
+                          (all-the-icons-dired-mode))))
   :config (setq all-the-icons-dired-monochrome nil))
+
+;;; Inline diagnostics
+
+(use-package sideline
+  :hook (flymake-mode . sideline-mode)
+  :custom (sideline-backends-right '(sideline-flymake)))
+
+(use-package sideline-flymake
+  :custom (sideline-flymake-display-mode 'line))
+
+(use-package sideline-flymake)
 
 ;;; LSP
 
@@ -252,6 +273,17 @@
 (use-package ws-butler
   :hook (prog-mode . ws-butler-mode))
 
+;;; Project detection
+
+(defun marcus-python-project-find (dir)
+  "Treat directories with pyproject.toml and .venv as standalone projects."
+  (when-let ((root (locate-dominating-file dir "pyproject.toml")))
+    (when (file-exists-p (expand-file-name ".venv" root))
+      (cons 'transient root))))
+
+(add-to-list 'project-find-functions #'marcus-python-project-find)
+(setq project-switch-commands 'project-find-file)
+
 ;;; Custom functions
 
 
@@ -321,11 +353,6 @@
 
 (defun marcus-check-dependencies ()
   (let ((warnings '()))
-    (unless (find-font (font-spec :name "all-the-icons"))
-      (push "all-the-icons fonts missing — run M-x all-the-icons-install-fonts" warnings))
-    (dolist (lang '(python typescript tsx javascript yaml dockerfile bash c-sharp))
-      (unless (treesit-language-available-p lang)
-        (push (format "tree-sitter grammar missing: %s — run M-x treesit-install-language-grammar" lang) warnings)))
     (unless (executable-find "rg")
       (push "ripgrep missing — run: brew install ripgrep" warnings))
     (unless (executable-find "gls")
@@ -344,10 +371,25 @@
           (insert "  • " w "\n"))
         (display-buffer (current-buffer))))))
 
+(defun marcus-install-grammars ()
+  (dolist (lang (mapcar #'car treesit-language-source-alist))
+    (unless (treesit-language-available-p lang)
+      (treesit-install-language-grammar lang))))
+
+(defun marcus-install-fonts ()
+  (when (and (display-graphic-p)
+             (not (find-font (font-spec :name "all-the-icons"))))
+    (all-the-icons-install-fonts t)
+    (nerd-icons-install-fonts t)))
+
+(add-hook 'emacs-startup-hook #'marcus-install-grammars)
+(add-hook 'emacs-startup-hook #'marcus-install-fonts)
 (add-hook 'emacs-startup-hook #'marcus-check-dependencies)
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load-file custom-file))
+
+(select-frame-set-input-focus (selected-frame))
 
 ;;; init.el ends here
