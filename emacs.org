@@ -16,7 +16,6 @@
       gcs-done))
 
   (add-hook 'emacs-startup-hook #'marcus-display-startup-time)
-
 #+END_SRC
 
 * Package handling
@@ -35,6 +34,7 @@
 
   (use-package diminish)
   (use-package bind-key)
+  (use-package exec-path-from-shell)
 
 #+END_SRC
 
@@ -58,8 +58,8 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
 
   (setq frame-title-format "%b")
-  (when window-system (set-frame-position (selected-frame) 10 30))
-  (when window-system (set-frame-size (selected-frame) 360 83))
+  (when window-system (set-frame-position (selected-frame) 5 30))
+  (when window-system (set-frame-size (selected-frame) 210 80))
 
   (delete-selection-mode)
   (setq mouse-yank-at-point t)
@@ -67,6 +67,11 @@
   (global-hl-line-mode 1)
   (line-number-mode t)
   (column-number-mode t)
+
+  (setq mac-option-key-is-meta nil
+        mac-command-key-is-meta t
+        mac-command-modifier 'meta
+        mac-option-modifier nil)
 
   (setq redisplay-dont-pause t
         scroll-margin 1
@@ -79,6 +84,9 @@
 
   (setq user-full-name "Marcus Veibäck")
   (setq user-mail-address "sirmar@gmail.com")
+
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
 
 #+END_SRC
 
@@ -176,8 +184,8 @@
     :init (load-theme 'zenburn t)
     :config (set-face-attribute 'region nil :background "#522"))
 
-  (defvar marcus-default-font-size 120)
-  (defvar marcus-default-variable-font-size 120)
+  (defvar marcus-default-font-size 130)
+  (defvar marcus-default-variable-font-size 130)
 
   (set-face-attribute 'default nil :font "Fira Code Retina" :height marcus-default-font-size)
   (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height marcus-default-font-size)
@@ -377,6 +385,15 @@
     :commands (php-mode))
 
 #+END_SRC
+** XML mode
+
+#+BEGIN_SRC emacs-lisp
+
+  (setq nxml-child-indent 4 nxml-attribute-indent 4)
+  (setq-default indent-tabs-mode t)
+  (setq-default tab-width 4)
+
+#+END_SRC
 
 ** Go mode
 
@@ -388,6 +405,15 @@
 
   (use-package go-mode
     :commands (go-mode))
+
+#+END_SRC
+
+** Type script mode
+
+#+BEGIN_SRC emacs-lisp
+
+    (use-package typescript-ts-mode
+      :commands (typescript-ts-mode))
 
 #+END_SRC
 
