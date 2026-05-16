@@ -1,15 +1,5 @@
 ;;; init.el --- Emacs configuration -*- lexical-binding: t -*-
 
-;;; Performance
-
-(defun marcus-display-startup-time ()
-  (message "Emacs loaded in %s with %d garbage collections."
-    (format "%.2f seconds"
-      (float-time (time-subtract after-init-time before-init-time)))
-    gcs-done))
-
-(add-hook 'emacs-startup-hook #'marcus-display-startup-time)
-
 ;;; Package handling
 
 (require 'package)
