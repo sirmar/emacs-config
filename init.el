@@ -48,20 +48,17 @@
     (set-frame-size (selected-frame) 210 80))
   (delete-selection-mode 1)
   (global-hl-line-mode 1)
-  (line-number-mode t)
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+  (add-hook 'before-save-hook #'delete-trailing-whitespace)
   (column-number-mode t)
   (electric-pair-mode 1)
   (show-paren-mode 1)
-  (global-whitespace-mode t)
-  (diminish 'global-whitespace-mode)
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize))
   (with-eval-after-load 'term
     (define-key term-raw-map (kbd "C-c C-y") 'term-paste))
   :hook
-  ((text-mode . marcus-setup-whitespace-style)
-   (prog-mode . marcus-setup-whitespace-style)
-   (prog-mode . display-fill-column-indicator-mode))
+  ((prog-mode . display-fill-column-indicator-mode))
   :init
   (setq display-fill-column-indicator-column 120))
 
@@ -257,8 +254,6 @@
 
 ;;; Custom functions
 
-(defun marcus-setup-whitespace-style ()
-  (setq whitespace-style '(face tabs trailing)))
 
 (defun marcus-kill-line-or-region ()
   "Cut region. If no region cut current line."
@@ -269,14 +264,14 @@
 (defun marcus-home ()
   "Move to indentation, beginning of line and beginning of buffer."
   (interactive)
-  (if (bolp) (beginning-of-buffer)
+  (if (bolp) (goto-char (point-min))
     (skip-chars-backward " \t")
     (unless (bolp) (back-to-indentation))))
 
 (defun marcus-end ()
   "Move to end of line and end of buffer."
   (interactive)
-  (if (eolp) (end-of-buffer)
+  (if (eolp) (goto-char (point-max))
     (end-of-line)))
 
 (defun marcus-comment ()
