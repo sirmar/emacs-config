@@ -43,8 +43,9 @@
   :config
   (display-time-mode 1)
   (setq use-short-answers t)
-  (when window-system (set-frame-position (selected-frame) 5 30))
-  (when window-system (set-frame-size (selected-frame) 210 80))
+  (when window-system
+    (set-frame-position (selected-frame) 5 30)
+    (set-frame-size (selected-frame) 210 80))
   (delete-selection-mode 1)
   (global-hl-line-mode 1)
   (line-number-mode t)
@@ -55,11 +56,11 @@
   (diminish 'global-whitespace-mode)
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize))
-  (eval-after-load "term"
-    '(define-key term-raw-map (kbd "C-c C-y") 'term-paste))
+  (with-eval-after-load 'term
+    (define-key term-raw-map (kbd "C-c C-y") 'term-paste))
   :hook
-  ((text-mode . (lambda () (setq whitespace-style '(face tabs trailing))))
-   (prog-mode . (lambda () (setq whitespace-style '(face tabs trailing))))
+  ((text-mode . marcus-setup-whitespace-style)
+   (prog-mode . marcus-setup-whitespace-style)
    (prog-mode . display-fill-column-indicator-mode))
   :init
   (setq display-fill-column-indicator-column 120))
@@ -219,13 +220,13 @@
         (dockerfile-mode . dockerfile-ts-mode)
         (csharp-mode     . csharp-ts-mode)))
 
-(add-to-list 'auto-mode-alist '("\\.ts\\'"  . typescript-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.cs\\'"  . csharp-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
-(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-ts-mode))
+(mapc (lambda (entry) (add-to-list 'auto-mode-alist entry))
+      '(("\\.ts\\'"      . typescript-ts-mode)
+        ("\\.tsx\\'"     . tsx-ts-mode)
+        ("\\.jsx\\'"     . js-ts-mode)
+        ("\\.cs\\'"      . csharp-ts-mode)
+        ("\\.ya?ml\\'"   . yaml-ts-mode)
+        ("Dockerfile\\'" . dockerfile-ts-mode)))
 
 (use-package markdown-mode)
 
@@ -255,6 +256,9 @@
   :hook (prog-mode . ws-butler-mode))
 
 ;;; Custom functions
+
+(defun marcus-setup-whitespace-style ()
+  (setq whitespace-style '(face tabs trailing)))
 
 (defun marcus-kill-line-or-region ()
   "Cut region. If no region cut current line."
@@ -348,5 +352,7 @@
 (add-hook 'emacs-startup-hook #'marcus-check-dependencies)
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load-file custom-file))
 
 ;;; init.el ends here
