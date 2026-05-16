@@ -20,7 +20,6 @@
 (setq use-package-always-ensure t)
 
 (use-package diminish)
-(use-package bind-key)
 (use-package exec-path-from-shell)
 
 ;;; Core
@@ -38,10 +37,9 @@
   (mouse-yank-at-point t)
   (make-backup-files nil)
   (auto-save-default nil)
+  (require-final-newline t)
   (user-full-name "Marcus Veibäck")
   (user-mail-address "sirmar@gmail.com")
-  (mac-option-key-is-meta nil)
-  (mac-command-key-is-meta t)
   (mac-command-modifier 'meta)
   (mac-option-modifier nil)
   (scroll-margin 1)
@@ -54,7 +52,7 @@
   (tab-width 4)
   :config
   (display-time-mode 1)
-  (defalias 'yes-or-no-p 'y-or-n-p)
+  (setq use-short-answers t)
   (when window-system (set-frame-position (selected-frame) 5 30))
   (when window-system (set-frame-size (selected-frame) 210 80))
   (delete-selection-mode 1)
@@ -176,21 +174,20 @@
 (use-package dired
   :ensure nil
   :commands (dired dired-jump)
-  :bind (("C-x C-d" . dired-jump))
+  :bind (("C-x C-d" . dired-jump)
+         :map dired-mode-map
+         ("RET"     . dired-find-alternate-file)
+         ("."       . dired-up-directory)
+         ([mouse-2] . dired-find-alternate-file))
   :config
   (when (executable-find "gls")
     (setq insert-directory-program "gls"))
   (setq dired-listing-switches "-alGhvF --group-directories-first")
-  (put 'dired-find-alternate-file 'disabled nil)
-  :hook
-  (dired-mode . (lambda ()
-                  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-                  (define-key dired-mode-map (kbd ".") 'dired-up-directory)
-                  (define-key dired-mode-map [mouse-2] 'dired-find-alternate-file))))
+  (put 'dired-find-alternate-file 'disabled nil))
 
 (use-package dired-hide-dotfiles
   :hook (dired-mode . dired-hide-dotfiles-mode)
-  :config (define-key dired-mode-map "H" 'dired-hide-dotfiles-mode))
+  :bind (:map dired-mode-map ("H" . dired-hide-dotfiles-mode)))
 
 (use-package all-the-icons)
 
@@ -240,44 +237,16 @@
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
 (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-ts-mode))
 
-(use-package markdown-mode
-  :commands (markdown-mode))
+(use-package markdown-mode)
 
-(use-package php-mode
-  :commands (php-mode))
+(use-package php-mode)
 
 (use-package restclient
-  :mode ("\\.http\\'" . restclient-mode))
-
-(defun org-font-setup ()
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-  (dolist (face '((org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.1)
-                  (org-level-6 . 1.1)
-                  (org-level-7 . 1.1)
-                  (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
-  (set-face-attribute 'org-block-begin-line nil :background "#393939" :extend t)
-  (set-face-attribute 'org-block-end-line nil :background "#393939" :extend t)
-  (set-face-underline 'org-ellipsis nil)
-  (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
-  (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-  (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+  :mode ("\\.http\\'" . restclient-mode)
+  :hook (restclient-mode . (lambda ()
+                             (add-hook 'before-save-hook #'untabify nil t))))
 
 (use-package org
-  :bind (("C-c c" . org-capture))
   :config
   (setq org-startup-indented t
         org-default-notes-file "~/notes.org"
@@ -286,22 +255,14 @@
         org-log-done "time"
         org-ellipsis "▾"
         org-src-window-setup 'current-window)
-
-  (org-font-setup))
+  (set-face-attribute 'org-block-begin-line nil :background "#393939" :extend t)
+  (set-face-attribute 'org-block-end-line nil :background "#393939" :extend t))
 
 (use-package org-modern
   :hook (org-mode . org-modern-mode))
 
-;;; Hooks
-
-(defun marcus-before-save-hook ()
-  (delete-trailing-whitespace)
-  (when (eq major-mode 'bash-ts-mode)
-    (untabify (point-min) (point-max)))
-  (when (eq major-mode 'restclient-mode)
-    (untabify (point-min) (point-max))))
-
-(add-hook 'before-save-hook 'marcus-before-save-hook)
+(use-package ws-butler
+  :hook (prog-mode . ws-butler-mode))
 
 ;;; Custom functions
 
