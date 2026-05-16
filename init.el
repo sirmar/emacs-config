@@ -44,7 +44,6 @@
   (mac-command-key-is-meta t)
   (mac-command-modifier 'meta)
   (mac-option-modifier nil)
-  (redisplay-dont-pause t)
   (scroll-margin 1)
   (scroll-step 1)
   (scroll-conservatively 10000)
@@ -73,7 +72,6 @@
   :hook
   ((text-mode . (lambda () (setq whitespace-style '(face tabs trailing))))
    (prog-mode . (lambda () (setq whitespace-style '(face tabs trailing))))
-   (go-mode   . (lambda () (setq whitespace-style '(face trailing))))
    (prog-mode . display-fill-column-indicator-mode))
   :init
   (setq display-fill-column-indicator-column 120))
@@ -286,9 +284,7 @@
         org-todo-keywords '((sequence "TODO" "DOING" "DONE"))
         org-todo-keyword-faces '(("TODO" . "red") ("DOING" . "Orange") ("DONE" . "green"))
         org-log-done "time"
-        org-src-fontify-natively t
         org-ellipsis "▾"
-        org-src-tab-acts-natively t
         org-src-window-setup 'current-window)
 
   (org-font-setup))
@@ -400,16 +396,6 @@
 
 (add-hook 'emacs-startup-hook #'marcus-check-dependencies)
 
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 2.0)))))
