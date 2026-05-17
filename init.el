@@ -87,6 +87,29 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(use-package popper
+  :bind (("C-å" . popper-toggle)
+         ("M-å" . popper-cycle))
+  :custom
+  (popper-reference-buffers
+   '("\\*Messages\\*"
+     "\\*Warnings\\*"
+     "\\*Compile-Log\\*"
+     "\\*compilation\\*"
+     "\\*Flymake diagnostics"
+     "\\*Occur\\*"
+     "\\*xref\\*"
+     help-mode
+     compilation-mode
+     occur-mode
+     grep-mode
+     xref--xref-buffer-mode))
+  :init
+  (popper-mode 1)
+  (popper-echo-mode 1)
+  :config
+  (setq popper-group-function #'popper-group-by-project))
+
 ;;; Completion stack
 
 (use-package vertico
@@ -112,6 +135,14 @@
    ("C-x b"   . consult-buffer)
    ("C-c b"   . consult-project-buffer)
    ("C-c g"   . consult-ripgrep)))
+
+(use-package embark
+  :bind (("C-." . embark-act)
+         ("C-c C-e" . embark-export)))
+
+
+(use-package embark-consult
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 ;;; Auto-complete
 
@@ -157,7 +188,8 @@
 
 (use-package diff-hl
   :init (global-diff-hl-mode 1)
-  :hook (magit-post-refresh . diff-hl-magit-post-refresh))
+  :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+  :bind ("C-x C-g" . diff-hl-show-hunk))
 
 (use-package helpful
   :bind (("C-h f" . helpful-callable)
@@ -193,31 +225,29 @@
                           (all-the-icons-dired-mode))))
   :config (setq all-the-icons-dired-monochrome nil))
 
-;;; Inline diagnostics
-
-(use-package sideline
-  :hook (flymake-mode . sideline-mode)
-  :custom (sideline-backends-right '(sideline-flymake)))
-
-(use-package sideline-flymake
-  :custom (sideline-flymake-display-mode 'line))
-
-(use-package sideline-flymake)
-
 ;;; LSP
 
 (use-package eglot
   :ensure nil
+  :bind (:map eglot-mode-map
+              ("M-."   . xref-find-definitions)
+              ("C-M-." . xref-find-references)
+              ("M-,"   . xref-go-back)
+              ("C-M-," . xref-go-forward))
   :config
   (add-to-list 'eglot-server-programs
                '((python-mode python-ts-mode) . ("basedpyright-langserver" "--stdio")))
   :hook
-  ((python-ts-mode     . eglot-ensure)
-   (typescript-ts-mode . eglot-ensure)
-   (tsx-ts-mode        . eglot-ensure)
-   (js-ts-mode         . eglot-ensure)
-   (bash-ts-mode       . eglot-ensure)
-   (dockerfile-ts-mode . eglot-ensure)))
+  ((python-ts-mode     . marcus-eglot-ensure-if-project)
+   (typescript-ts-mode . marcus-eglot-ensure-if-project)
+   (tsx-ts-mode        . marcus-eglot-ensure-if-project)
+   (js-ts-mode         . marcus-eglot-ensure-if-project)
+   (bash-ts-mode       . marcus-eglot-ensure-if-project)
+   (dockerfile-ts-mode . marcus-eglot-ensure-if-project)))
+
+(defun marcus-eglot-ensure-if-project ()
+  (when (project-current)
+    (eglot-ensure)))
 
 ;;; Major modes
 
